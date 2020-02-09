@@ -1,0 +1,37 @@
+$fontsize: 24px;
+
+h1 {
+  font-size: $fontsize;
+  margin: 0;
+}
+.toto {
+  text-transform: uppercase;
+}
+.tutu {
+  background-color: red;
+  color: wheat;
+}
+section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+}
+article section {
+  flex: 1;
+  display: flex;
+}
+article {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  height: 4rem;
+  border: blue solid 1px;
+  div {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid red;
+  }
+}
