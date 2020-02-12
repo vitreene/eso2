@@ -27,14 +27,14 @@ export const updates = {
 		layer: "aS",
 		slot: "2",
 		id: 12,
-		style: { backgroundColor: "orangered" },
+		style: { backgroundColor: "orange" },
 		content: "XOXOX"
 	},
 	5000: {
 		layer: "cS",
 		slot: "0",
 		id: 12,
-		style: { backgroundColor: "crimson" }
-		// content: "crimson"
+		style: { backgroundColor: "crimson" },
+		content: "crimson"
 	}
 };
