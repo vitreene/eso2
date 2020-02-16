@@ -17,50 +17,51 @@ const max_valets = 20;
 const valets = createValets(max_valets);
 
 for (let time in updates) {
-	setTimeout(() => {
-		const upd = onScene(updates[time]);
-		updateScene(upd);
-	}, time);
+  setTimeout(() => {
+    const upd = onScene(updates[time]);
+    updateScene(upd);
+  }, time);
 }
 
 function updateSlot(slotId, valetsIds) {
-	const children = valetsIds.map(id => valets.get(id));
-	slots.get(slotId).setState({ children });
+  const children = valetsIds.map(id => valets.get(id));
+  slots.get(slotId).setState({ children });
 }
 
 function updateScene({ changed, update }) {
-	if (typeof changed === "string") {
-		console.error(changed);
-		return;
-	}
-	const valet = valets.get(update.id);
-	let old, current, transform;
+  if (typeof changed === "string") {
+    console.error(changed);
+    return;
+  }
+  const valet = valets.get(update?.id);
+  let old, current, transform;
 
-	if (changed?.remove) {
-		old = valet._wire$.getBoundingClientRect();
-		updateSlot(...changed.remove);
-	}
-	if (changed?.add) {
-		updateSlot(...changed.add);
-		current = valet._wire$.getBoundingClientRect();
-	}
+  if (changed?.remove) {
+    valet && (old = valet._wire$.getBoundingClientRect());
+    updateSlot(...changed.remove);
+  }
+  if (changed?.add) {
+    updateSlot(...changed.add);
+    valet && (current = valet._wire$.getBoundingClientRect());
+  }
 
-	if (old && current) {
-		const translate = {
-			x: old.x - current.x,
-			y: old.y - current.y
-		};
-		transform = `translate(${translate.x}px, ${translate.y}px)`;
-	}
+  // demo re-slot
+  if (old && current) {
+    const translate = {
+      x: old.x - current.x,
+      y: old.y - current.y
+    };
+    transform = `translate(${translate.x}px, ${translate.y}px)`;
+  }
 
-	update &&
-		valets
-			.get(update.id)
-			.update({ ...update, style: { ...update.style, transform } });
+  update &&
+    valets
+      .get(update.id)
+      .update({ ...update, style: { ...update.style, transform } });
 }
 
 function layersOnScene(layers) {
-	hyper(document.body)`<div class="container">${layers}</div>`;
+  hyper(document.body)`<div class="container">${layers}</div>`;
 }
 
 // ============================================================
@@ -83,7 +84,7 @@ setTimeout(() => {
 */
 
 setTimeout(() => {
-	slots.get("bS_3").setState({
-		children: container
-	});
+  slots.get("bS_3").setState({
+    children: container
+  });
 }, 2000);
