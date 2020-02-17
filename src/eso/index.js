@@ -68,36 +68,37 @@ conserve l'état du composant
  */
 
 export class Eso {
-  constructor(init, callback) {
-    this.store = {};
-    this.callback = callback;
-    this.revise = { style, content };
-    this.update = this.update.bind(this);
-    this.init(init);
-    return this.update;
-  }
-  init(props) {
-    this.update(props);
-  }
+	constructor(init, handler) {
+		this.store = {};
+		this.handler = handler;
+		this.revise = { style, content };
+		this.update = this.update.bind(this);
+		this.prerender = this.prerender.bind(this);
+		this.init(init);
+		return { update: this.update, prerender: this.prerender };
+	}
+	init(props) {
+		this.update(props);
+	}
 
-  update(props) {
-    const newState = {};
-    for (const revise in this.revise) {
-      props[revise] &&
-        (newState[revise] = this.revise[revise](this.store, props));
-    }
-    this.store = newState;
-    this.prerender();
-  }
+	update(props) {
+		const newState = {};
+		for (const revise in this.revise) {
+			props[revise] &&
+				(newState[revise] = this.revise[revise](this.store, props));
+		}
+		this.store = newState;
+		this.prerender();
+	}
 
-  prerender(zoom) {
-    this.callback(this.store);
-  }
+	prerender(zoom) {
+		this.handler(this.store);
+	}
 }
 
 function style(state, props) {
-  return { ...state.style, ...props.style };
+	return { ...state.style, ...props.style };
 }
 function content(state, { content }) {
-  return content;
+	return content;
 }
