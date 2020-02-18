@@ -14,7 +14,7 @@ la fonction onScene gere le flux des objets.
 /**
     * Slots : collection des ids des slots: pour chaque slot, liste des valets
     * onScene: liste des valets visibles, dans leur slot
-    * update, propiétés employées : 
+    * up, propiétés employées : 
         * layer et slot pour créer slotId
         * id du Valet
     * fonctions :
@@ -24,13 +24,13 @@ la fonction onScene gere le flux des objets.
         * leave : retrait de onScene (async)
    
     onScene renvoie :
-    les ids des slots à updater
-    l'objet update augmenté
+    les ids des slots à upr
+    l'objet up augmenté
         - reslot
         - enter
         - leave (callback)
 
-    onScene précede la phase d'update du composant lui-meme
+    onScene précede la phase d'up du composant lui-meme
     
 */
 
@@ -42,7 +42,7 @@ simplifier leave :
 */
 
 /* 
-- reslot est géré à part, avant update
+- reslot est géré à part, avant up
 - il faut pouvoir ensuite lire sa nouvelle position , puis le mettre a jour avant rafraichissement de l'écran
     // reslot : position du node avant et après déplacement
     // créer une transition
@@ -50,50 +50,61 @@ simplifier leave :
 */
 
 //TODO ecrire les tests
-export function createOnScene(slots) {
-	// if (!slots || typeof slots !== "object") return false;
-	if (!slots || !(slots instanceof Map)) return false;
-	const _slots = new Map(Array.from(slots.keys(), id => [id, []]));
-	const _onScene = new Map();
+// réécrire comme classe ?
+// create up comme methodes
 
-	return function onScene(update) {
+export class OnScene {
+	constructor(slots) {
+		// if (!slots || typeof slots !== "object") return false;
+		if (!slots || !(slots instanceof Map)) return false;
+		this._slots = new Map(Array.from(slots.keys(), id => [id, []]));
+		this.areOnScene = new Map();
+		this.update = this.update.bind(this);
+		this._addToScene = this._addToScene.bind(this);
+		this._moveToSlot = this._moveToSlot.bind(this);
+		this._leaveScene = this._leaveScene.bind(this);
+	}
+
+	update(up) {
 		let action = update => ({ changed: null, update });
-		if (!update.id) return getError("id", update);
-		if (_onScene.has(update.id)) {
-			const isLeaving = update.leave;
-			const changeSlot = update.layer && update.slot;
-			changeSlot && (action = moveToSlot);
-			isLeaving && (action = leaveScene);
-		} else action = addToScene;
+		if (!up.id) return this._getError("id", up);
+		if (this.areOnScene.has(up.id)) {
+			const isLeaving = up.leave;
+			const changeSlot = up.layer && up.slot;
 
-		return action(update);
-	};
+			changeSlot && (action = this._moveToSlot);
+			isLeaving && (action = this._leaveScene);
+		} else action = this._addToScene;
 
-	function addToScene(update) {
-		const slotId = getSlotId(update);
-		if (!slotId || !_slots.has(slotId)) return getError("slot", update);
+		return action(up);
+	}
+
+	_addToScene(up) {
+		const slotId = this._getSlotId(up);
+		if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
 
 		// TODO trier selon l'ordre
-		const inslot = _slots.get(slotId).concat(update.id);
-		_slots.set(slotId, inslot);
-		_onScene.set(update.id, slotId);
+		const inslot = this._slots.get(slotId).concat(up.id);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.set(up.id, slotId);
 		const changed = { add: [slotId, inslot] };
 		return {
 			changed,
-			update: { ...update, enter: true }
+			update: { ...up, enter: true }
 		};
 	}
-	function moveToSlot(update) {
-		const oldSlotId = _onScene.get(update.id);
-		const slotId = getSlotId(update);
 
-		const oldInslot = _slots.get(oldSlotId).filter(s => s !== update.id);
-		if (!_slots.get(slotId)) return getError("move", update);
+	_moveToSlot(up) {
+		const oldSlotId = this.areOnScene.get(up.id);
+		const slotId = this._getSlotId(up);
 
-		const inslot = _slots.get(slotId).concat(update.id);
-		_slots.set(oldSlotId, oldInslot);
-		_slots.set(slotId, inslot);
-		_onScene.set(update.id, slotId);
+		const oldInslot = this._slots.get(oldSlotId).filter(s => s !== up.id);
+		if (!this._slots.get(slotId)) return this._getError("move", up);
+
+		const inslot = this._slots.get(slotId).concat(up.id);
+		this._slots.set(oldSlotId, oldInslot);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.set(up.id, slotId);
 
 		const changed = {
 			remove: [oldSlotId, oldInslot],
@@ -101,34 +112,33 @@ export function createOnScene(slots) {
 		};
 		return {
 			changed,
-			update: { ...update, reslot: true }
+			update: { ...up, reslot: true }
 		};
 	}
 
-	function leaveScene(update) {
-		const { id } = update;
-		const slotId = _onScene.get(id);
-		const inslot = _slots.get(slotId).filter(s => s !== id);
-		_slots.set(slotId, inslot);
-		_onScene.delete(id);
+	_leaveScene(up) {
+		const { id } = up;
+		const slotId = this.areOnScene.get(id);
+		const inslot = this._slots.get(slotId).filter(s => s !== id);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.delete(id);
 		const changed = { remove: [slotId, inslot] };
 		return {
 			changed,
-			update
+			update: up
 		};
 	}
 
-	function getSlotId(update) {
-		return joinId(update.layer, update.slot);
+	_getSlotId(up) {
+		return joinId(up.layer, up.slot);
 	}
-	function getError(errorId, update) {
-		return {
-			_onScene,
-			_slots,
-			changed: errors[errorId],
-			update
-		};
-	}
+
+	_getError = (errorId, up) => ({
+		areOnScene: this.areOnScene,
+		slots: this._slots,
+		changed: errors[errorId],
+		update: up
+	});
 }
 
 export function joinId(...args) {

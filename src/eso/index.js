@@ -67,6 +67,18 @@ conserve l'état du composant
 
  */
 
+/* 
+ resize
+ - activer le listener à la creation du conteneur
+ - enregistrer le composant à surveiller comme side effect de onscene
+- au resize, prerender est appliqué aux composants enregistrés.
+ */
+
+/* 
+ timeline:
+ serait-il possible d'enregistrer seulement les diffs calculés en sortie de la fonction update
+ avec une liste "changed"
+ */
 export class Eso {
 	constructor(init, handler) {
 		this.store = {};
@@ -82,6 +94,8 @@ export class Eso {
 	}
 
 	update(props) {
+		// séparer : calculer les diffs, puis assembler
+		// les diffs seront stockés pour la timeline (il faut le time)
 		const newState = {};
 		for (const revise in this.revise) {
 			props[revise] &&

@@ -4,9 +4,9 @@ import { slots, layers } from "./datas/create-layers";
 import { createValets } from "./datas/create-valets";
 import { updates } from "./datas/seeds";
 
-import { createOnScene } from "./onScene";
+import { OnScene } from "./onScene";
 
-const onScene = createOnScene(slots);
+const onScene = new OnScene(slots);
 
 const container = layers.get("cS");
 const layerA = layers.get("aS");
@@ -18,7 +18,7 @@ const valets = createValets(max_valets);
 
 for (let time in updates) {
 	setTimeout(() => {
-		const upd = onScene(updates[time]);
+		const upd = onScene.update(updates[time]);
 		updateScene(upd);
 	}, time);
 }
