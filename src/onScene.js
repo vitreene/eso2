@@ -50,8 +50,6 @@ simplifier leave :
 */
 
 //TODO ecrire les tests
-// réécrire comme classe ?
-// create up comme methodes
 
 export class OnScene {
 	constructor(slots) {
@@ -59,6 +57,7 @@ export class OnScene {
 		if (!slots || !(slots instanceof Map)) return false;
 		this._slots = new Map(Array.from(slots.keys(), id => [id, []]));
 		this.areOnScene = new Map();
+
 		this.update = this.update.bind(this);
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);

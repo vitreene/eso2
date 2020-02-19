@@ -1,4 +1,4 @@
-import { bind as hyper } from "hyperhtml";
+import { bind as hyper, Component } from "hyperhtml";
 import "./style.scss";
 import { slots, layers } from "./datas/create-layers";
 import { createValets } from "./datas/create-valets";
@@ -12,9 +12,28 @@ const container = layers.get("cS");
 const layerA = layers.get("aS");
 const layerB = layers.get("bS");
 
-layersOnScene([layerA, layerB]);
+////////////////////////////////////////////////
+
+class Root extends Component {
+	onconnected() {
+		//TODO hook pour lancer la surveillance du resize
+		const { top, left, width, height } = this._wire$.getBoundingClientRect();
+		console.log({ top, left, width, height });
+	}
+	render() {
+		return this
+			.html`<div id="container" class="container" onconnected=${this}>${this.state.content}</div>`;
+	}
+}
+
+////////////////////////////////////////////////
+const root = new Root();
 const max_valets = 20;
 const valets = createValets(max_valets);
+
+layersOnScene(root, [layerA, layerB]);
+
+////////////////////////////////////////////////
 
 for (let time in updates) {
 	setTimeout(() => {
@@ -22,6 +41,8 @@ for (let time in updates) {
 		updateScene(upd);
 	}, time);
 }
+
+////////////////////////////////////////////////
 
 function updateSlot(slotId, valetsIds) {
 	const children = valetsIds.map(id => valets.get(id));
@@ -60,8 +81,9 @@ function updateScene({ changed, update }) {
 			.update({ ...update, style: { ...update.style, transform } });
 }
 
-function layersOnScene(layers) {
-	hyper(document.body)`<div class="container">${layers}</div>`;
+function layersOnScene(root, layers) {
+	root.setState({ content: layers });
+	hyper(document.body)`${root}`;
 }
 
 // ============================================================
