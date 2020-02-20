@@ -1,10 +1,13 @@
 import { bind as hyper, Component } from "hyperhtml";
 import "./style.scss";
-import { slots, layers } from "./datas/create-layers";
-import { createValets } from "./datas/create-valets";
-import { updates } from "./datas/seeds";
 
+import { slots, layers } from "./data/create-layers";
+import { createValets } from "./data/create-valets";
 import { OnScene } from "./onScene";
+import { Zoom } from "./eso/zoom";
+
+import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "./data/constantes";
+import { updates } from "./data/seeds";
 
 const onScene = new OnScene(slots);
 
@@ -15,15 +18,13 @@ const layerB = layers.get("bS");
 ////////////////////////////////////////////////
 
 class Root extends Component {
-	onconnected() {
-		//TODO hook pour lancer la surveillance du resize
-		const { top, left, width, height } = this._wire$.getBoundingClientRect();
-		console.log({ top, left, width, height });
-	}
-	render() {
-		return this
-			.html`<div id="container" class="container" onconnected=${this}>${this.state.content}</div>`;
-	}
+  onconnected() {
+    activeZoom();
+  }
+  render() {
+    return this
+      .html`<div id=${CONTAINER_ESO} class="container" onconnected=${this}>${this.state.content}</div>`;
+  }
 }
 
 ////////////////////////////////////////////////
@@ -36,56 +37,62 @@ layersOnScene(root, [layerA, layerB]);
 ////////////////////////////////////////////////
 
 for (let time in updates) {
-	setTimeout(() => {
-		const upd = onScene.update(updates[time]);
-		updateScene(upd);
-	}, time);
+  setTimeout(() => {
+    const upd = onScene.update(updates[time]);
+    updateScene(upd);
+  }, time);
 }
 
 ////////////////////////////////////////////////
 
 function updateSlot(slotId, valetsIds) {
-	const children = valetsIds.map(id => valets.get(id));
-	slots.get(slotId).setState({ children });
+  const children = valetsIds.map(id => valets.get(id));
+  slots.get(slotId).setState({ children });
 }
 
 function updateScene({ changed, update }) {
-	if (typeof changed === "string") {
-		console.error(changed);
-		return;
-	}
-	const valet = valets.get(update?.id);
-	let old, current, transform;
+  if (typeof changed === "string") {
+    console.error(changed);
+    return;
+  }
+  const valet = valets.get(update?.id);
+  let old, current, transform;
 
-	if (changed?.remove) {
-		valet && (old = valet._wire$.getBoundingClientRect());
-		updateSlot(...changed.remove);
-	}
-	if (changed?.add) {
-		updateSlot(...changed.add);
-		valet && (current = valet._wire$.getBoundingClientRect());
-	}
+  if (changed?.remove) {
+    valet && (old = valet._wire$.getBoundingClientRect());
+    updateSlot(...changed.remove);
+  }
+  if (changed?.add) {
+    updateSlot(...changed.add);
+    valet && (current = valet._wire$.getBoundingClientRect());
+  }
 
-	// demo re-slot
-	if (old && current) {
-		const translate = {
-			x: old.x - current.x,
-			y: old.y - current.y
-		};
-		transform = `translate(${translate.x}px, ${translate.y}px)`;
-	}
+  // demo re-slot
+  if (old && current) {
+    const translate = {
+      x: old.x - current.x,
+      y: old.y - current.y
+    };
+    transform = `translate(${translate.x}px, ${translate.y}px)`;
+  }
 
-	update &&
-		valets
-			.get(update.id)
-			.update({ ...update, style: { ...update.style, transform } });
+  update &&
+    valets
+      .get(update.id)
+      .update({ ...update, style: { ...update.style, transform } });
 }
 
 function layersOnScene(root, layers) {
-	root.setState({ content: layers });
-	hyper(document.body)`${root}`;
+  root.setState({ content: layers });
+  hyper(document.body)`${root}`;
 }
 
+function activeZoom() {
+  const zoom = new Zoom(CONTAINER_ESO, DEFAULT_SIZE_SCENE["4/3"]);
+  zoom.resize();
+  console.log("zoom.value", zoom.value);
+  window.addEventListener("resize", zoom.resize);
+}
 // ============================================================
 
 // ============================================================
@@ -107,7 +114,7 @@ setTimeout(() => {
  */
 
 setTimeout(() => {
-	slots.get("bS_3").setState({
-		children: container
-	});
+  slots.get("bS_3").setState({
+    children: container
+  });
 }, 2000);
