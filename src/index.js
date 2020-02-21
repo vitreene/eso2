@@ -19,11 +19,18 @@ const layerB = layers.get("bS");
 
 class Root extends Component {
   onconnected() {
-    activeZoom();
+    this.removeZoom = activeZoom();
+  }
+  ondisconnected() {
+    this.removeZoom();
   }
   render() {
-    return this
-      .html`<div id=${CONTAINER_ESO} class="container" onconnected=${this}>${this.state.content}</div>`;
+    return this.html`<div 
+      id=${CONTAINER_ESO} 
+      class="container" 
+      onconnected=${this}
+      ondisconnected=${this}
+      >${this.state.content}</div>`;
   }
 }
 
@@ -87,11 +94,17 @@ function layersOnScene(root, layers) {
   hyper(document.body)`${root}`;
 }
 
+/* 
+zoom.resize va appliquer un callback ou tous les élements en scene sont re-rendus avec la valeur de zoom.
+il faut réunir :
+- on
+*/
 function activeZoom() {
   const zoom = new Zoom(CONTAINER_ESO, DEFAULT_SIZE_SCENE["4/3"]);
   zoom.resize();
   console.log("zoom.value", zoom.value);
   window.addEventListener("resize", zoom.resize);
+  return () => window.removeEventListener("resize", zoom.resize);
 }
 // ============================================================
 
