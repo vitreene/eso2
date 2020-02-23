@@ -38,6 +38,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "emotion": "^10.0.27",
     "eventemitter2": "^6.0.0",
     "fibers": "^4.0.2",
     "hyperhtml": "^2.31.6",

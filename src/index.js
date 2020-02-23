@@ -4,7 +4,7 @@ import "./style.scss";
 import { slots, layers } from "./data/create-layers";
 import { createValets } from "./data/create-valets";
 import { OnScene } from "./onScene";
-import { Zoom } from "./eso/zoom";
+import { Zoom } from "./eso/lib/zoom";
 
 import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "./data/constantes";
 import { updates } from "./data/seeds";
@@ -19,7 +19,7 @@ const layerB = layers.get("bS");
 
 class Root extends Component {
   onconnected() {
-    this.removeZoom = activeZoom();
+    this.removeZoom = activateZoom();
   }
   ondisconnected() {
     this.removeZoom();
@@ -33,8 +33,10 @@ class Root extends Component {
       >${this.state.content}</div>`;
   }
 }
+////////////////////////////////////////////////
 
 ////////////////////////////////////////////////
+let zoom;
 const root = new Root();
 const max_valets = 20;
 const valets = createValets(max_valets);
@@ -62,9 +64,14 @@ function updateScene({ changed, update }) {
     console.error(changed);
     return;
   }
-  const valet = valets.get(update?.id);
-  let old, current, transform;
 
+  const valet = valets.get(update?.id);
+
+  // zoom enter
+  if (update.enter) valet.prerender(zoom.value);
+
+  // demo re-slot
+  let old, current, transform;
   if (changed?.remove) {
     valet && (old = valet._wire$.getBoundingClientRect());
     updateSlot(...changed.remove);
@@ -73,8 +80,6 @@ function updateScene({ changed, update }) {
     updateSlot(...changed.add);
     valet && (current = valet._wire$.getBoundingClientRect());
   }
-
-  // demo re-slot
   if (old && current) {
     const translate = {
       x: old.x - current.x,
@@ -86,7 +91,7 @@ function updateScene({ changed, update }) {
   update &&
     valets
       .get(update.id)
-      .update({ ...update, style: { ...update.style, transform } });
+      .update({ ...update, dynStyle: { ...update.dynStyle, transform } });
 }
 
 function layersOnScene(root, layers) {
@@ -94,19 +99,25 @@ function layersOnScene(root, layers) {
   hyper(document.body)`${root}`;
 }
 
-/* 
-zoom.resize va appliquer un callback ou tous les élements en scene sont re-rendus avec la valeur de zoom.
-il faut réunir :
-- on
-*/
-function activeZoom() {
-  const zoom = new Zoom(CONTAINER_ESO, DEFAULT_SIZE_SCENE["4/3"]);
-  zoom.resize();
-  console.log("zoom.value", zoom.value);
+// ============================================================
+
+function activateZoom() {
+  zoom = new Zoom(
+    CONTAINER_ESO,
+    DEFAULT_SIZE_SCENE["4/3"],
+    initRenderOnResize(valets, onScene)
+  );
   window.addEventListener("resize", zoom.resize);
   return () => window.removeEventListener("resize", zoom.resize);
 }
-// ============================================================
+
+function initRenderOnResize(valets, onScene) {
+  return function renderOnResize(zoom) {
+    for (const id of onScene.areOnScene.keys()) {
+      valets.get(id).prerender(zoom);
+    }
+  };
+}
 
 // ============================================================
 /* 

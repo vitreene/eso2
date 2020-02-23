@@ -68,51 +68,96 @@ conserve l'état du composant
  */
 
 /* 
- resize
- - activer le listener à la creation du conteneur
- - enregistrer le composant à surveiller comme side effect de onscene
-- au resize, prerender est appliqué aux composants enregistrés.
- */
-
-/* 
  timeline:
  serait-il possible d'enregistrer seulement les diffs calculés en sortie de la fonction update
  avec une liste "changed"
  */
+import { doStyle } from "./style-comp";
+const { css, ...dynStyle } = doStyle;
+
 export class Eso {
-	constructor(init, handler) {
-		this.store = {};
-		this.handler = handler;
-		this.revise = { style, content };
-		this.update = this.update.bind(this);
-		this.prerender = this.prerender.bind(this);
-		this.init(init);
-		return { update: this.update, prerender: this.prerender };
-	}
-	init(props) {
-		this.update(props);
-	}
+  constructor(init, handler) {
+    this.store = {};
+    this.handler = handler;
+    this.revision = { statStyle, dynStyle, content };
+    this.update = this.update.bind(this);
+    this.prerender = this.prerender.bind(this);
+    this.init(init);
+    return { update: this.update, prerender: this.prerender };
+  }
+  init(props) {
+    this.revise(props);
+    this.handler();
+  }
 
-	update(props) {
-		// séparer : calculer les diffs, puis assembler
-		// les diffs seront stockés pour la timeline (il faut le time)
-		const newState = {};
-		for (const revise in this.revise) {
-			props[revise] &&
-				(newState[revise] = this.revise[revise](this.store, props));
-		}
-		this.store = newState;
-		this.prerender();
-	}
+  update(props) {
+    // séparer : calculer les diffs, puis assembler
+    // les diffs seront stockés pour la timeline (il faut le time)
+    this.revise(props);
+    this.prerender();
+  }
 
-	prerender(zoom) {
-		this.handler(this.store);
-	}
+  revise(props) {
+    const newState = new Map();
+    for (const revise in this.revision) {
+      if (props[revise]) {
+        const diff = this.revision[revise].update(
+          this.store[revise],
+          props[revise]
+        );
+        newState.set(revise, diff);
+      }
+    }
+    console.log("newState", newState);
+
+    this.addToStore(newState);
+  }
+
+  addToStore(state) {
+    state.forEach((diff, revise) => {
+      switch (revise) {
+        case "dynStyle":
+        case "statStyle":
+          this.store[revise] = { ...this.store[revise], ...diff };
+          break;
+        case "content":
+          this.store[revise] = diff;
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  prerender(zoom) {
+    zoom && (this.zoom = zoom);
+    // calculer styles : appliquer zoom sur unitless
+    // transformer style statique  + dimensions + pointerevent en classe
+
+    const { dynStyle, statStyle, dimensions, ...other } = this.store;
+    const hasClass = statStyle || dimensions;
+    // const pointerEvents = options.pointerEvents ? "all" : "none";
+
+    const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
+    const cssClass = this.revision.dynStyle.prerender(this.zoom, {
+      ...statStyle,
+      ...dimensions
+    });
+
+    const newState = {
+      style,
+      ...(hasClass && { class: css(cssClass) }),
+      ...other
+    };
+    this.handler(newState);
+  }
 }
 
-function style(state, props) {
-	return { ...state.style, ...props.style };
-}
-function content(state, { content }) {
-	return content;
-}
+const content = {
+  update(state, content) {
+    return content;
+  },
+  prerender() {}
+};
+
+const statStyle = dynStyle;

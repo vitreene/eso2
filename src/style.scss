@@ -1,41 +1,48 @@
 $fontsize: 24px;
 
+#main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 h1 {
-	font-size: $fontsize;
-	margin: 0;
+  font-size: $fontsize;
+  margin: 0;
 }
 .toto {
-	text-transform: uppercase;
+  text-transform: uppercase;
 }
 .tutu {
-	background-color: red;
-	color: wheat;
+  background-color: red;
+  color: wheat;
 }
 section {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-gap: 10px;
-	grid-auto-rows: minmax(100px, auto);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
 }
 article section {
-	flex: 1;
-	display: flex;
+  flex: 1;
+  display: flex;
 }
 article {
-	display: flex;
-	flex: 1;
-	justify-content: space-between;
-	height: 4rem;
-	border: blue solid 1px;
-	div {
-		display: flex;
-		flex: 1;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid red;
-	}
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  height: 4rem;
+  border: blue solid 1px;
+  div {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid red;
+  }
 }
 
 #12 {
-	transition: transform;
+  transition: transform;
 }

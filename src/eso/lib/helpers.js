@@ -1,6 +1,3 @@
-export const hasOwn = (obj, key) =>
-  Object.prototype.hasOwnProperty.call(obj, key);
-
 export function throttle(callback, limit) {
   let wait = false; // Initially, we're not waiting
   return () => {
@@ -18,6 +15,65 @@ export function throttle(callback, limit) {
     }
   };
 }
+
+export function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this,
+      args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
+export class TrueOnce {
+  value = false;
+  set on(v = true) {
+    this.value = v;
+  }
+  get on() {
+    const on = this.value;
+    this.value = false;
+    return on;
+  }
+}
+
+export class GetSet {
+  constructor(label, value = "") {
+    this.label = label;
+    let val = value;
+    this[label] = {
+      set(v) {
+        val = v;
+      },
+      get() {
+        return val;
+      }
+    };
+  }
+}
+
+export function hasProperties(properties, style) {
+  let flag = false;
+  if (style) {
+    for (const prop of properties) {
+      if (hasOwn(style, prop)) {
+        flag = true;
+        break;
+      }
+    }
+  }
+  return flag;
+}
+
+export const hasOwn = (obj, key) =>
+  Object.prototype.hasOwnProperty.call(obj, key);
 
 export function arrayToObject(arr) {
   const obj = {};

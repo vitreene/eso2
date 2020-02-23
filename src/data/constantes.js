@@ -72,6 +72,7 @@ export const pointerEventList = [
   "onTouchStart"
 ];
 
+export const positionCssProps = ["top", "left", "right", "bottom"];
 export const whiteListCssProps = new Set([
   "backgroundPosition",
   "borderBottom",

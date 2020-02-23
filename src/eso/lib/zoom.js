@@ -1,14 +1,15 @@
-import { round } from "./lib/helpers";
+import { round } from "./helpers";
 // import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
 
 export class Zoom {
   static singleton = false;
-  constructor(id, scene) {
+  constructor(id, scene, renderOnResize) {
     if (Zoom.singleton) return this;
     Zoom.singleton = true;
     this.el = document.getElementById(id);
     this.scene = scene;
-    this.z = 1;
+    this.renderOnResize = renderOnResize;
+    this.z = this.setZoom().zoom;
   }
   get value() {
     return this.z;
@@ -23,10 +24,9 @@ export class Zoom {
     return o;
   };
   resize = () => {
-    // TODO la fonction prend une liste de Valets a re-rendre
-
     const { zoom } = this.setZoom();
     this.z = zoom;
+    this.renderOnResize && this.renderOnResize(zoom);
   };
 
   setZoom = () => {
@@ -55,5 +55,3 @@ export class Zoom {
     }
   };
 }
-
-// export const zoom = new Zoom(CONTAINER_ESO, DEFAULT_SIZE_SCENE["4/3"]);
