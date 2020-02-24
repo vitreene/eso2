@@ -9,7 +9,8 @@ export const updates = {
     layer: "aS",
     slot: "0",
     id: 10,
-    dynStyle: { backgroundColor: "grey", left: "-=10", top: "+=50" },
+    // dynStyle: { backgroundColor: "grey", left: "-=10", top: "+=50" },
+    dynStyle: { backgroundColor: "grey", x: 10, y: 50, dX: -10, dY: -50 },
     content: "grey"
   },
   2000: {

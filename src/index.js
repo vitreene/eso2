@@ -81,17 +81,18 @@ function updateScene({ changed, update }) {
     valet && (current = valet._wire$.getBoundingClientRect());
   }
   if (old && current) {
-    const translate = {
+    // en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
+    transform = zoom.unZoom({
       x: old.x - current.x,
       y: old.y - current.y
-    };
-    transform = `translate(${translate.x}px, ${translate.y}px)`;
+    });
+    console.log("transform", transform);
   }
 
   update &&
     valets
       .get(update.id)
-      .update({ ...update, dynStyle: { ...update.dynStyle, transform } });
+      .update({ ...update, dynStyle: { ...update.dynStyle, ...transform } });
 }
 
 function layersOnScene(root, layers) {

@@ -21,6 +21,7 @@ import { css } from "emotion";
 import { whiteListCssProps, positionCssProps } from "../data/constantes";
 import { hasProperties } from "./lib/helpers";
 import { mapRelatives } from "./lib/map-relatives";
+import { extractTransform, withTransform } from "./lib/transform-comp";
 
 export const doStyle = {
   css(style) {
@@ -34,22 +35,29 @@ export const doStyle = {
     */
     const newStyle = mapRelatives(state, props);
     const position = hasProperties(positionCssProps, props) && "relative";
+
     return {
       ...(position && { position }),
       ...newStyle
     };
   },
-  prerender(zoom = 1, style) {
-    if (!style) return;
+  prerender(zoom = 1, newStyle) {
+    if (!newStyle) return;
     // calculer styles : appliquer zoom sur unitless
-    const newStyle = {};
+    const newRenderStyle = {};
 
-    for (const prop in style) {
+    for (const prop in newStyle) {
       if (whiteListCssProps.has(prop)) {
-        const z = typeof style[prop] === "number" ? zoom : 1;
-        newStyle[prop] = style[prop] * z + "px";
-      } else newStyle[prop] = style[prop];
+        const z = typeof newStyle[prop] === "number" ? zoom : 1;
+        newRenderStyle[prop] = newStyle[prop] * z + "px";
+      } else newRenderStyle[prop] = newStyle[prop];
     }
-    return newStyle;
+    const { style, transform } = extractTransform(newRenderStyle);
+
+    return {
+      ...style,
+      ...withTransform(transform, zoom)
+    };
+    // return newRenderStyle;
   }
 };

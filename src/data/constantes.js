@@ -112,7 +112,5 @@ export const whiteListCssProps = new Set([
   "strokeWidth",
   "textIndent",
   "top",
-  "width",
-  "x",
-  "y"
+  "width"
 ]);
