@@ -51,101 +51,98 @@ simplifier leave :
 
 //TODO ecrire les tests
 
+import { joinId } from "./eso/lib/helpers";
 export class OnScene {
-  constructor(slots) {
-    // if (!slots || typeof slots !== "object") return false;
-    if (!slots || !(slots instanceof Map)) return false;
-    this._slots = new Map(Array.from(slots.keys(), id => [id, []]));
-    this.areOnScene = new Map();
+	constructor(slots) {
+		// if (!slots || typeof slots !== "object") return false;
+		if (!slots || !(slots instanceof Map)) return false;
+		this._slots = new Map(Array.from(slots.keys(), id => [id, []]));
+		this.areOnScene = new Map();
 
-    this.update = this.update.bind(this);
-    this._addToScene = this._addToScene.bind(this);
-    this._moveToSlot = this._moveToSlot.bind(this);
-    this._leaveScene = this._leaveScene.bind(this);
-  }
+		this.update = this.update.bind(this);
+		this._addToScene = this._addToScene.bind(this);
+		this._moveToSlot = this._moveToSlot.bind(this);
+		this._leaveScene = this._leaveScene.bind(this);
+	}
 
-  update(up) {
-    let action = update => ({ changed: null, update });
-    if (!up.id) return this._getError("id", up);
-    if (this.areOnScene.has(up.id)) {
-      const isLeaving = up.leave;
-      const changeSlot = up.layer && up.slot;
+	update(up) {
+		let action = update => ({ changed: null, update });
+		if (!up.id) return this._getError("id", up);
+		if (this.areOnScene.has(up.id)) {
+			const isLeaving = up.leave;
+			const changeSlot = up.layer && up.slot;
 
-      changeSlot && (action = this._moveToSlot);
-      isLeaving && (action = this._leaveScene);
-    } else action = this._addToScene;
+			changeSlot && (action = this._moveToSlot);
+			isLeaving && (action = this._leaveScene);
+		} else action = this._addToScene;
 
-    return action(up);
-  }
+		return action(up);
+	}
 
-  _addToScene(up) {
-    const slotId = this._getSlotId(up);
-    if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
+	_addToScene(up) {
+		const slotId = this._getSlotId(up);
+		if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
 
-    // TODO trier selon l'ordre
-    const inslot = this._slots.get(slotId).concat(up.id);
-    this._slots.set(slotId, inslot);
-    this.areOnScene.set(up.id, slotId);
-    const changed = { add: [slotId, inslot] };
-    return {
-      changed,
-      update: { ...up, enter: true }
-    };
-  }
+		// TODO trier selon l'ordre
+		const inslot = this._slots.get(slotId).concat(up.id);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.set(up.id, slotId);
+		const changed = { add: [slotId, inslot] };
+		return {
+			changed,
+			update: { ...up, enter: true }
+		};
+	}
 
-  _moveToSlot(up) {
-    const oldSlotId = this.areOnScene.get(up.id);
-    const slotId = this._getSlotId(up);
+	_moveToSlot(up) {
+		const oldSlotId = this.areOnScene.get(up.id);
+		const slotId = this._getSlotId(up);
 
-    const oldInslot = this._slots.get(oldSlotId).filter(s => s !== up.id);
-    if (!this._slots.get(slotId)) return this._getError("move", up);
+		const oldInslot = this._slots.get(oldSlotId).filter(s => s !== up.id);
+		if (!this._slots.get(slotId)) return this._getError("move", up);
 
-    const inslot = this._slots.get(slotId).concat(up.id);
-    this._slots.set(oldSlotId, oldInslot);
-    this._slots.set(slotId, inslot);
-    this.areOnScene.set(up.id, slotId);
+		const inslot = this._slots.get(slotId).concat(up.id);
+		this._slots.set(oldSlotId, oldInslot);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.set(up.id, slotId);
 
-    const changed = {
-      remove: [oldSlotId, oldInslot],
-      add: [slotId, inslot]
-    };
-    return {
-      changed,
-      update: { ...up, reslot: true }
-    };
-  }
+		const changed = {
+			remove: [oldSlotId, oldInslot],
+			add: [slotId, inslot]
+		};
+		return {
+			changed,
+			update: { ...up, reslot: true }
+		};
+	}
 
-  _leaveScene(up) {
-    const { id } = up;
-    const slotId = this.areOnScene.get(id);
-    const inslot = this._slots.get(slotId).filter(s => s !== id);
-    this._slots.set(slotId, inslot);
-    this.areOnScene.delete(id);
-    const changed = { remove: [slotId, inslot] };
-    return {
-      changed,
-      update: up
-    };
-  }
+	_leaveScene(up) {
+		const { id } = up;
+		const slotId = this.areOnScene.get(id);
+		const inslot = this._slots.get(slotId).filter(s => s !== id);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.delete(id);
+		const changed = { remove: [slotId, inslot] };
+		return {
+			changed,
+			update: up
+		};
+	}
 
-  _getSlotId(up) {
-    return joinId(up.layer, up.slot);
-  }
+	_getSlotId(up) {
+		return joinId(up.layer, up.slot);
+	}
 
-  _getError = (errorId, up) => ({
-    areOnScene: this.areOnScene,
-    slots: this._slots,
-    changed: errors[errorId],
-    update: up
-  });
-}
-
-export function joinId(...args) {
-  return args.filter(a => a !== "").join("_");
+	_getError = (errorId, up) => ({
+		areOnScene: this.areOnScene,
+		slots: this._slots,
+		changed: errors[errorId],
+		update: up
+	});
 }
 
 const errors = {
-  move: "error move: not a valid slot",
-  slot: "error: not a valid slot",
-  id: "error: not a valid id"
+	move: "error move: not a valid slot",
+	slot: "error: not a valid slot",
+	id: "error: not a valid id"
 };
