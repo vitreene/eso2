@@ -22,7 +22,7 @@ export const updates = {
 			x: 20,
 			y: "50px",
 			rotate: 45,
-			scale: 1.41
+			scale: 1
 		},
 		content: "yellow"
 	},
