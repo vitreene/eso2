@@ -121,6 +121,7 @@ export const deferOnMount = {
 
 const separate = /\s*(\d+)\s*(\D*)/;
 export function splitUnitValue(val) {
+	if (!val) return null;
 	if (typeof val === "number") return { value: val, unit: null };
 	const match = val.match(separate);
 	return {

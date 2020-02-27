@@ -2,7 +2,7 @@ const tList = {
 	x: { transform: "translateX", unit: "px", zoomable: true },
 	y: { transform: "translateY", unit: "px", zoomable: true },
 	r: { transform: "rotate", unit: "deg", zoomable: false },
-	s: { transform: "scale", unit: "", zoomable: true }, // true ?
+	s: { transform: "scale", unit: "", zoomable: false }, // true ?
 	dX: "matrixX",
 	dY: "matrixY"
 };

@@ -72,92 +72,93 @@ conserve l'état du composant
  serait-il possible d'enregistrer seulement les diffs calculés en sortie de la fonction update
  avec une liste "changed"
  */
+import { doDimensions as dimensions } from "./lib/dimensions-comp";
 import { doStyle } from "./style-comp";
 const { css, ...dynStyle } = doStyle;
 
 export class Eso {
-  constructor(init, handler) {
-    this.store = {};
-    this.handler = handler;
-    this.revision = { statStyle, dynStyle, content };
-    this.update = this.update.bind(this);
-    this.prerender = this.prerender.bind(this);
-    this.init(init);
-    return { update: this.update, prerender: this.prerender };
-  }
-  init(props) {
-    this.revise(props);
-    this.handler();
-  }
+	constructor(init, handler) {
+		this.store = {};
+		this.handler = handler;
+		this.revision = { dimensions, statStyle, dynStyle, content };
+		this.update = this.update.bind(this);
+		this.prerender = this.prerender.bind(this);
+		this.init(init);
+		return { update: this.update, prerender: this.prerender };
+	}
+	init(props) {
+		this.revise(props);
+		this.handler();
+	}
 
-  update(props) {
-    // séparer : calculer les diffs, puis assembler
-    // les diffs seront stockés pour la timeline (il faut le time)
-    this.revise(props);
-    this.prerender();
-  }
+	update(props) {
+		// séparer : calculer les diffs, puis assembler
+		// les diffs seront stockés pour la timeline (il faut le time)
+		this.revise(props);
+		this.prerender();
+	}
 
-  revise(props) {
-    const newState = new Map();
-    for (const revise in this.revision) {
-      if (props[revise]) {
-        const diff = this.revision[revise].update(
-          this.store[revise],
-          props[revise]
-        );
-        newState.set(revise, diff);
-      }
-    }
-    console.log("newState", newState);
+	revise(props) {
+		const newState = new Map();
+		for (const revise in this.revision) {
+			if (props[revise]) {
+				const diff = this.revision[revise].update(
+					this.store[revise],
+					props[revise]
+				);
+				newState.set(revise, diff);
+			}
+		}
+		console.log("newState", newState);
 
-    this.addToStore(newState);
-  }
+		this.addToStore(newState);
+	}
 
-  addToStore(state) {
-    state.forEach((diff, revise) => {
-      switch (revise) {
-        case "dynStyle":
-        case "statStyle":
-          this.store[revise] = { ...this.store[revise], ...diff };
-          break;
-        case "content":
-          this.store[revise] = diff;
-          break;
-        default:
-          break;
-      }
-    });
-  }
+	addToStore(state) {
+		state.forEach((diff, revise) => {
+			switch (revise) {
+				case "dynStyle":
+				case "statStyle":
+					this.store[revise] = { ...this.store[revise], ...diff };
+					break;
+				case "content":
+					this.store[revise] = diff;
+					break;
+				default:
+					break;
+			}
+		});
+	}
 
-  prerender(zoom) {
-    zoom && (this.zoom = zoom);
-    // calculer styles : appliquer zoom sur unitless
-    // transformer style statique  + dimensions + pointerevent en classe
+	prerender(zoom) {
+		zoom && (this.zoom = zoom);
+		// calculer styles : appliquer zoom sur unitless
+		// transformer style statique  + dimensions + pointerevent en classe
 
-    const { dynStyle, statStyle, dimensions, ...other } = this.store;
-    const hasClass = statStyle || dimensions;
-    // const pointerEvents = options.pointerEvents ? "all" : "none";
+		const { dynStyle, statStyle, dimensions, ...other } = this.store;
+		const hasClass = statStyle || dimensions;
+		// const pointerEvents = options.pointerEvents ? "all" : "none";
 
-    const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
-    const cssClass = this.revision.dynStyle.prerender(this.zoom, {
-      ...statStyle,
-      ...dimensions
-    });
+		const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
+		const cssClass = this.revision.dynStyle.prerender(this.zoom, {
+			...statStyle,
+			...dimensions
+		});
 
-    const newState = {
-      style,
-      ...(hasClass && { class: css(cssClass) }),
-      ...other
-    };
-    this.handler(newState);
-  }
+		const newState = {
+			style,
+			...(hasClass && { class: css(cssClass) }),
+			...other
+		};
+		this.handler(newState);
+	}
 }
 
 const content = {
-  update(state, content) {
-    return content;
-  },
-  prerender() {}
+	update(state, content) {
+		return content;
+	},
+	prerender() {}
 };
 
 const statStyle = dynStyle;
