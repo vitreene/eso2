@@ -27,13 +27,13 @@ export const doStyle = {
   css(style) {
     return css(style);
   },
-  update(state, props) {
+  update(props, state) {
     /* 
     simplifier mapRelatives
     - les valeurs unitless peuvent le rester
     - retrait de u
     */
-    const newStyle = mapRelatives(state, props);
+    const newStyle = mapRelatives(props, state);
     const position = hasProperties(positionCssProps, props) && "relative";
 
     return {
@@ -47,9 +47,8 @@ export const doStyle = {
     const newRenderStyle = {};
 
     for (const prop in newStyle) {
-      if (whiteListCssProps.has(prop)) {
-        const z = typeof newStyle[prop] === "number" ? zoom : 1;
-        newRenderStyle[prop] = newStyle[prop] * z + "px";
+      if (whiteListCssProps.has(prop) && typeof newStyle[prop] === "number") {
+        newRenderStyle[prop] = newStyle[prop] * zoom + "px";
       } else newRenderStyle[prop] = newStyle[prop];
     }
     const { style, transform } = extractTransform(newRenderStyle);

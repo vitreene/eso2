@@ -1,5 +1,6 @@
 import { Component } from "hyperhtml";
 
+// TODO flex, position interne classes atomiques ?
 export class Slot extends Component {
   constructor({ id, children }) {
     super();

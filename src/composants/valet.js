@@ -2,30 +2,30 @@ import { Component } from "hyperhtml";
 import { Eso } from "../eso";
 
 function registerEmits(emits) {
-	this.emit = emits || {};
-	for (const emit in emits) {
-		this._wire$.addEventListener(emit, this);
-	}
+  this.emit = emits || {};
+  for (const emit in emits) {
+    this._wire$.addEventListener(emit, this);
+  }
 }
 export class Valet extends Component {
-	constructor({ id, emit, ...props }) {
-		super();
-		const { update, prerender } = new Eso(props, props => this.setState(props));
-		this.id = id;
-		this.update = update;
-		this.prerender = prerender;
-		registerEmits.call(this, emit);
-	}
+  constructor({ id, emit, ...props }) {
+    super();
+    const { update, prerender } = new Eso(props, props => this.setState(props));
+    this.id = id;
+    this.update = update;
+    this.prerender = prerender;
+    registerEmits.call(this, emit);
+  }
 
-	handleEvent(e) {
-		console.log("handleEvent", e.type, this.state);
-		this.emit[e.type] && console.log(this.emit[e.type]);
-	}
+  handleEvent(e) {
+    console.log("handleEvent", e.type, this.state);
+    this.emit[e.type] && console.log(this.emit[e.type]);
+  }
 
-	render() {
-		return this
-			.html`<div id=${this.id} style=${this.state.style} >${this.state.content}</div>`;
-	}
+  render() {
+    return this
+      .html`<div id=${this.id} style=${this.state.style} class=${this.state.class} >${this.state.content}</div>`;
+  }
 }
 
 /* 

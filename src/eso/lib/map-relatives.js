@@ -42,7 +42,7 @@ function convertVal(val) {
   return parseInt(val);
 }
 
-export function mapRelatives(prec, props) {
+export function mapRelatives(props, prec) {
   const newProps = {};
   for (const p in props) {
     const value = typeof props[p] === "string" && props[p].match(rgxRelatives);
