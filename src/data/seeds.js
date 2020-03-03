@@ -21,6 +21,10 @@ export const updates = {
 		content: "grey",
 		classes: "toto"
 	},
+	1500: {
+		id: 10,
+		classes: "+=tom  -=toto"
+	},
 	2000: {
 		layer: "bS",
 		slot: "0",

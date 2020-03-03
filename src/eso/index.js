@@ -75,8 +75,16 @@ conserve l'état du composant
 import { doDimensions as dimensions } from "./lib/dimensions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
+
 const { css, ...dynStyle } = doStyle;
+const statStyle = dynStyle;
 const classes = doClasses;
+const content = {
+	update(content) {
+		return content;
+	},
+	prerender() {}
+};
 
 export class Eso {
 	constructor(props, handler) {
@@ -165,12 +173,3 @@ export class Eso {
 		this.handler(newState);
 	}
 }
-
-const content = {
-	update(content) {
-		return content;
-	},
-	prerender() {}
-};
-
-const statStyle = dynStyle;
