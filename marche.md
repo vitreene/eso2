@@ -57,3 +57,29 @@ la fonction onScene gere le flux des objets.
         - ajout dans le nouvel emplacement (mount)
         
     ces événements sont transmis à l'objet lui-meme
+
+
+Où placer la fonction de transition :
+- dans chaque composant, via Eso
+- en amont, dans des pré-traitements comme re-slot
+
+- Transistion a un tempo 1/60s, Runtime 1/100s 
+
+- Les transitions sont-elles précalculées, ou calculées à la lecture ?
+
+Comment sont enregistrées les données sur la timeline :
+- tous les 1/10s pour l'enregistrement de la timeline
+- 1/60s pour l'execution
+
+Selon le choix, utiliser l'emitter courant, ou bien des callbacks internes pour mettre à jour l'etat du composant
+
+->
+transition dans le composant
+
+solution conforme
+reçoit from, to, progress
+-> sortie : { transition: {from, to}, progress} enregistré dans la timeline
+plus l'état consigné tous les 1/10s 
+
+alternative
+en sortie {transition: {progression, to}, time} où progression est l'état intermediaire. 
