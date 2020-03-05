@@ -44,6 +44,14 @@ export const updates = {
 		},
 		content: "yellow"
 	},
+	2500: {
+		id: 11,
+		transition: [
+			{
+				from: "fadeIn"
+			}
+		]
+	},
 
 	3000: {
 		layer: "aS",

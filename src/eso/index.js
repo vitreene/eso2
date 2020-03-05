@@ -73,7 +73,7 @@ conserve l'état du composant
  avec une liste "changed"
  */
 import { doDimensions } from "./lib/dimensions-comp";
-import { doTransitions } from "./transitions-comp";
+import { Transitions } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
 
@@ -86,22 +86,24 @@ const content = {
 };
 
 export class Eso {
-	constructor(props, handler) {
+	constructor(props, handler, node) {
 		this.store = {};
 		this.handler = handler;
+		const transition = new Transitions(node, () => this.prerender());
 		this.revision = {
 			classes: doClasses,
 			dimensions: doDimensions,
 			statStyle: dynStyle,
-			dynStyle: dynStyle,
-			content: content
+			dynStyle,
+			content,
+			transition
 		};
-		this.transitions = doTransitions;
 		this.update = this.update.bind(this);
 		this.prerender = this.prerender.bind(this);
 		this.init(props);
 		return { update: this.update, prerender: this.prerender };
 	}
+
 	init(props) {
 		this.revise(props);
 		this.handler();
@@ -125,16 +127,6 @@ export class Eso {
 				newState.set(revise, diff);
 			}
 		}
-		/**
-		 * transition a un profil différent, c'est un emitter
-		 * params transition { from, to, duration, ease, progress, onstart, onpdate, oncomplete}
-		 * params node
-		 * params this.prerender();
-		 * returns diff
-		 */
-		props["transitions"] &&
-			this.transitions.update(props["transitions"] /* node */);
-
 		this.addToStore(newState);
 	}
 
@@ -173,7 +165,7 @@ export class Eso {
 				...dimensions
 				//   ,pointerEvents
 			});
-		console.log("cssClass", cssClass);
+		// console.log("cssClass", cssClass);
 
 		const theClasses = this.revision.classes.prerender(css(cssClass), classes);
 
@@ -183,7 +175,7 @@ export class Eso {
 			...other
 		};
 
-		console.log("newState", newState);
+		// console.log("newState", newState);
 
 		this.handler(newState);
 	}
