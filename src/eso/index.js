@@ -89,14 +89,15 @@ export class Eso {
 	constructor(props, handler, node) {
 		this.store = {};
 		this.handler = handler;
-		const transition = new Transitions(node, () => this.prerender());
+		const transition = new Transitions(node, props => this.update(props));
 		this.revision = {
 			classes: doClasses,
 			dimensions: doDimensions,
 			statStyle: dynStyle,
 			dynStyle,
 			content,
-			transition
+			transition,
+			between: dynStyle
 		};
 		this.update = this.update.bind(this);
 		this.prerender = this.prerender.bind(this);
@@ -142,6 +143,12 @@ export class Eso {
 				case "content":
 					this.store[revise] = diff;
 					break;
+				case "transition":
+					// où et pour qui cette info sera utile ?
+					break;
+				case "between":
+					console.log("between", diff);
+
 				default:
 					break;
 			}

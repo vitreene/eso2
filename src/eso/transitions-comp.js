@@ -15,23 +15,32 @@
  between {style, progression, transition }
  dans addToStore, progression et transition seront utilisés pour la timeline, style est destiné à prerender
  */
+
+import { selectTransition } from "./lib/select-transition";
 export class Transitions {
-  constructor(node, handler) {
-    this.node = node;
-    this.handler = handler;
-    this.update = this.update.bind(this);
-    // this.transition = this.transition.bind(this);
-    // this.prerender = this.prerender.bind(this);
-    return { update: this.update };
-  }
+	constructor(node, handler) {
+		this.node = node;
+		this.handler = handler;
+		this.update = this.update.bind(this);
+		// this.transition = this.transition.bind(this);
+		// this.prerender = this.prerender.bind(this);
+		return { update: this.update };
+	}
 
-  // props { [{from, to, duration, ease, progress, onstart, onpdate, oncomplete}]}
-  update(props, state) {
-    return (Array.isArray(props) ? props : [props]).map(transition);
+	// props { [{from, to, duration, ease, progress, onstart, onpdate, oncomplete}]}
+	update(props, state) {
+		const { handler } = this;
 
-    function transition(props) {
-      console.log("transition", props);
-      return props;
-    }
-  }
+		(Array.isArray(props) ? props : [props]).forEach(doTransition);
+		return props;
+
+		function doTransition(props) {
+			// FIXME from et to peuvent etre nuls ?
+			const transition = selectTransition({ to: null }, props);
+			console.log("transition", props, transition);
+
+			const between = { between: props };
+			handler(between);
+		}
+	}
 }
