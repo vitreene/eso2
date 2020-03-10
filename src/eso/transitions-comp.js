@@ -17,30 +17,30 @@
  */
 
 import { selectTransition } from "./lib/select-transition";
-export class Transitions {
-	constructor(node, handler) {
-		this.node = node;
-		this.handler = handler;
-		this.update = this.update.bind(this);
-		// this.transition = this.transition.bind(this);
-		// this.prerender = this.prerender.bind(this);
-		return { update: this.update };
-	}
 
-	// props { [{from, to, duration, ease, progress, onstart, onpdate, oncomplete}]}
-	update(props, state) {
-		const { handler } = this;
+export function transition() {
+  const self = this;
 
-		(Array.isArray(props) ? props : [props]).forEach(doTransition);
-		return props;
+  function update(props) {
+    (Array.isArray(props) ? props : [props]).forEach(doTransition);
+    return props;
+  }
 
-		function doTransition(props) {
-			// FIXME from et to peuvent etre nuls ?
-			const transition = selectTransition({ to: null }, props);
-			console.log("transition", props, transition);
+  function doTransition(props) {
+    // FIXME from et to peuvent etre nuls ?
+    const transition = selectTransition(props.to, props.from);
+    console.log("transition", props, transition);
 
-			const between = { between: props };
-			handler(between);
-		}
-	}
+    // from-to
+
+    //lancer la ou les transitions
+
+    // si plusieurs transitions en cours, il faut reduire les valeurs sorties par chacune. cela se fait dans between, ou dans le Eso.prerender ? ;
+    const between = { between: transition.to };
+
+    self.update(between);
+  }
+  return {
+    update
+  };
 }
