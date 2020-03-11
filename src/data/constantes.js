@@ -39,6 +39,15 @@ export const DEFAULT_SIZE_SCENE = {
 	}
 };
 
+export const DEFAULT_STYLES = {
+	x: 0,
+	y: 0,
+	scale: 1,
+	rotate: 0,
+	opacity: 1,
+	color: "#000"
+};
+
 export const pointerEventList = [
 	"onClick",
 	"onContextMenu",

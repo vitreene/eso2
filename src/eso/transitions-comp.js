@@ -19,28 +19,30 @@
 import { selectTransition } from "./lib/select-transition";
 
 export function transition() {
-  const self = this;
+	const self = this;
 
-  function update(props) {
-    (Array.isArray(props) ? props : [props]).forEach(doTransition);
-    return props;
-  }
+	function update(props) {
+		(Array.isArray(props) ? props : [props]).forEach(doTransition);
+		return props;
+	}
 
-  function doTransition(props) {
-    // FIXME from et to peuvent etre nuls ?
-    const transition = selectTransition(props.to, props.from);
-    console.log("transition", props, transition);
+	function doTransition(props) {
+		// FIXME from et to peuvent etre nuls ?
+		const options = selectTransition(props.to, props.from);
+		const transition = options;
+		// const transition = fromTo(options, node);
 
-    // from-to
+		console.log("transition", props, transition);
+		// from-to
 
-    //lancer la ou les transitions
+		//lancer la ou les transitions
 
-    // si plusieurs transitions en cours, il faut reduire les valeurs sorties par chacune. cela se fait dans between, ou dans le Eso.prerender ? ;
-    const between = { between: transition.to };
+		// si plusieurs transitions en cours, il faut reduire les valeurs sorties par chacune. cela se fait dans between, ou dans le Eso.prerender ? ;
+		const between = { between: transition.to };
 
-    self.update(between);
-  }
-  return {
-    update
-  };
+		self.update(between);
+	}
+	return {
+		update
+	};
 }

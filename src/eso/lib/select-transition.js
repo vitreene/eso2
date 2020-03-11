@@ -3,9 +3,10 @@ import { effect } from "./effect";
 
 /* 
 propTo :
-- string : 'FadeIn'
 - object : {effect: 'FadeIn', duration: 500}
 - object : { ...to, duration ? }
+// déprécié
+- string : 'FadeIn'
 
 */
 
