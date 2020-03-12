@@ -78,6 +78,9 @@ import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
 
+import { testcolors } from "./lib/from-to";
+testcolors();
+
 const { css, ...dynStyle } = doStyle;
 const content = {
   update(content) {
@@ -90,7 +93,7 @@ export class Eso {
   constructor(props, handler, node) {
     this.store = {};
     this.handler = handler;
-    this.node = node;
+    this._node = node;
     this.revision = {
       classes: doClasses,
       dimensions: doDimensions,
@@ -109,13 +112,17 @@ export class Eso {
     return { update: this.update, prerender: this.prerender };
   }
 
+  get node() {
+    return this._node();
+  }
+
   init(props) {
     this.revise(props);
     this.handler();
   }
 
   update(props) {
-    props.between && console.log("update between", this.node(), this);
+    props.between && console.log("update between", this.node, this);
     // séparer : calculer les diffs, puis assembler
     // les diffs seront stockés pour la timeline (il faut le time)
     this.revise(props);
