@@ -45,6 +45,8 @@
   "dependencies": {
     "emotion": "^10.0.27",
     "eventemitter2": "^6.0.0",
-    "hyperhtml": "^2.31.6"
+    "hooked-elements": "^1.0.1",
+    "hyperhtml": "^2.31.6",
+    "lighterhtml": "^2.1.0"
   }
 }
