@@ -12,7 +12,9 @@ module.exports = {
     path: path.resolve(__dirname, "../dist"),
     sourceMapFilename: "[file].map[query]"
   },
-  devtool: "__cheap-source-map",
+  devtool: "eval-cheap-module-source-map",
+  // devtool: "eval-source-map",
+  // devtool: "eval-cheap-source-map",
 
   resolve: { extensions: [".js", ".ts"] },
   module: {

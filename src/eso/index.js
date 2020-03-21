@@ -78,8 +78,8 @@ import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
 
-import { testcolors } from "./lib/from-to";
-testcolors();
+// import { testcolors } from "./lib/from-to";
+// testcolors();
 
 const { css, ...dynStyle } = doStyle;
 const content = {
@@ -90,18 +90,19 @@ const content = {
 };
 
 export class Eso {
-  constructor(props, handler, node) {
+  constructor(props, handler, node, id) {
     this.store = {};
     this.handler = handler;
     this._node = node;
+    this.id = id;
     this.revision = {
       classes: doClasses,
       dimensions: doDimensions,
       statStyle: dynStyle,
+      between: dynStyle,
       dynStyle,
       content,
-      transition: transition.call(this),
-      between: dynStyle
+      transition: transition.call(this)
     };
     this.update = this.update.bind(this);
     this.revise = this.revise.bind(this);
@@ -122,7 +123,9 @@ export class Eso {
   }
 
   update(props) {
-    props.between && console.log("update between", this.node, this);
+    // console.log("props", props);
+    // props.between && console.log("update between", this.node, this);
+
     // séparer : calculer les diffs, puis assembler
     // les diffs seront stockés pour la timeline (il faut le time)
     this.revise(props);
@@ -149,17 +152,18 @@ export class Eso {
         case "dynStyle":
         case "statStyle":
         case "dimensions":
+        case "between":
+          // console.log(this.id, revise, diff);
           this.store[revise] = { ...this.store[revise], ...diff };
           break;
         case "classes":
         case "content":
+          // console.log(this.id, revise, diff);
           this.store[revise] = diff;
           break;
         case "transition":
-          // où et pour qui cette info sera utile ?
+          // où et pour qui cette info sera utile ? pour timeline ?
           break;
-        case "between":
-          console.log("between", diff);
 
         default:
           break;
@@ -167,15 +171,26 @@ export class Eso {
     });
   }
 
+  // TODO  mise en cache des classes
   prerender(zoom) {
     zoom && (this.zoom = zoom);
     // calculer styles : appliquer zoom sur unitless
     // transformer style statique  + dimensions + pointerevent en classe
 
-    const { dynStyle, statStyle, dimensions, classes, ...other } = this.store;
+    const {
+      dynStyle,
+      statStyle,
+      dimensions,
+      between,
+      classes,
+      ...other
+    } = this.store;
     // const pointerEvents = options.pointerEvents ? "all" : "none";
 
-    const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
+    const style = this.revision.dynStyle.prerender(this.zoom, {
+      ...dynStyle,
+      ...between
+    });
 
     const cssClass =
       (statStyle || dimensions) &&
@@ -184,7 +199,6 @@ export class Eso {
         ...dimensions
         //   ,pointerEvents
       });
-    // console.log("cssClass", cssClass);
 
     const theClasses = this.revision.classes.prerender(css(cssClass), classes);
 
@@ -193,8 +207,6 @@ export class Eso {
       class: theClasses,
       ...other
     };
-
-    // console.log("newState", newState);
 
     this.handler(newState);
   }

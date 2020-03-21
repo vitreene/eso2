@@ -13,7 +13,8 @@ export class Valet extends Component {
     const { update, prerender } = new Eso(
       props,
       props => this.setState(props),
-      () => this._wire$
+      () => this._wire$,
+      id
     );
     this.id = id;
     this.update = update;

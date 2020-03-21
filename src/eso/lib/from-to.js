@@ -1,7 +1,7 @@
 /* 
 entree : 
-- lastFrom, 
-- actualTo,
+- options.from, 
+- options.to,
 - duration,
 
 - styler
@@ -9,52 +9,41 @@ entree :
 sortie : {from, to, duration}
 */
 
-// import { color } from "style-value-types";
-import { effect } from "./effect";
+import { transformColor, isColorFactory } from "./colors";
 import { DEFAULT_STYLES, DEFAULT_DURATION } from "../../data/constantes";
 
-export function fromTo(options, node) {
+export function fromTo(options, store, node) {
   if (!options.from && !options.to) return null;
-
-  const isColor = isColorFactory();
   const { duration = DEFAULT_DURATION } = options;
 
-  const isObjectFrom = typeof options.from === "object";
-  const isStringFrom = typeof options.from === "string";
-  const isObjectTo = typeof options.to === "object";
-  const isStringTo = typeof options.to === "string";
-
-  const actualTo =
-    (isObjectTo && options.to) ||
-    (isStringFrom && effect[options.from].to) ||
-    (isStringTo && effect[options.to].to) ||
-    null;
-
-  const lastFrom =
-    (isStringTo && effect[options.to].from) ||
-    (isStringFrom && effect[options.from].from) ||
-    (isObjectFrom && options.from) ||
-    null;
+  let keyStore, styler;
 
   const from = {};
   const to = {};
 
   // retirer les valeurs egales
   // ne garder que les props de to dans from
-  // si une prop de from manque la lire depuis styler
-  for (const key in actualTo) {
-    let styler;
-    if (lastFrom[key] === actualTo[key]) continue;
-    if (lastFrom[key]) {
-      from[key] = lastFrom[key];
-      to[key] = actualTo[key];
+  // si une prop de from manque la lire depuis le store / default / styler
+  for (const key in options.to) {
+    if (options.from[key] === options.to[key]) continue;
+    if (options.from[key] !== undefined) {
+      from[key] = options.from[key];
+      to[key] = options.to[key];
     } else {
-      if (!styler) styler = window.getComputedStyle(node);
-      from[key] = getCssValue(key, styler, isColor);
-      to[key] = actualTo[key];
+      if (!keyStore) keyStore = flattenStore(store);
+      if (key in keyStore) from[key] = keyStore[key];
+      else {
+        if (!styler) styler = window.getComputedStyle(node);
+        from[key] = styler.getPropertyValue(key);
+      }
+      to[key] = options.to[key];
     }
   }
   if (Object.keys(to).length < 1) return null;
+
+  // convertir couleurs et valeurs
+  for (const key in from) from[key] = getCssValue(from[key]);
+  for (const key in to) to[key] = getCssValue(to[key]);
 
   return {
     from,
@@ -63,44 +52,26 @@ export function fromTo(options, node) {
   };
 }
 
-function getCssValue(key, styler, isColor) {
-  const cssProp = DEFAULT_STYLES[key] || styler.get(key);
+const isColor = isColorFactory();
+
+function getCssValue(cssProp) {
   const val = isColor(cssProp)
-    ? color.transform(cssProp)
+    ? transformColor(cssProp)
     : isNaN(cssProp)
     ? cssProp
     : parseFloat(cssProp);
   return val;
 }
 
-function isColorFactory() {
-  const o = new Option().style;
-  return function isColor(color) {
-    o.color = color;
-    console.log(color, o.color);
-
-    const res = o.color !== "";
-    o.color = "";
-    return res;
+function flattenStore(store) {
+  const { dynStyle, dimensions, between, statStyle } = store;
+  const flatStore = {
+    ...DEFAULT_STYLES,
+    ...statStyle,
+    ...dimensions,
+    ...dynStyle,
+    ...between
   };
-}
-
-export function testcolors() {
-  const isColor = isColorFactory();
-  const res1 = [
-    "red",
-    "#ff0000",
-    "#ff0",
-    "rgb(255,0,0)",
-    "rgba(255,0,0,1)",
-    "rgba(47, 79, 79, 1)"
-  ].map(isColor);
-  const res2 = [
-    "rouge",
-    "#ffX000",
-    "#if0",
-    "rcb(255,0,0)",
-    "rgba(255,0,a)"
-  ].map(isColor);
-  console.log(res1, res2);
+  console.log("flatStore", flatStore);
+  return flatStore;
 }

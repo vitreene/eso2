@@ -15,34 +15,63 @@
  between {style, progression, transition }
  dans addToStore, progression et transition seront utilisés pour la timeline, style est destiné à prerender
  */
-
-import { selectTransition } from "./lib/select-transition";
+import { controlAnimations } from "./lib/control-animation";
+import { selectTransition, directTransition } from "./lib/select-transition";
+import { fromTo } from "./lib/from-to";
 
 export function transition() {
-	const self = this;
+  const self = this;
 
-	function update(props) {
-		(Array.isArray(props) ? props : [props]).forEach(doTransition);
-		return props;
-	}
+  function update(props) {
+    (Array.isArray(props) ? props : [props]).forEach(doTransition);
+    return props;
+  }
 
-	function doTransition(props) {
-		// FIXME from et to peuvent etre nuls ?
-		const options = selectTransition(props.to, props.from);
-		const transition = options;
-		// const transition = fromTo(options, node);
+  function doTransition(props) {
+    // FIXME from et to peuvent etre nuls ?
+    const options = props.direct
+      ? directTransition(props)
+      : selectTransition(props);
 
-		console.log("transition", props, transition);
-		// from-to
+    // from-to
+    const interpolation = fromTo(options, self.store, self.node);
 
-		//lancer la ou les transitions
+    //lancer la ou les transitions
+    if (interpolation) {
+      // mettre à jour la position avant le rafraichissement
+      self.update({ between: interpolation.from });
+      controlAnimations.tween({
+        id: self.id,
+        interpolation,
+        update: interpolate,
+        complete: self.complete
+      });
+    }
+  }
 
-		// si plusieurs transitions en cours, il faut reduire les valeurs sorties par chacune. cela se fait dans between, ou dans le Eso.prerender ? ;
-		const between = { between: transition.to };
+  // si plusieurs transitions en cours,
+  //il faut reduire les valeurs sorties par chacune.
+  const accumulate = {
+    cumul: [],
+    add(value) {
+      if (!this.cumul.length) requestAnimationFrame(() => this.flush());
+      this.cumul.push(value);
+    },
+    update() {
+      let between = {};
+      for (const acc of this.cumul) Object.assign(between, acc);
+      self.update({ between });
+    },
+    flush() {
+      this.update();
+      this.cumul = [];
+    }
+  };
 
-		self.update(between);
-	}
-	return {
-		update
-	};
+  function interpolate(between) {
+    // self.update({ between });
+    accumulate.add(between);
+  }
+
+  return { update };
 }
