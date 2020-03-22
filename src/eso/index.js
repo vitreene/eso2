@@ -72,14 +72,11 @@ conserve l'état du composant
  serait-il possible d'enregistrer seulement les diffs calculés en sortie de la fonction update
  avec une liste "changed"
  */
+
 import { doDimensions } from "./lib/dimensions-comp";
-// import { Transitions } from "./transitions-comp";
 import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
-
-// import { testcolors } from "./lib/from-to";
-// testcolors();
 
 const { css, ...dynStyle } = doStyle;
 const content = {
@@ -88,7 +85,7 @@ const content = {
   },
   prerender() {}
 };
-
+// TODO attr
 export class Eso {
   constructor(props, handler, node, id) {
     this.store = {};

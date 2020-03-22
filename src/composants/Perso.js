@@ -1,32 +1,35 @@
 import { Component } from "hyperhtml";
 import { Eso } from "../eso";
 
-function registerEmits(emits) {
-  this.emit = emits || {};
-  for (const emit in emits) {
-    this._wire$.addEventListener(emit, this);
-  }
-}
 export class Perso extends Component {
-  constructor({ id, emit, ...props }) {
+  static nature = "bloc";
+  constructor(story, emitter) {
     super();
+    const { id, initial, emit } = story;
     const { update, prerender } = new Eso(
-      props,
+      initial,
       props => this.setState(props),
       () => this._wire$,
       id
     );
     this.id = id;
+    this.emitter = emitter;
     this.update = update;
     this.prerender = prerender;
-    registerEmits.call(this, emit);
+    this.registerEmits(emit);
   }
 
   handleEvent(e) {
     console.log("handleEvent", e.type, this.state);
     this.emit[e.type] && console.log(this.emit[e.type]);
+    this.emit[e.type] && this.emitter(this.emit[e.type]);
   }
-
+  registerEmits(emits) {
+    this.emit = emits || {};
+    for (const emit in emits) {
+      this._wire$.addEventListener(emit, this);
+    }
+  }
   render() {
     return this
       .html`<div id=${this.id} style=${this.state.style} class=${this.state.class} >${this.state.content}</div>`;

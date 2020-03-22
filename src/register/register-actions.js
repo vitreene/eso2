@@ -1,10 +1,10 @@
 import { DEFAULT_NS } from "../data/constantes";
 
-export default function registerActions(stories, emitter) {
+export function registerActions(stories, emitter) {
   const actionsList = [];
 
-  for (const perso of stories) {
-    const { id, listen, actions } = perso;
+  for (const story of stories) {
+    const { id, listen, actions } = story;
     listen.forEach(e => {
       const NS = e.ns || DEFAULT_NS;
       const { name, ...other } = actions.find(a => a.name === e.action);

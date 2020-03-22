@@ -1,4 +1,4 @@
-import controlAnimations from "../Actor/control-animation";
+import { controlAnimations } from "../eso/lib/control-animation";
 import { TC, PLAY, PAUSE, REWIND } from "../data/constantes";
 
 //////// CLOCK /////////////////////////

@@ -1,50 +1,31 @@
-import { slots } from "../register/create-layers";
-import { persos } from "../register/create-persos";
-
 import { OnScene } from "../scene/onScene";
 import { Zoom } from "../eso/lib/zoom";
 
+import { slots } from "../register/create-layers";
+import { persos } from "../scene/init";
+
 import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
-import { updates } from "../data/seeds";
 
 // ============================================================
 // zoom est partagé par Root et updateScene
 let zoom;
+const onScene = new OnScene(slots);
 // ============================================================
 
-// RUNTIME ////////////////////////////////////////////////
-
-const onScene = new OnScene(slots);
-
-// déclencheur
+// déclenche les updates
 export function sceneUpdateHandler(update) {
   const up = onScene.update(update);
   updateScene(up);
 }
 
-////////////////////////////////////////////////
-for (let time in updates) {
-  setTimeout(() => {
-    const upd = onScene.update(updates[time]);
-    updateScene(upd);
-  }, time);
-}
+// ============================================================
 
-// setTimeout(() => {
-//   slots.get("bS_3").setState({
-//     children: container
-//   });
-// }, 2000);
-
-////////////////////////////////////////////////
-
-// persos zoom
+// need : persos zoom
 function updateScene({ changed, update }) {
   if (typeof changed === "string") {
     console.error(changed);
     return;
   }
-
   const perso = persos.get(update?.id);
 
   // zoom enter
@@ -84,7 +65,7 @@ function updateScene({ changed, update }) {
   update && persos.get(update.id).update({ ...update, transition });
 }
 
-// persos slots
+// need : persos slots
 function updateSlot(slotId, persosIds) {
   const children = persosIds.map(id => persos.get(id));
   slots.get(slotId).setState({ children });
@@ -92,7 +73,7 @@ function updateSlot(slotId, persosIds) {
 
 // ============================================================
 
-// onScene zoom persos
+// need : onScene zoom persos
 export function activateZoom() {
   zoom = new Zoom(
     CONTAINER_ESO,

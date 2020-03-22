@@ -7,7 +7,7 @@ import { zoom } from "../eso/lib/zoom";
 
 import registerActions from "../register/register-actions";
 import registerImages from "../register/register-images";
-import registerActors from "../register/register-actor";
+import registerActors from "../register/register-persos";
 import registerAllSlots from "../register/register-slots";
 import registerStraps from "../register/register-straps";
 

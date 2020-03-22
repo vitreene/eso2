@@ -5,6 +5,8 @@ import { layers } from "./register/create-layers";
 import { Root } from "./composants/Root";
 import { APP_ID } from "./data/constantes";
 
+// FIXME c'est l'import qui déclenche la lecture de la scene
+// rendre plus intentionnel
 import { activateZoom } from "./runtime";
 
 import { grid_01_styles, fond_styles } from "./stories/layers";

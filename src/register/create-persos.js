@@ -23,10 +23,10 @@ const randColor = () => colors[Math.round(Math.random() * (colors.length - 1))];
 const randLetter = () =>
   letters[Math.round(Math.random() * (letters.length - 1))];
 
-function createPerso(index) {
+function createAutoPerso(index) {
   const config = {
     content: randLetter(),
-    style: {
+    dynStyle: {
       backgroundColor: randColor()
     },
     id: index,
@@ -49,8 +49,8 @@ function createPerso(index) {
   return [index, new Perso(config)];
 }
 
-export const createPersos = length =>
-  new Map(Array.from(Array(length).keys(), createPerso));
+export const createAutoPersos = length =>
+  new Map(Array.from(Array(length).keys(), createAutoPerso));
 
 const max_persos = 20;
-export const persos = createPersos(max_persos);
+export const persos = createAutoPersos(max_persos);

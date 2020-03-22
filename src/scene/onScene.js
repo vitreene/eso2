@@ -51,7 +51,7 @@ simplifier leave :
 
 //TODO ecrire les tests
 
-import { joinId } from "../eso/lib/helpers";
+// TODO conformer les updates venant des clicks
 export class OnScene {
   constructor(slots) {
     // if (!slots || typeof slots !== "object") return false;
@@ -66,7 +66,7 @@ export class OnScene {
   }
 
   update(up) {
-    console.log("up----->", up);
+    console.log("up", up);
     let action = update => ({ changed: null, update });
     if (!up.id) return this._getError("id", up);
     if (this.areOnScene.has(up.id)) {
@@ -83,7 +83,6 @@ export class OnScene {
   _addToScene(up) {
     // const slotId = this._getSlotId(up);
     const slotId = up.slot;
-    console.log("slotId", slotId);
     if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
 
     // TODO trier selon l'ordre
@@ -133,9 +132,9 @@ export class OnScene {
     };
   }
 
-  _getSlotId(up) {
-    return joinId(up.layer, up.slot);
-  }
+  // _getSlotId(up) {
+  //   return joinId(up.layer, up.slot);
+  // }
 
   _getError = (errorId, up) => ({
     areOnScene: this.areOnScene,
