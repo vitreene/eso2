@@ -1,4 +1,5 @@
 export const CONTAINER_ESO = "main";
+export const APP_ID = "app";
 
 export const MAIN = "anim";
 export const TELCO = "telco";

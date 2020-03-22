@@ -1,161 +1,31 @@
-// import { render } from "lighterhtml";
-
-import { bind as hyper, Component } from "hyperhtml";
+import { bind as hyper } from "hyperhtml";
 import "./style.scss";
 
-import { slots, layers } from "./data/create-layers";
-import { createValets } from "./data/create-valets";
-import { OnScene } from "./onScene";
-import { Zoom } from "./eso/lib/zoom";
+import { layers } from "./register/create-layers";
+import { Root } from "./composants/Root";
+import { APP_ID } from "./data/constantes";
 
-import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "./data/constantes";
-import { updates } from "./data/seeds";
+import { activateZoom } from "./runtime";
 
-// import { valetFactory } from "./composants/w-valet";
-// const valetA = valetFactory({ id: "A" });
-// render(document.getElementById("pre"), valetA);
+import { grid_01_styles, fond_styles } from "./stories/layers";
+////////////////////////////////////////////////
 
-const onScene = new OnScene(slots);
+const style = document.createElement("style");
+style.id = "grid_01_styles";
+style.innerHTML = grid_01_styles + fond_styles;
+document.head.appendChild(style);
 
-const container = layers.get("cS");
-const layerA = layers.get("aS");
-const layerB = layers.get("bS");
+const fond = layers.get("fond");
+const grid_01 = layers.get("grid-01");
 
 ////////////////////////////////////////////////
 
-class Root extends Component {
-  onconnected() {
-    this.removeZoom = activateZoom();
-  }
-
-  ondisconnected() {
-    this.removeZoom();
-  }
-  render() {
-    return this.html`<div 
-      id=${CONTAINER_ESO} 
-      class="container" 
-      onconnected=${this}
-      ondisconnected=${this}
-      >${this.state.content}</div>`;
-  }
-}
-////////////////////////////////////////////////
-
-////////////////////////////////////////////////
-let zoom;
-const root = new Root();
-const max_valets = 20;
-const valets = createValets(max_valets);
-layersOnScene(root, [layerA, layerB]);
-
-////////////////////////////////////////////////
-
-for (let time in updates) {
-  setTimeout(() => {
-    const upd = onScene.update(updates[time]);
-    updateScene(upd);
-  }, time);
-}
-
-////////////////////////////////////////////////
-
-function updateSlot(slotId, valetsIds) {
-  const children = valetsIds.map(id => valets.get(id));
-  slots.get(slotId).setState({ children });
-}
-
-function updateScene({ changed, update }) {
-  if (typeof changed === "string") {
-    console.error(changed);
-    return;
-  }
-
-  const valet = valets.get(update?.id);
-
-  // zoom enter
-  if (update.enter) valet.prerender(zoom.value);
-
-  // demo re-slot
-  let old,
-    current,
-    transition = [];
-
-  if (update.transition) {
-    Array.isArray(update.transition)
-      ? transition.push(...update.transition)
-      : transition.push(update.transition);
-  }
-
-  if (changed?.remove) {
-    valet && (old = valet._wire$.getBoundingClientRect());
-    updateSlot(...changed.remove);
-  }
-  if (changed?.add) {
-    updateSlot(...changed.add);
-    valet && (current = valet._wire$.getBoundingClientRect());
-  }
-  if (old && current) {
-    // en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
-    const transform = zoom.unZoom({
-      dX: old.x - current.x,
-      dY: old.y - current.y
-    });
-    transition.push({
-      from: transform,
-      to: { dX: 0, dY: 0 },
-      duration: 1000
-    });
-  }
-
-  update && valets.get(update.id).update({ ...update, transition });
-}
+// ENTRY POINT
+const root = new Root(activateZoom);
 
 function layersOnScene(root, layers) {
   root.setState({ content: layers });
-  hyper(document.getElementById("app"))`${root}`;
+  hyper(document.getElementById(APP_ID))`${root}`;
 }
 
-// ============================================================
-
-function activateZoom() {
-  zoom = new Zoom(
-    CONTAINER_ESO,
-    DEFAULT_SIZE_SCENE["4/3"],
-    initRenderOnResize(valets, onScene)
-  );
-  window.addEventListener("resize", zoom.resize);
-  return () => window.removeEventListener("resize", zoom.resize);
-}
-
-function initRenderOnResize(valets, onScene) {
-  return function renderOnResize(zoom) {
-    for (const id of onScene.areOnScene.keys()) {
-      valets.get(id).prerender(zoom);
-    }
-  };
-}
-
-// ============================================================
-/* 
-setTimeout(() => {
-  valets.get(10).update({
-    style: { backgroundColor: "yellow" },
-    content: "toto"
-  });
-}, 3000);
-
-setTimeout(() => {
-  // valets.get(11).update({
-    //   style: { fontSize: "2rem" },
-    //   content: "TITITITIT"
-    // });
-    valets.get(11).prerender(true);
-  }, 2500);
- */
-
-setTimeout(() => {
-  slots.get("bS_3").setState({
-    children: container
-  });
-}, 2000);
+layersOnScene(root, [fond, grid_01]);

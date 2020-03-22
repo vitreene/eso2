@@ -7,7 +7,7 @@ function registerEmits(emits) {
     this._wire$.addEventListener(emit, this);
   }
 }
-export class Valet extends Component {
+export class Perso extends Component {
   constructor({ id, emit, ...props }) {
     super();
     const { update, prerender } = new Eso(

@@ -1,4 +1,4 @@
-import { Valet } from "../composants/valet";
+import { Perso } from "../composants/Perso";
 
 /**
  *
@@ -23,7 +23,7 @@ const randColor = () => colors[Math.round(Math.random() * (colors.length - 1))];
 const randLetter = () =>
   letters[Math.round(Math.random() * (letters.length - 1))];
 
-function createValet(index) {
+function createPerso(index) {
   const config = {
     content: randLetter(),
     style: {
@@ -46,8 +46,11 @@ function createValet(index) {
     }
   };
 
-  return [index, new Valet(config)];
+  return [index, new Perso(config)];
 }
 
-export const createValets = length =>
-  new Map(Array.from(Array(length).keys(), createValet));
+export const createPersos = length =>
+  new Map(Array.from(Array(length).keys(), createPerso));
+
+const max_persos = 20;
+export const persos = createPersos(max_persos);

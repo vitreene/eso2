@@ -1,13 +1,12 @@
 export const layerDefs = [
-  { id: "aS", length: 3 },
-  { id: "bS", length: 4 },
-  { id: "cS", length: 2 }
+  { id: "fond", length: 1 },
+  { id: "grid-01", length: 6 }
 ];
 
 export const updates = {
   0: {
-    layer: "aS",
-    slot: "0",
+    layer: "grid-01",
+    slot: "grid-01_s01",
     id: 10,
     // dynStyle: { backgroundColor: "grey", left: "-=10", top: "+=50" },
     dynStyle: {
@@ -19,8 +18,8 @@ export const updates = {
   },
   50: {
     id: 10,
-    layer: "bS",
-    slot: "1",
+    layer: "grid-01",
+    slot: "grid-01_s05",
     classes: "+=tom  -=toto",
     transition: {
       to: { backgroundColor: "red" },
@@ -29,8 +28,8 @@ export const updates = {
   },
 
   2010: {
-    layer: "aS",
-    slot: "0",
+    layer: "grid-01",
+    slot: "grid-01_s01",
     id: 10,
     transition: {
       to: { x: 200, y: 150, scale: 2, backgroundColor: "purple" },
@@ -39,8 +38,8 @@ export const updates = {
   },
 
   2000: {
-    layer: "bS",
-    slot: "0",
+    layer: "grid-01",
+    slot: "grid-01_s02",
     id: 11,
     dimensions: { height: 100, ratio: 2 },
     dynStyle: {
@@ -66,8 +65,8 @@ export const updates = {
   },
 
   3000: {
-    layer: "aS",
-    slot: "2",
+    layer: "grid-01",
+    slot: "grid-01_s03",
     id: 12,
     dynStyle: { backgroundColor: "orange" },
     content: "XOXOX"
@@ -77,8 +76,8 @@ export const updates = {
     // leave: true
   },
   4000: {
-    layer: "cS",
-    slot: "0",
+    layer: "grid-01",
+    slot: "grid-01_s01",
     id: 12,
     dynStyle: { backgroundColor: "crimson" },
     content: "crimson"

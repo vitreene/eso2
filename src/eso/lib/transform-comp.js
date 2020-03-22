@@ -1,3 +1,5 @@
+import { splitUnitValue } from "./helpers";
+
 const tList = {
   x: { transform: "translateX", unit: "px", zoomable: true },
   y: { transform: "translateY", unit: "px", zoomable: true },
@@ -9,8 +11,6 @@ const tList = {
 // alias
 tList.rotate = tList.r;
 tList.scale = tList.s;
-
-import { splitUnitValue } from "./helpers";
 
 export function extractTransform(oldStyle) {
   const style = {};
