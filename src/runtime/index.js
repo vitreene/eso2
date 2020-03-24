@@ -8,7 +8,7 @@ import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
 
 // ============================================================
 // zoom est partagé par Root et updateScene
-let zoom;
+export let zoom;
 const onScene = new OnScene(slots);
 
 actions(sceneUpdateHandler);

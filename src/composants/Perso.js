@@ -20,7 +20,7 @@ export class Perso extends Component {
 
   handleEvent(e) {
     console.log("handleEvent", e.type, this.state);
-    this.emit[e.type] && this.emit[e.type]();
+    this.emit[e.type] && this.emit[e.type](e);
   }
   registerEmits(emit, emitter) {
     const keyEvents = Eso.registerKeyEvents(emit, emitter);

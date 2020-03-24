@@ -1,4 +1,4 @@
-import { DEFAULT_NS } from "../data/constantes";
+import { STRAP } from "../data/constantes";
 
 export const textSample = {
   id: "text-sample",
@@ -18,14 +18,14 @@ export const textSample = {
     content: "dimanche"
   },
   emit: {
-    click: {
-      event: { ns: DEFAULT_NS, name: "ev011" },
-      data: {
-        dynStyle: { backgroundColor: "purple" }
-      }
+    mousedown: {
+      event: { ns: STRAP, name: "move" },
+      data: { id: "text-sample", event: "move" }
     }
-    /* click: {
-      event: { ns: "anim", name: "add-event-list" },
+  },
+  /*   emit: {
+    click: {
+      event: { ns: STRAP, name: "add-event-list" },
       data: {
         name: "click",
         start: 0,
@@ -35,14 +35,19 @@ export const textSample = {
           { start: 2000, name: "ev102" }
         ]
       }
-    } */
-  },
+    }
+  }, */
+
   listen: [
     { event: "ev011", action: "enter" },
     { event: "ev012", action: "step01" },
-    { event: "ev014", action: "step02" }
+    // { event: "ev014", action: "step02" },
+    { event: "move", action: "move" }
   ],
   actions: [
+    {
+      name: "move"
+    },
     {
       name: "enter",
       layer: "grid-01",

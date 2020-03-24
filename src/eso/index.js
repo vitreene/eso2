@@ -151,9 +151,9 @@ export class Eso {
         case "dynStyle":
         case "statStyle":
         case "dimensions":
-        case "between":
-          // console.log(this.id, revise, diff);
           this.store[revise] = { ...this.store[revise], ...diff };
+        case "between":
+          this.store["dynStyle"] = { ...this.store["dynStyle"], ...diff };
           break;
         case "classes":
         case "content":
@@ -180,16 +180,12 @@ export class Eso {
       dynStyle,
       statStyle,
       dimensions,
-      between,
+      // between,
       classes,
       ...other
     } = this.store;
     // const pointerEvents = options.pointerEvents ? "all" : "none";
-
-    const style = this.revision.dynStyle.prerender(this.zoom, {
-      ...dynStyle,
-      ...between
-    });
+    const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
 
     const cssClass =
       (statStyle || dimensions) &&

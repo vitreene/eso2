@@ -51,12 +51,11 @@ export const doStyle = {
         newRenderStyle[prop] = newStyle[prop] * zoom + "px";
       } else newRenderStyle[prop] = newStyle[prop];
     }
-    const { style, transform } = extractTransform(newRenderStyle);
 
+    const { style, transform } = extractTransform(newRenderStyle);
     return {
       ...style,
       ...withTransform(transform, zoom)
     };
-    // return newRenderStyle;
   }
 };
