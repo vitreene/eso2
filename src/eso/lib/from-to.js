@@ -72,6 +72,5 @@ function flattenStore(store) {
     ...dynStyle,
     ...between
   };
-  console.log("flatStore", flatStore);
   return flatStore;
 }

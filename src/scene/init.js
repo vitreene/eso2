@@ -7,19 +7,16 @@ import { TimeLiner } from "../runtime/solver";
 
 import { registerPersos } from "../register/register-persos";
 import { registerActions } from "../register/register-actions";
-import { sceneUpdateHandler } from "../runtime/index";
+// import { sceneUpdateHandler } from "../runtime/index";
 
-import * as stories from "../stories/story-01-persos";
+import * as objectStories from "../stories/story-01-persos";
 import { eventimes } from "../stories/story-01-eventimes";
 
-const pubSub = new EventEmitter2({ wildcard: true, maxListeners: 0 });
+const emitter = new EventEmitter2({ wildcard: true, maxListeners: 0 });
+const timeLiner = new TimeLiner(eventimes);
 
-const arrStories = Object.values(stories);
-const a = registerActions(arrStories, pubSub);
-a(sceneUpdateHandler);
+const stories = Object.values(objectStories);
+export const actions = registerActions(stories, emitter);
+export const persos = registerPersos(stories, emitter);
 
-export const persos = registerPersos(arrStories, sceneUpdateHandler);
-
-export const timeLiner = new TimeLiner(eventimes);
-
-export const chrono = clock(pubSub, timeLiner);
+export const chrono = clock(timeLiner, emitter);

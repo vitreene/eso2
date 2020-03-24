@@ -1,3 +1,5 @@
+import { DEFAULT_NS } from "../data/constantes";
+
 export const textSample = {
   id: "text-sample",
   nature: "bloc",
@@ -17,6 +19,12 @@ export const textSample = {
   },
   emit: {
     click: {
+      event: { ns: DEFAULT_NS, name: "ev011" },
+      data: {
+        dynStyle: { backgroundColor: "purple" }
+      }
+    }
+    /* click: {
       event: { ns: "anim", name: "add-event-list" },
       data: {
         name: "click",
@@ -27,7 +35,7 @@ export const textSample = {
           { start: 2000, name: "ev102" }
         ]
       }
-    }
+    } */
   },
   listen: [
     { event: "ev011", action: "enter" },

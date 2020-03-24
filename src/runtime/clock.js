@@ -3,7 +3,7 @@ import { TC, PLAY, PAUSE, REWIND } from "../data/constantes";
 
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
-export function clock(pubSub, timeLiner) {
+export function clock(timeLiner, emitter) {
   const beat = 10; // tout les 1/100e de seconde
   const startTime = Date.now();
   const maxCount = 20000 + 1;
@@ -15,15 +15,15 @@ export function clock(pubSub, timeLiner) {
   let timeout;
 
   let isPlaying = true;
-  pubSub.on([TC, PLAY], () => {
+  emitter.on([TC, PLAY], () => {
     isPlaying = true;
     controlAnimations.play();
   });
-  pubSub.on([TC, PAUSE], () => {
+  emitter.on([TC, PAUSE], () => {
     isPlaying = false;
     controlAnimations.pause();
   });
-  pubSub.on([TC, REWIND], () => {
+  emitter.on([TC, REWIND], () => {
     count = 0;
     secondes = 0;
     controlAnimations.reset();
@@ -31,7 +31,7 @@ export function clock(pubSub, timeLiner) {
     loop();
   });
 
-  pubSub.emit("*.init", { chrono: 0 });
+  emitter.emit("*.init", { chrono: 0 });
 
   const timeLine = timeLiner.timeLine;
   console.log("timeLine", timeLine);
@@ -39,7 +39,8 @@ export function clock(pubSub, timeLiner) {
   const emitEvent = count => tm => NS => {
     if (tm[NS][count]) {
       const _emitEvent = name =>
-        console.log("name", name) || pubSub.emit([NS, name], { chrono: count });
+        console.log("name", name) ||
+        emitter.emit([NS, name], { chrono: count });
       tm[NS][count].forEach(_emitEvent);
     }
   };
@@ -56,10 +57,10 @@ export function clock(pubSub, timeLiner) {
 
         secondes = count / 1000;
       }
-      pubSub.emit("secondes", secondes);
+      emitter.emit("secondes", secondes);
       count = count + beat;
     }
-    pubSub.emit("elapsed", elapsed);
+    emitter.emit("elapsed", elapsed);
     elapsed = elapsed + beat;
     tick = startTime + count - Date.now();
     count < maxCount && (timeout = setTimeout(loop, tick));

@@ -73,6 +73,7 @@ conserve l'état du composant
  avec une liste "changed"
  */
 
+import { registerKeyEvents } from "./lib/register-keyEvents";
 import { doDimensions } from "./lib/dimensions-comp";
 import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
@@ -87,6 +88,7 @@ const content = {
 };
 // TODO attr
 export class Eso {
+  static registerKeyEvents = registerKeyEvents;
   constructor(props, handler, node, id) {
     this.store = {};
     this.handler = handler;

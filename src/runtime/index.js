@@ -2,7 +2,7 @@ import { OnScene } from "../scene/onScene";
 import { Zoom } from "../eso/lib/zoom";
 
 import { slots } from "../register/create-layers";
-import { persos } from "../scene/init";
+import { persos, actions } from "../scene/init";
 
 import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
 
@@ -10,10 +10,13 @@ import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
 // zoom est partagé par Root et updateScene
 let zoom;
 const onScene = new OnScene(slots);
+
+actions(sceneUpdateHandler);
 // ============================================================
 
 // déclenche les updates
-export function sceneUpdateHandler(update) {
+function sceneUpdateHandler(update) {
+  console.log("update", update);
   const up = onScene.update(update);
   updateScene(up);
 }

@@ -13,21 +13,21 @@ export class Perso extends Component {
       id
     );
     this.id = id;
-    this.emitter = emitter;
     this.update = update;
     this.prerender = prerender;
-    this.registerEmits(emit);
+    this.registerEmits(emit, emitter);
   }
 
   handleEvent(e) {
     console.log("handleEvent", e.type, this.state);
-    this.emit[e.type] && console.log(this.emit[e.type]);
-    this.emit[e.type] && this.emitter(this.emit[e.type]);
+    this.emit[e.type] && this.emit[e.type]();
   }
-  registerEmits(emits) {
-    this.emit = emits || {};
-    for (const emit in emits) {
-      this._wire$.addEventListener(emit, this);
+  registerEmits(emit, emitter) {
+    const keyEvents = Eso.registerKeyEvents(emit, emitter);
+    this.emit = keyEvents || {};
+    if (!keyEvents) return;
+    for (const event in keyEvents) {
+      this._wire$.addEventListener(event, this);
     }
   }
   render() {

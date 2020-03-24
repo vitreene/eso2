@@ -15,7 +15,7 @@ export function selectTransition({
   to: propTo,
   duration = DEFAULT_DURATION
 }) {
-  console.log(propFrom, propTo);
+  // console.log(propFrom, propTo);
   let actualTo;
   switch (true) {
     case typeof propTo === "string":
