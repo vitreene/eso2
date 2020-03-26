@@ -43,8 +43,9 @@ module.exports = {
           {
             loader: "file-loader",
             options: {
-              name: "[name].[ext]",
-              outputPath: "assets/images"
+              name: "../public/images/[name].[ext]",
+              outputPath: ""
+              // outputPath: "assets/images"
             }
           }
         ]
@@ -70,7 +71,8 @@ module.exports = {
       filename: "style.css"
     }),
     new CopyWebpackPlugin([
-      { from: "./src/static/images", to: "assets/images" }
+      // { from: "./src/static/images", to: "assets/images" }
+      { from: "./public/images", to: "" }
     ]),
     new CleanWebpackPlugin()
   ]

@@ -1,7 +1,8 @@
 import ComposantLib from "./composant-lib";
-import { Perso } from "../composants/Perso";
+import { Bloc, Img } from "../composants/Perso";
 
 const createPerso = new ComposantLib();
-createPerso.register(Perso);
+createPerso.register(Bloc);
+createPerso.register(Img);
 
 export default createPerso;

@@ -15,13 +15,13 @@ export function selectTransition({
   to: propTo,
   duration = DEFAULT_DURATION
 }) {
-  // console.log(propFrom, propTo);
+  console.log(propFrom, propTo);
   let actualTo;
   switch (true) {
     case typeof propTo === "string":
       actualTo = { to: effect[propTo].to, duration };
       break;
-    case !!propTo.effect:
+    case !!propTo && !!propTo.effect:
       actualTo = {
         to: effect[propTo.effect].to,
         duration: propTo.duration || DEFAULT_DURATION

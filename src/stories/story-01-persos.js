@@ -87,3 +87,30 @@ export const textSample = {
     }
   ]
 };
+
+export const imageSample = {
+  id: "image",
+  nature: "img",
+  initial: {
+    content: "vignette.jpg",
+    fit: "contain" //"cover"
+  },
+  listen: [
+    { event: "go", action: "enter" },
+    { event: "ev014", action: "step01" }
+  ],
+  actions: [
+    {
+      name: "enter",
+      layer: "grid-01",
+      slot: "grid-01_s02",
+      transition: { to: "fadeIn" }
+      // style: { opacity: 0.5 }
+    },
+    {
+      name: "step01",
+      layer: "fond",
+      slot: "fond_s01"
+    }
+  ]
+};
