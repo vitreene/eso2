@@ -1,4 +1,4 @@
-import { STRAP } from "../data/constantes";
+import { STRAP, TC, PAUSE } from "../data/constantes";
 
 export const textSample = {
   id: "text-sample",
@@ -21,6 +21,9 @@ export const textSample = {
     mousedown: {
       event: { ns: STRAP, name: "move" },
       data: { id: "text-sample", event: "move" }
+    },
+    click: {
+      event: { ns: TC, name: PAUSE }
     }
   },
   /*   emit: {
@@ -41,7 +44,7 @@ export const textSample = {
   listen: [
     { event: "ev011", action: "enter" },
     { event: "ev012", action: "step01" },
-    // { event: "ev014", action: "step02" },
+    { event: "ev014", action: "step02" },
     { event: "move", action: "move" }
   ],
   actions: [
@@ -50,15 +53,13 @@ export const textSample = {
     },
     {
       name: "enter",
-      layer: "grid-01",
-      slot: "grid-01_s01",
+      move: { layer: "grid-01", slot: "grid-01_s01" },
       statStyle: { fontSize: "12px", backgroundColor: "#ffff00" }
     },
     {
       name: "step01",
       content: "lundi",
-      layer: "grid-01",
-      slot: "grid-01_s03",
+      move: { layer: "grid-01", slot: "grid-01_s03" },
       dynStyle: { color: "#ff0000" },
       transition: {
         to: {
@@ -70,8 +71,7 @@ export const textSample = {
     },
     {
       name: "step02",
-      layer: "grid-01",
-      slot: "grid-01_s05",
+      move: { layer: "grid-01", slot: "grid-01_s05" },
       transition: {
         to: {
           fontSize: "32px",
@@ -93,24 +93,33 @@ export const imageSample = {
   nature: "img",
   initial: {
     content: "vignette.jpg",
-    fit: "contain" //"cover"
+    fit: "contain", //"cover"
+    statStyle: {
+      position: "absolute"
+    }
   },
   listen: [
     { event: "go", action: "enter" },
-    { event: "ev014", action: "step01" }
+    { event: "ev012", action: "step01" },
+    { event: "ev014", action: "step02" }
   ],
   actions: [
     {
       name: "enter",
-      layer: "grid-01",
-      slot: "grid-01_s02",
+      move: { layer: "grid-01", slot: "grid-01_s02" },
+      dimensions: { width: "100%", height: "100%" },
       transition: { to: "fadeIn" }
       // style: { opacity: 0.5 }
     },
     {
       name: "step01",
-      layer: "fond",
-      slot: "fond_s01"
+      move: { layer: "fond", slot: "fond_s01", rescale: true },
+      transition: { to: { opacity: 0.5 } }
+    },
+    {
+      name: "step02",
+      move: { layer: "grid-01", slot: "grid-01_s05", rescale: true },
+      transition: { to: { opacity: 1 } }
     }
   ]
 };

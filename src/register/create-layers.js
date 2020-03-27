@@ -4,7 +4,7 @@
  */
 import { wire } from "hyperhtml";
 import { Slot } from "../composants/Slot";
-import { layerDefs } from "../data/seeds";
+import { layerDefs } from "../stories/layers";
 import { joinId } from "../eso/lib/helpers";
 
 const prefix = "s0";

@@ -29,6 +29,8 @@ function updateScene({ changed, update }) {
     console.error(changed);
     return;
   }
+  const rescale = update.move?.rescale;
+
   const perso = persos.get(update?.id);
 
   // zoom enter
@@ -37,6 +39,8 @@ function updateScene({ changed, update }) {
   // demo re-slot
   let old,
     current,
+    oldParent,
+    currentParent,
     transition = [];
 
   if (update.transition) {
@@ -47,23 +51,51 @@ function updateScene({ changed, update }) {
 
   if (changed?.remove) {
     perso && (old = perso._wire$.getBoundingClientRect());
+    perso &&
+      rescale &&
+      (oldParent = perso._wire$.parentNode.getBoundingClientRect());
     updateSlot(...changed.remove);
   }
+
   if (changed?.add) {
     updateSlot(...changed.add);
     perso && (current = perso._wire$.getBoundingClientRect());
+    perso &&
+      rescale &&
+      (currentParent = perso._wire$.parentNode.getBoundingClientRect());
   }
+
   if (old && current) {
     // en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
-    const transform = zoom.unZoom({
+    const position = zoom.unZoom({
       dX: old.x - current.x,
       dY: old.y - current.y
     });
     transition.push({
-      from: transform,
+      from: position,
       to: { dX: 0, dY: 0 },
       duration: 1000
     });
+
+    // rescale
+    if (rescale) {
+      const oldDimensions = zoom.unZoom({
+        width: oldParent.width,
+        height: oldParent.height
+      });
+      const currentDimensions = zoom.unZoom({
+        width: currentParent.width,
+        height: currentParent.height
+      });
+      // console.log("oldParent", currentParent);
+      // console.log({ oldDimensions, currentDimensions });
+
+      transition.push({
+        from: oldDimensions,
+        to: currentDimensions,
+        duration: 1000
+      });
+    }
   }
   update && persos.get(update.id).update({ ...update, transition });
 }

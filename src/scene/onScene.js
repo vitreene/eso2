@@ -66,12 +66,14 @@ export class OnScene {
   }
 
   update(up) {
-    // console.log("up", up);
+    console.log("up", up);
     let action = update => ({ changed: null, update });
     if (!up.id) return this._getError("id", up);
     if (this.areOnScene.has(up.id)) {
       const isLeaving = up.leave;
-      const changeSlot = up.layer && up.slot;
+      // const changeSlot = up.layer && up.slot;
+      const { move } = up;
+      const changeSlot = move && move.layer && move.slot;
 
       changeSlot && (action = this._moveToSlot);
       isLeaving && (action = this._leaveScene);
@@ -81,8 +83,12 @@ export class OnScene {
   }
 
   _addToScene(up) {
-    // const slotId = this._getSlotId(up);
-    const slotId = up.slot;
+    if (!up.move) {
+      console.warn("_addToScene fail");
+      return;
+    }
+    const { move } = up;
+    const slotId = move.slot;
     if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
 
     // TODO trier selon l'ordre
@@ -97,9 +103,14 @@ export class OnScene {
   }
 
   _moveToSlot(up) {
+    if (!up.move) {
+      console.warn("_moveToSlot fail");
+      return;
+    }
+    const { move } = up;
+
     const oldSlotId = this.areOnScene.get(up.id);
-    // const slotId = this._getSlotId(up);
-    const slotId = up.slot;
+    const slotId = move.slot;
 
     const oldInslot = this._slots.get(oldSlotId).filter(s => s !== up.id);
     if (!this._slots.get(slotId)) return this._getError("move", up);

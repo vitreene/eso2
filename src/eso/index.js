@@ -73,6 +73,7 @@ conserve l'état du composant
  avec une liste "changed"
  */
 
+import { getElementOffset } from "./lib/get-element-offset";
 import { registerKeyEvents } from "./lib/register-keyEvents";
 import { doDimensions } from "./lib/dimensions-comp";
 import { transition } from "./transitions-comp";
@@ -89,11 +90,13 @@ const content = {
 // TODO attr
 export class Eso {
   static registerKeyEvents = registerKeyEvents;
+  static getElementOffset = getElementOffset;
   constructor(props, handler, node, id) {
     this.store = {};
     this.handler = handler;
     this._node = node;
     this.id = id;
+    this.cssClass = null;
     this.revision = {
       classes: doClasses,
       dimensions: doDimensions,
@@ -152,6 +155,7 @@ export class Eso {
         case "statStyle":
         case "dimensions":
           this.store[revise] = { ...this.store[revise], ...diff };
+          break;
         case "between":
           this.store["dynStyle"] = { ...this.store["dynStyle"], ...diff };
           break;
@@ -176,26 +180,21 @@ export class Eso {
     // calculer styles : appliquer zoom sur unitless
     // transformer style statique  + dimensions + pointerevent en classe
 
-    const {
-      dynStyle,
-      statStyle,
-      dimensions,
-      // between,
-      classes,
-      ...other
-    } = this.store;
+    const { dynStyle, statStyle, dimensions, classes, ...other } = this.store;
     // const pointerEvents = options.pointerEvents ? "all" : "none";
     const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
 
-    const cssClass =
-      (statStyle || dimensions) &&
-      this.revision.dynStyle.prerender(this.zoom, {
-        ...statStyle,
-        ...dimensions
-        //   ,pointerEvents
-      });
+    if (statStyle || dimensions) {
+      this.cssClass = css(
+        this.revision.dynStyle.prerender(this.zoom, {
+          ...statStyle,
+          ...dimensions
+          //   ,pointerEvents
+        })
+      );
+    }
 
-    const theClasses = this.revision.classes.prerender(css(cssClass), classes);
+    const theClasses = this.revision.classes.prerender(this.cssClass, classes);
 
     const newState = {
       style,

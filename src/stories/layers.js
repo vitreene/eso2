@@ -1,3 +1,8 @@
+export const layerDefs = [
+  { id: "fond", length: 1 },
+  { id: "grid-01", length: 6 }
+];
+
 export const grid_01_styles = `
       #grid-01 {
         position: absolute;
