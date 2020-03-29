@@ -45,6 +45,11 @@ export const DEFAULT_STYLES = {
   y: 0,
   dX: 0,
   dY: 0,
+  s: 1,
+  r: 0,
+  skew: 1,
+  skewX: 1,
+  skewY: 1,
   scale: 1,
   scaleX: 1,
   scaleY: 1,
@@ -55,6 +60,10 @@ export const DEFAULT_STYLES = {
   rotateZ: 0,
   opacity: 1,
   color: "#000"
+};
+export const SHORT_STYLES = {
+  s: "scale",
+  r: "rotate"
 };
 
 export const pointerEventList = [

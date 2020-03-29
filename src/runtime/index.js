@@ -6,6 +6,9 @@ import { persos, actions } from "../scene/init";
 
 import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
 
+import { Eso } from "../eso";
+const { getElementOffset } = Eso;
+
 // ============================================================
 // zoom est partagé par Root et updateScene
 export let zoom;
@@ -36,7 +39,7 @@ function updateScene({ changed, update }) {
   // zoom enter
   if (update.enter) perso.prerender(zoom.value);
 
-  // demo re-slot
+  // RESLOT et RESCALE
   let old,
     current,
     oldParent,
@@ -50,27 +53,38 @@ function updateScene({ changed, update }) {
   }
 
   if (changed?.remove) {
-    perso && (old = perso._wire$.getBoundingClientRect());
-    perso &&
-      rescale &&
-      (oldParent = perso._wire$.parentNode.getBoundingClientRect());
+    if (perso) {
+      // old = perso.node.getBoundingClientRect();
+      old = getElementOffset(perso.node);
+      // console.log("old", old);
+      rescale && (oldParent = perso.node.parentNode.getBoundingClientRect());
+    }
     updateSlot(...changed.remove);
   }
 
   if (changed?.add) {
     updateSlot(...changed.add);
-    perso && (current = perso._wire$.getBoundingClientRect());
-    perso &&
+    if (perso) {
+      // current = perso.node.getBoundingClientRect();
+      // const current2 = perso.node.getBoundingClientRect();
+      current = getElementOffset(perso.node);
+      // console.log("current", current);
+      // console.log("current2", current2);
       rescale &&
-      (currentParent = perso._wire$.parentNode.getBoundingClientRect());
+        (currentParent = perso.node.parentNode.getBoundingClientRect());
+    }
   }
 
   if (old && current) {
     // en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
-    const position = zoom.unZoom({
+    const position = {
       dX: old.x - current.x,
       dY: old.y - current.y
-    });
+    };
+    // const position = zoom.unZoom({
+    //   dX: old.x - current.x,
+    //   dY: old.y - current.y
+    // });
     transition.push({
       from: position,
       to: { dX: 0, dY: 0 },
@@ -87,8 +101,6 @@ function updateScene({ changed, update }) {
         width: currentParent.width,
         height: currentParent.height
       });
-      // console.log("oldParent", currentParent);
-      // console.log({ oldDimensions, currentDimensions });
 
       transition.push({
         from: oldDimensions,

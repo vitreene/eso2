@@ -7,7 +7,7 @@ export function getElementOffset(el = null) {
   function getOffset(el, left = 0, top = 0) {
     // trace(el, top, left);
     if (!el || isNaN(el.offsetLeft) || isNaN(el.offsetTop))
-      return { top, left, width, height };
+      return { x: left, y: top, top, left, width, height };
     return getOffset(
       el.offsetParent,
       left + el.offsetLeft - el.scrollLeft,

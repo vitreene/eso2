@@ -7,7 +7,7 @@ $fontsize: 24px;
   bottom: 0;
   display: flex;
   padding: 1rem;
-  margin: 1rem;
+  margin: 2rem;
   justify-content: stretch;
   align-items: stretch;
   outline: 2px cyan solid;
@@ -48,13 +48,14 @@ article section {
   display: flex;
 }
 article {
+  position: relative;
   display: flex;
   flex: 1;
   justify-content: space-between;
+  pointer-events: none;
   // height: 8rem;
   border: blue solid 1px;
   div {
-    position: relative;
     display: flex;
     // flex: 1;
     justify-content: center;

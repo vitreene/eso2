@@ -15,10 +15,18 @@ TODO
 - des parametres sont envoyés à pointeur qui filtre ce qu'il veut recevoir. 
 */
 
+/* 
+FIXME : au mousedown, la position verticale du pointer est mal calculée, ce qui entraine un décalage en débutt de déplacement. 
+cependant, en modifiant la css de #app, puis en la rétablissant, le déplacmeent est ensuite correct...
+*/
+
 export function moveStrap(emitter) {
   return class Move {
     constructor(data) {
+      console.log("DATA", data);
       this.data = data;
+      // store : quelques propriétés de l'objet (scale, rotate...)
+      this.store = null;
       this.down();
       this.below = null;
       this.pointerEvents = null;
@@ -42,17 +50,35 @@ export function moveStrap(emitter) {
         x: window.scrollX + e.clientX,
         y: window.scrollY + e.clientY
       };
+
       const newPointer = {
         x: absPointer.x - this.initialMousePosition.x,
         y: absPointer.y - this.initialMousePosition.y
       };
-      const relative = {
-        x: newPointer.x - this.pointer.x,
-        y: newPointer.y - this.pointer.y
+
+      // const relative = {
+      //   x: newPointer.x - this.pointer.x,
+      //   y: newPointer.y - this.pointer.y
+      // };
+
+      // const sign = {
+      //   x: relative.x < 0 ? "-" : "+",
+      //   y: relative.y < 0 ? "-" : "+"
+      // };
+
+      const distance = hypothenuse(newPointer.x, newPointer.y);
+      const angle = Math.atan2(newPointer.y, newPointer.x);
+
+      const coords = {
+        x: distance * Math.cos(angle - this.store.rotate) * this.store.scale,
+        y: distance * Math.sin(angle - this.store.rotate) * this.store.scale
       };
+
       const relativePointer = {
-        x: `${relative.x < 0 ? "-" : "+"}=${Math.abs(relative.x) / zoom.value}`,
-        y: `${relative.y < 0 ? "-" : "+"}=${Math.abs(relative.y) / zoom.value}`
+        x: `${newPointer.x / zoom.value}`,
+        y: `${newPointer.y / zoom.value}`
+        // x: `${coords.x / zoom.value}`,
+        // y: `${coords.y / zoom.value}`
       };
 
       // diffuser l'event
@@ -78,6 +104,7 @@ export function moveStrap(emitter) {
         pointerFromStart: this.pointer,
         pointeur: absPointer
       });
+
       this.pointer = newPointer;
     };
 
@@ -89,14 +116,15 @@ export function moveStrap(emitter) {
       document.removeEventListener("pointerup", this.up);
 
       // top, left sur le composant, x,y pour le support
+      const sign = {
+        x: this.pointer.x < 0 ? "-" : "+",
+        y: this.pointer.y < 0 ? "-" : "+"
+      };
+
       const dynStyle = {
         pointerEvents: this.pointerEvents,
-        left: `${this.pointer.x < 0 ? "-" : "+"}=${Math.abs(
-          this.pointer.x / zoom.value
-        )}`,
-        top: `${this.pointer.y < 0 ? "-" : "+"}=${Math.abs(
-          this.pointer.y / zoom.value
-        )}`,
+        left: `${sign.x}=${Math.abs(this.pointer.x / zoom.value)}`,
+        top: `${sign.y}=${Math.abs(this.pointer.y / zoom.value)}`,
         dX: 0,
         dY: 0
       };
@@ -120,15 +148,13 @@ export function moveStrap(emitter) {
 
     down = () => {
       const { id, event, e } = this.data;
-      console.log("POINTERDOWN", id, event);
-      console.log("e", e);
       e.preventDefault();
-
-      this.pointerEvents = e.target.style.pointerEvents || "";
-
-      emitter.emit([DEFAULT_NS, event], {
-        position: { pointerEvents: "none" }
-      });
+      const store = this.data.store();
+      this.store = {
+        scale: (store.scale && 1 / store.scale) || 1,
+        rotate: (store.rotate && (store.rotate * Math.PI) / 180) || 0
+      };
+      console.log("POINTERDOWN", id, event, this.store);
 
       document.addEventListener("pointermove", this.move);
       document.addEventListener("pointerup", this.up);
@@ -144,4 +170,8 @@ export function moveStrap(emitter) {
       };
     };
   };
+}
+
+function hypothenuse(width, height) {
+  return Math.sqrt(width * width + height * height);
 }

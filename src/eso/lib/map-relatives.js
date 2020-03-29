@@ -42,37 +42,40 @@ function convertVal(val) {
   return parseInt(val);
 }
 
-export function mapRelatives(props, prec) {
-  const newProps = {};
-  for (const p in props) {
-    const value = typeof props[p] === "string" && props[p].match(rgxRelatives);
-    if (value) {
-      const propMatchU = props[p].match(rgxUnits);
-      const precMatchU =
-        prec && typeof prec[p] === "string" && prec[p].match(rgxUnits);
-      const propU = propMatchU && propMatchU[1];
-      const precU = precMatchU && precMatchU[1];
-      const operateur = value[1];
+export function mapRelatives(prec) {
+  return function mapProps(props) {
+    const newProps = {};
+    for (const p in props) {
+      const value =
+        typeof props[p] === "string" && props[p].match(rgxRelatives);
+      if (value) {
+        const propMatchU = props[p].match(rgxUnits);
+        const precMatchU =
+          prec && typeof prec[p] === "string" && prec[p].match(rgxUnits);
+        const propU = propMatchU && propMatchU[1];
+        const precU = precMatchU && precMatchU[1];
+        const operateur = value[1];
 
-      // valeurs en nombre
-      const valA = parseFloat(value[2]);
-      const valB = prec && prec[p] && parseFloat(prec[p]);
-      // comparer unités
-      // - si aucun, operation
-      if (!propU && !precU) newProps[p] = operate[operateur](valA, valB);
-      // - si identiques, operation, puis appliquer unité
-      else if (propU && propU === precU) {
-        newProps[p] = operate[operateur](valA, valB) + propU;
-      }
-      // - sinon, convertir en px, operation, puis appliquer px
-      else if ((propU || precU) && propU !== precU) {
-        console.warn("not effective : ", propU, " -> ", precU);
-        const convertedValA = convertVal(props[p].slice(2));
-        const convertedValB = convertVal(prec[p]);
-        newProps[p] = operate[operateur](convertedValA, convertedValB) + "px";
+        // valeurs en nombre
+        const valA = parseFloat(value[2]);
+        const valB = prec && prec[p] && parseFloat(prec[p]);
+        // comparer unités
+        // - si aucun, operation
+        if (!propU && !precU) newProps[p] = operate[operateur](valA, valB);
+        // - si identiques, operation, puis appliquer unité
+        else if (propU && propU === precU) {
+          newProps[p] = operate[operateur](valA, valB) + propU;
+        }
+        // - sinon, convertir en px, operation, puis appliquer px
+        else if ((propU || precU) && propU !== precU) {
+          console.warn("not effective : ", propU, " -> ", precU);
+          const convertedValA = convertVal(props[p].slice(2));
+          const convertedValB = convertVal(prec[p]);
+          newProps[p] = operate[operateur](convertedValA, convertedValB) + "px";
+        }
       }
     }
-  }
-  //   console.log("props, newProps", props, newProps);
-  return { ...prec, ...props, ...newProps };
+    //   console.log("props, newProps", props, newProps);
+    return { ...prec, ...props, ...newProps };
+  };
 }

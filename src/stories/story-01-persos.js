@@ -54,40 +54,50 @@ export const textSample = {
     {
       name: "enter",
       move: { layer: "grid-01", slot: "grid-01_s01" },
-      statStyle: { fontSize: "12px", backgroundColor: "#ffff00" }
+      statStyle: {
+        fontSize: "12px",
+        backgroundColor: "#ffff00",
+        position: "absolute"
+      }
     },
     {
       name: "step01",
       content: "lundi",
-      move: { layer: "grid-01", slot: "grid-01_s03" },
-      dynStyle: { color: "#ff0000" },
+      move: { layer: "grid-01", slot: "grid-01_s02" },
       transition: {
         to: {
+          // x: 100,
+          // y: 100,
+          rotate: 200,
+          scale: 0.4,
           fontSize: "48px",
-          backgroundColor: "#ff0000",
+          backgroundColor: "green",
           color: "#0033FF"
-        }
+        },
+        duration: 2000
       }
     },
     {
       name: "step02",
-      move: { layer: "grid-01", slot: "grid-01_s05" },
+      move: { layer: "grid-01", slot: "grid-01_s03" },
       transition: {
         to: {
+          // x: 0,
+          // y: 0,
+          scale: 1.5,
+          rotate: 40,
+          // rotate: 360 * 4 + 45
           fontSize: "32px",
           backgroundColor: "#00ff00",
-          color: "#3300FF",
-          x: -500,
-          y: 50,
-          rotate: 360 * 4 + 45
+          color: "#3300FF"
         },
-        duration: 2000
+        duration: 500
       },
       content: "arrivé"
     }
   ]
 };
-
+/* 
 export const imageSample = {
   id: "image",
   nature: "img",
@@ -123,3 +133,4 @@ export const imageSample = {
     }
   ]
 };
+ */

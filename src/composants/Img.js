@@ -23,6 +23,18 @@ export class Img extends Perso {
     </svg>`;
   }
 }
+/* 
+FIXME 
+- precharger les images
+- recupérer les dimensions
+- utiliser getelementsize pour les dimensions
+- ajout auto de width et height 100%
+- position; absolute quand reslot
+
+strap move est cassé !! 
+la position est mal lue si les valeurs left, translate et matrix sont cumulées
+-> le probleme avec rotate, scale
+*/
 
 //   render() {
 //     return this.html`<img

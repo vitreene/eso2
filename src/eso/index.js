@@ -80,6 +80,8 @@ import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
 
+import { DEFAULT_STYLES, SHORT_STYLES } from "../data/constantes";
+
 const { css, ...dynStyle } = doStyle;
 const content = {
   update(content) {
@@ -91,10 +93,10 @@ const content = {
 export class Eso {
   static registerKeyEvents = registerKeyEvents;
   static getElementOffset = getElementOffset;
-  constructor(props, handler, node, id) {
+  constructor({ props, handler, node, id }) {
     this.store = {};
     this.handler = handler;
-    this._node = node;
+    this.node = node;
     this.id = id;
     this.cssClass = null;
     this.revision = {
@@ -112,11 +114,7 @@ export class Eso {
     this.prerender = this.prerender.bind(this);
 
     this.init(props);
-    return { update: this.update, prerender: this.prerender };
-  }
-
-  get node() {
-    return this._node();
+    return this;
   }
 
   init(props) {
@@ -171,8 +169,11 @@ export class Eso {
         default:
           break;
       }
+      // console.log("dynStyle", this.store.dynStyle);
     });
   }
+
+  compiled = () => compiledStyles(this.store);
 
   // TODO  mise en cache des classes
   prerender(zoom) {
@@ -204,4 +205,20 @@ export class Eso {
 
     this.handler(newState);
   }
+}
+
+function compiledStyles({ dynStyle, statStyle, dimensions }) {
+  const flatStore = { ...statStyle, ...dimensions, ...dynStyle };
+  const store = {};
+  for (const prop in DEFAULT_STYLES) {
+    if (flatStore.hasOwnProperty(prop)) store[prop] = flatStore[prop];
+  }
+  // retirer les raccourcis
+  for (const [key, value] of Object.entries(SHORT_STYLES)) {
+    if (store[key]) {
+      store[value] = store[key];
+      delete store[key];
+    }
+  }
+  return store;
 }

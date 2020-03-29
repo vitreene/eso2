@@ -19,10 +19,10 @@ Prerender
 import { css } from "emotion";
 
 import { whiteListCssProps, positionCssProps } from "../data/constantes";
-import { hasProperties } from "./lib/helpers";
+import { hasProperties, pipe } from "./lib/helpers";
 import { mapRelatives } from "./lib/map-relatives";
+// import { removeAliasProps } from "./lib/remove-alias-props";
 import { extractTransform, withTransform } from "./lib/transform-comp";
-
 export const doStyle = {
   css(style) {
     return css(style);
@@ -33,7 +33,12 @@ export const doStyle = {
     - les valeurs unitless peuvent le rester
     - retrait de u
     */
-    const newStyle = mapRelatives(props, state);
+    const mapProps = mapRelatives(state);
+
+    const newStyle = pipe(mapProps /* removeAliasProps */)(props);
+    // console.log(props, newStyle);
+
+    // FIXME pos absolute si déplacement
     const position = hasProperties(positionCssProps, props) && "relative";
 
     return {
@@ -51,7 +56,6 @@ export const doStyle = {
         newRenderStyle[prop] = newStyle[prop] * zoom + "px";
       } else newRenderStyle[prop] = newStyle[prop];
     }
-
     const { style, transform } = extractTransform(newRenderStyle);
     return {
       ...style,

@@ -8,8 +8,8 @@ entree :
 
 sortie : {from, to, duration}
 */
-
 import { transformColor, isColorFactory } from "./colors";
+// import { removeAliasProps } from "./remove-alias-props";
 import { DEFAULT_STYLES, DEFAULT_DURATION } from "../../data/constantes";
 
 export function fromTo(options, store, node) {
@@ -26,7 +26,7 @@ export function fromTo(options, store, node) {
   // si une prop de from manque la lire depuis le store / default / styler
   for (const key in options.to) {
     if (options.from[key] === options.to[key]) continue;
-    if (options.from[key] !== undefined) {
+    if (options.from.hasOwnProperty(key)) {
       from[key] = options.from[key];
       to[key] = options.to[key];
     } else {
