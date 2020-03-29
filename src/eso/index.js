@@ -94,7 +94,7 @@ export class Eso {
   static registerKeyEvents = registerKeyEvents;
   static getElementOffset = getElementOffset;
   constructor({ id, props, node, handler, emitter }) {
-    this.store = {};
+    this.store = {}; // TODO faire une Map
     this.handler = handler;
     this.node = node;
     this.id = id;
@@ -143,11 +143,10 @@ export class Eso {
         newState.set(revise, diff);
       }
     }
-    this.addToStore(newState);
+    this.addToStore(newState, props.chrono);
   }
 
-  addToStore(state) {
-    console.log("addToStore state", state);
+  addToStore(state, chrono) {
     state.forEach((diff, revise) => {
       switch (revise) {
         case "dynStyle":
@@ -171,7 +170,7 @@ export class Eso {
           break;
       }
     });
-    console.log("dynStyle", this.store.dynStyle);
+    chrono && console.log(chrono, this.store);
   }
 
   compiled = () => compiledStyles(this.store);

@@ -50,7 +50,6 @@ export function transition(emitter) {
             .flat()
             .forEach(function(action) {
               if (!action) return;
-              console.log("action", action);
               const { event, data } = action;
 
               accumulate.add(function emit() {

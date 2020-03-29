@@ -118,7 +118,6 @@ function updateScene({ changed, update }) {
     }
   }
 
-  console.log("transition", transition);
   persos.get(update.id).update({ ...update, transition });
 }
 
