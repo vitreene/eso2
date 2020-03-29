@@ -1,6 +1,6 @@
 import { zoom } from "../../runtime";
 export function getElementOffset(el = null) {
-  //   console.log("el", zoom.value, el);
+  console.log("el", zoom.value, el);
   const width = el && el.offsetWidth;
   const height = el && el.offsetHeight;
 

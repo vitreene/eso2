@@ -4,7 +4,11 @@ import { Zoom } from "../eso/lib/zoom";
 import { slots } from "../register/create-layers";
 import { persos, actions } from "../scene/init";
 
-import { CONTAINER_ESO, DEFAULT_SIZE_SCENE } from "../data/constantes";
+import {
+  CONTAINER_ESO,
+  DEFAULT_SIZE_SCENE,
+  DEFAULT_NS
+} from "../data/constantes";
 
 import { Eso } from "../eso";
 const { getElementOffset } = Eso;
@@ -28,6 +32,7 @@ function sceneUpdateHandler(update) {
 
 // need : persos zoom
 function updateScene({ changed, update }) {
+  if (!update || Object.keys(update).length === 0) return;
   if (typeof changed === "string") {
     console.error(changed);
     return;
@@ -42,8 +47,8 @@ function updateScene({ changed, update }) {
   // RESLOT et RESCALE
   let old,
     current,
-    oldParent,
-    currentParent,
+    // oldParent,
+    // currentParent,
     transition = [];
 
   if (update.transition) {
@@ -54,10 +59,9 @@ function updateScene({ changed, update }) {
 
   if (changed?.remove) {
     if (perso) {
-      // old = perso.node.getBoundingClientRect();
-      old = getElementOffset(perso.node);
+      const node = rescale ? perso.node.parentNode : perso.node;
+      old = getElementOffset(node);
       // console.log("old", old);
-      rescale && (oldParent = perso.node.parentNode.getBoundingClientRect());
     }
     updateSlot(...changed.remove);
   }
@@ -65,13 +69,9 @@ function updateScene({ changed, update }) {
   if (changed?.add) {
     updateSlot(...changed.add);
     if (perso) {
-      // current = perso.node.getBoundingClientRect();
-      // const current2 = perso.node.getBoundingClientRect();
-      current = getElementOffset(perso.node);
+      const node = rescale ? perso.node.parentNode : perso.node;
+      current = getElementOffset(node);
       // console.log("current", current);
-      // console.log("current2", current2);
-      rescale &&
-        (currentParent = perso.node.parentNode.getBoundingClientRect());
     }
   }
 
@@ -81,10 +81,7 @@ function updateScene({ changed, update }) {
       dX: old.x - current.x,
       dY: old.y - current.y
     };
-    // const position = zoom.unZoom({
-    //   dX: old.x - current.x,
-    //   dY: old.y - current.y
-    // });
+
     transition.push({
       from: position,
       to: { dX: 0, dY: 0 },
@@ -93,23 +90,36 @@ function updateScene({ changed, update }) {
 
     // rescale
     if (rescale) {
-      const oldDimensions = zoom.unZoom({
-        width: oldParent.width,
-        height: oldParent.height
-      });
-      const currentDimensions = zoom.unZoom({
-        width: currentParent.width,
-        height: currentParent.height
-      });
+      const oldDimensions = {
+        width: old.width,
+        height: old.height
+      };
+      const currentDimensions = {
+        width: current.width,
+        height: current.height
+      };
 
       transition.push({
         from: oldDimensions,
         to: currentDimensions,
-        duration: 1000
+        duration: 1000,
+        oncomplete: [
+          {
+            event: { ns: DEFAULT_NS, name: "end-rescale-" + update?.id },
+            data: {
+              dynStyle: {
+                width: "100%",
+                height: "100%"
+              }
+            }
+          }
+        ]
       });
     }
   }
-  update && persos.get(update.id).update({ ...update, transition });
+
+  console.log("transition", transition);
+  persos.get(update.id).update({ ...update, transition });
 }
 
 // need : persos slots

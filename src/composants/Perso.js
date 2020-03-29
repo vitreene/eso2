@@ -9,10 +9,11 @@ export class Perso extends Component {
     super().node = this.render();
     const { id, initial, emit } = story;
     const { compiled, update, prerender } = new Eso({
+      id,
       props: initial,
-      handler: props => this.setState(props),
       node: this.node,
-      id
+      handler: props => this.setState(props),
+      emitter
     });
     this.id = id;
     this.update = update;

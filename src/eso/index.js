@@ -93,7 +93,7 @@ const content = {
 export class Eso {
   static registerKeyEvents = registerKeyEvents;
   static getElementOffset = getElementOffset;
-  constructor({ props, handler, node, id }) {
+  constructor({ id, props, node, handler, emitter }) {
     this.store = {};
     this.handler = handler;
     this.node = node;
@@ -106,7 +106,7 @@ export class Eso {
       between: dynStyle,
       dynStyle,
       content,
-      transition: transition.call(this)
+      transition: transition.call(this, emitter)
     };
     this.update = this.update.bind(this);
     this.revise = this.revise.bind(this);
@@ -147,6 +147,7 @@ export class Eso {
   }
 
   addToStore(state) {
+    console.log("addToStore state", state);
     state.forEach((diff, revise) => {
       switch (revise) {
         case "dynStyle":
@@ -169,8 +170,8 @@ export class Eso {
         default:
           break;
       }
-      // console.log("dynStyle", this.store.dynStyle);
     });
+    console.log("dynStyle", this.store.dynStyle);
   }
 
   compiled = () => compiledStyles(this.store);

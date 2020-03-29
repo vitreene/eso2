@@ -13,7 +13,7 @@ export const grid_01_styles = `
         grid-template-columns: 6fr 4fr;
         grid-template-rows: 4fr 3fr repeat(3, 1fr);
         width: calc(100% - 4rem);
-        height: calc(100vmin - 4rem);
+        height: calc(100vmin - 8rem);
       }
 
       #grid-01_s01 {

@@ -66,15 +66,15 @@ export const textSample = {
       move: { layer: "grid-01", slot: "grid-01_s02" },
       transition: {
         to: {
-          // x: 100,
-          // y: 100,
+          x: 100,
+          y: 100,
           rotate: 200,
           scale: 0.4,
           fontSize: "48px",
           backgroundColor: "green",
           color: "#0033FF"
         },
-        duration: 2000
+        duration: 2480 // race condition ?
       }
     },
     {
@@ -97,7 +97,7 @@ export const textSample = {
     }
   ]
 };
-/* 
+
 export const imageSample = {
   id: "image",
   nature: "img",
@@ -111,12 +111,19 @@ export const imageSample = {
   listen: [
     { event: "go", action: "enter" },
     { event: "ev012", action: "step01" },
-    { event: "ev014", action: "step02" }
+    { event: "ev014", action: "step02" },
+    { event: "end-rescale-image", action: "end-rescale-image" }
   ],
   actions: [
     {
+      name: "end-rescale-image",
+      dynStyle: {
+        outline: "20px solid red"
+      }
+    },
+    {
       name: "enter",
-      move: { layer: "grid-01", slot: "grid-01_s02" },
+      move: { layer: "grid-01", slot: "grid-01_s03" },
       dimensions: { width: "100%", height: "100%" },
       transition: { to: "fadeIn" }
       // style: { opacity: 0.5 }
@@ -128,9 +135,8 @@ export const imageSample = {
     },
     {
       name: "step02",
-      move: { layer: "grid-01", slot: "grid-01_s05", rescale: true },
+      move: { layer: "grid-01", slot: "grid-01_s02", rescale: true },
       transition: { to: { opacity: 1 } }
     }
   ]
 };
- */

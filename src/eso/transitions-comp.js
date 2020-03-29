@@ -15,11 +15,12 @@
  between {style, progression, transition }
  dans addToStore, progression et transition seront utilisés pour la timeline, style est destiné à prerender
  */
+
 import { controlAnimations } from "./lib/control-animation";
 import { selectTransition, directTransition } from "./lib/select-transition";
 import { fromTo } from "./lib/from-to";
 
-export function transition() {
+export function transition(emitter) {
   const self = this;
 
   function update(props) {
@@ -44,7 +45,19 @@ export function transition() {
         id: self.id,
         interpolation,
         update: interpolate,
-        complete: self.complete
+        complete() {
+          [self?.oncomplete, props?.oncomplete]
+            .flat()
+            .forEach(function(action) {
+              if (!action) return;
+              console.log("action", action);
+              const { event, data } = action;
+
+              accumulate.add(function emit() {
+                emitter.emit([event.ns, event.name], data);
+              });
+            });
+        }
       });
     }
   }
@@ -57,10 +70,16 @@ export function transition() {
       if (!this.cumul.length) requestAnimationFrame(() => this.flush());
       this.cumul.push(value);
     },
+
     update() {
+      // executer les fonctions après les updates
       let between = {};
-      for (const acc of this.cumul) Object.assign(between, acc);
+      let fn = [];
+      for (const acc of this.cumul) {
+        typeof acc === "function" ? fn.push(acc) : Object.assign(between, acc);
+      }
       self.update({ between });
+      fn.forEach(f => f());
     },
     flush() {
       this.update();
@@ -69,7 +88,6 @@ export function transition() {
   };
 
   function interpolate(between) {
-    // self.update({ between });
     accumulate.add(between);
   }
 

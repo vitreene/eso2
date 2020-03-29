@@ -40,7 +40,6 @@ export function withTransform(props, zoom) {
     transform += transformList[tr].transform + "(" + value + unit + ") ";
   }
   if (dX || dY) {
-    // transform += ` matrix(1,0,0,1,${dX * zoom || 0},${dY * zoom || 0})`;
     const coords = transformCoords(dX, dY, other.rotate, other.scale);
     transform += ` matrix(1,0,0,1,${coords.x * zoom || 0},${coords.y * zoom ||
       0})`;

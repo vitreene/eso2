@@ -25,8 +25,6 @@ export function moveStrap(emitter) {
     constructor(data) {
       console.log("DATA", data);
       this.data = data;
-      // store : quelques propriétés de l'objet (scale, rotate...)
-      this.store = null;
       this.down();
       this.below = null;
       this.pointerEvents = null;
@@ -56,29 +54,9 @@ export function moveStrap(emitter) {
         y: absPointer.y - this.initialMousePosition.y
       };
 
-      // const relative = {
-      //   x: newPointer.x - this.pointer.x,
-      //   y: newPointer.y - this.pointer.y
-      // };
-
-      // const sign = {
-      //   x: relative.x < 0 ? "-" : "+",
-      //   y: relative.y < 0 ? "-" : "+"
-      // };
-
-      const distance = hypothenuse(newPointer.x, newPointer.y);
-      const angle = Math.atan2(newPointer.y, newPointer.x);
-
-      const coords = {
-        x: distance * Math.cos(angle - this.store.rotate) * this.store.scale,
-        y: distance * Math.sin(angle - this.store.rotate) * this.store.scale
-      };
-
       const relativePointer = {
         x: `${newPointer.x / zoom.value}`,
         y: `${newPointer.y / zoom.value}`
-        // x: `${coords.x / zoom.value}`,
-        // y: `${coords.y / zoom.value}`
       };
 
       // diffuser l'event
@@ -133,9 +111,8 @@ export function moveStrap(emitter) {
         x: window.scrollX + e.clientX,
         y: window.scrollY + e.clientY
       };
-      emitter.emit([DEFAULT_NS, event], {
-        dynStyle
-      });
+
+      emitter.emit([DEFAULT_NS, event], { dynStyle });
 
       emitter.emit([STRAP, "end_" + event], {
         id,
@@ -149,12 +126,8 @@ export function moveStrap(emitter) {
     down = () => {
       const { id, event, e } = this.data;
       e.preventDefault();
-      const store = this.data.store();
-      this.store = {
-        scale: (store.scale && 1 / store.scale) || 1,
-        rotate: (store.rotate && (store.rotate * Math.PI) / 180) || 0
-      };
-      console.log("POINTERDOWN", id, event, this.store);
+
+      console.log("POINTERDOWN", id, event);
 
       document.addEventListener("pointermove", this.move);
       document.addEventListener("pointerup", this.up);
@@ -170,8 +143,4 @@ export function moveStrap(emitter) {
       };
     };
   };
-}
-
-function hypothenuse(width, height) {
-  return Math.sqrt(width * width + height * height);
 }
