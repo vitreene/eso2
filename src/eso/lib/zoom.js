@@ -24,6 +24,8 @@ export class Zoom {
     return o;
   };
   resize = () => {
+    console.log("resize", this.z);
+
     const { zoom } = this.setZoom();
     this.z = zoom;
     this.renderOnResize && this.renderOnResize(zoom);

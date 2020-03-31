@@ -103,7 +103,7 @@ export const imageSample = {
   nature: "img",
   initial: {
     content: "vignette.jpg",
-    fit: "contain", //"cover"
+    fit: "cover", //"cover"
     statStyle: {
       position: "absolute"
     }
@@ -136,6 +136,49 @@ export const imageSample = {
     {
       name: "step02",
       move: { layer: "grid-01", slot: "grid-01_s02", rescale: true },
+      transition: { to: { opacity: 1 } }
+    }
+  ]
+};
+
+export const imageSample2 = {
+  id: "image2",
+  nature: "img",
+  initial: {
+    content: "perfume_002.jpg",
+    fit: "cover", //"cover"
+    statStyle: {
+      position: "absolute"
+    }
+  },
+  listen: [
+    { event: "go", action: "enter" },
+    { event: "ev011", action: "step01" },
+    { event: "ev013", action: "step02" },
+    { event: "end-rescale-image", action: "end-rescale-image" }
+  ],
+  actions: [
+    {
+      name: "end-rescale-image",
+      dynStyle: {
+        outline: "20px solid red"
+      }
+    },
+    {
+      name: "enter",
+      move: { layer: "grid-01", slot: "grid-01_s02" },
+      dimensions: { width: "100%", height: "100%" },
+      transition: { to: "fadeIn" }
+      // style: { opacity: 0.5 }
+    },
+    {
+      name: "step01",
+      move: { layer: "grid-01", slot: "grid-01_s01", rescale: true },
+      transition: { to: { opacity: 0.5 } }
+    },
+    {
+      name: "step02",
+      move: { layer: "fond", slot: "fond_s01", rescale: true },
       transition: { to: { opacity: 1 } }
     }
   ]

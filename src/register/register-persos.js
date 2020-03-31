@@ -1,10 +1,9 @@
-import createPerso from "./register-nature-persos";
+import initCreatePerso from "./register-nature-persos";
 
-export function registerPersos(stories, emitter) {
+export function registerPersos(stories, imagesCollection, emitter) {
   const persos = new Map();
-
+  const createPerso = initCreatePerso(imagesCollection);
   (Array.isArray(stories) ? stories : [stories]).forEach(story => {
-    console.log("story", story);
     switch (story.nature) {
       case "sound":
         break;
@@ -14,8 +13,11 @@ export function registerPersos(stories, emitter) {
         break;
       case "sprite":
         break;
-      default:
+      case "bloc":
+      case "img":
         persos.set(story.id, createPerso.create(story, emitter));
+        break;
+      default:
         break;
     }
   });

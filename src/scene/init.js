@@ -15,20 +15,27 @@ import { eventimes } from "../stories/story-01-eventimes";
 
 const emitter = new EventEmitter2({ wildcard: true, maxListeners: 0 });
 const stories = Object.values(objectStories);
-
-registerImages(stories).then(coll => {
-  imagesCollection = coll;
-  chrono = clock(timeLiner, emitter);
-});
-
-registerStraps(emitter);
-
-export const actions = registerActions(stories, emitter);
-export const persos = registerPersos(stories, emitter);
-
 export const timeLiner = new TimeLiner(eventimes);
 
-export let chrono;
-export let imagesCollection;
+export const init = registerImages(stories).then(coll => {
+  imagesCollection = coll;
+  const persos = registerPersos(stories, imagesCollection, emitter);
+  const actions = registerActions(stories, emitter);
+  chrono = clock(timeLiner, emitter);
+  registerStraps(emitter);
 
-console.log("CHRONO", chrono);
+  return {
+    // imagesCollection,
+    persos,
+    actions,
+    chrono
+  };
+});
+
+// export let actions = registerActions(stories, emitter);
+
+export let imagesCollection;
+// export let persos;
+export let chrono;
+
+// console.log("CHRONO", chrono);

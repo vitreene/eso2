@@ -1,9 +1,11 @@
 import ComposantLib from "./composant-lib";
 import { Bloc } from "../composants/Perso";
-import { Img } from "../composants/Img";
+import { createImgClass } from "../composants/Img";
 
-const createPerso = new ComposantLib();
-createPerso.register(Bloc);
-createPerso.register(Img);
-
-export default createPerso;
+export default function initCreatePerso(imagesCollection) {
+  const createPerso = new ComposantLib();
+  const Img = createImgClass(imagesCollection);
+  createPerso.register(Bloc);
+  createPerso.register(Img);
+  return createPerso;
+}

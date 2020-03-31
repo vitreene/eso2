@@ -13,8 +13,8 @@ export default class ComposantLib {
   };
 
   create = (story, emitter) => {
-    const nature = story.nature;
-    if (!nature) throw new Error(`"${story.id}" n'a pas de composant déclaré`);
+    const { id, nature } = story;
+    if (!nature) throw new Error(`"${id}" n'a pas de composant déclaré`);
     if (!this.lib.has(nature))
       throw new Error(`${nature} : pas de composant déclaré à ce nom.`);
 

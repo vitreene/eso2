@@ -1,24 +1,12 @@
 // https: stackoverflow.com/questions/46165545/access-dom-when-using-hyper-component
 
-import { Component } from "hyperhtml";
 import { Eso } from "../eso";
 
-export class Perso extends Component {
+export class Perso extends Eso {
   constructor(story, emitter) {
-    super();
-    super().node = this.render();
-    const { id, initial, emit } = story;
-    const { compiled, update, prerender } = new Eso({
-      id,
-      props: initial,
-      node: this.node,
-      handler: props => this.setState(props),
-      emitter
-    });
+    super(story, emitter);
+    const { id, emit } = story;
     this.id = id;
-    this.update = update;
-    this.store = compiled;
-    this.prerender = prerender;
     this.registerEmits(emit, emitter);
   }
 

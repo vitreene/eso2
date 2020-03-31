@@ -72,6 +72,7 @@ conserve l'état du composant
  serait-il possible d'enregistrer seulement les diffs calculés en sortie de la fonction update
  avec une liste "changed"
  */
+import { Component } from "hyperhtml";
 
 import { getElementOffset } from "./lib/get-element-offset";
 import { registerKeyEvents } from "./lib/register-keyEvents";
@@ -90,13 +91,17 @@ const content = {
   prerender() {}
 };
 // TODO attr
-export class Eso {
+export class Eso extends Component {
   static registerKeyEvents = registerKeyEvents;
   static getElementOffset = getElementOffset;
-  constructor({ id, props, node, handler, emitter }) {
+  constructor(story, emitter) {
+    super();
+    super().node = this.render();
+
+    const { id, initial } = story;
     this.store = {}; // TODO faire une Map
-    this.handler = handler;
-    this.node = node;
+    this.handler = props => this.setState(props);
+
     this.id = id;
     this.cssClass = null;
     this.revision = {
@@ -108,17 +113,17 @@ export class Eso {
       content,
       transition: transition.call(this, emitter)
     };
-    this.update = this.update.bind(this);
-    this.revise = this.revise.bind(this);
-    this.addToStore = this.addToStore.bind(this);
-    this.prerender = this.prerender.bind(this);
+    // this.update = this.update.bind(this);
+    // this.revise = this.revise.bind(this);
+    // this.addToStore = this.addToStore.bind(this);
+    // this.prerender = this.prerender.bind(this);
 
-    this.init(props);
+    this.init(initial);
     return this;
   }
 
   init(props) {
-    this.revise(props);
+    this._revise(props);
     this.handler();
   }
 
@@ -128,11 +133,11 @@ export class Eso {
 
     // séparer : calculer les diffs, puis assembler
     // les diffs seront stockés pour la timeline (il faut le time)
-    this.revise(props);
+    this._revise(props);
     this.prerender();
   }
 
-  revise(props) {
+  _revise(props) {
     const newState = new Map();
     for (const revise in this.revision) {
       if (props[revise]) {
@@ -143,10 +148,10 @@ export class Eso {
         newState.set(revise, diff);
       }
     }
-    this.addToStore(newState, props.chrono);
+    this._addToStore(newState, props.chrono);
   }
 
-  addToStore(state, chrono) {
+  _addToStore(state, chrono) {
     state.forEach((diff, revise) => {
       switch (revise) {
         case "dynStyle":
@@ -173,7 +178,7 @@ export class Eso {
     chrono && console.log(chrono, this.store);
   }
 
-  compiled = () => compiledStyles(this.store);
+  // compiled = () => compiledStyles(this.store);
 
   // TODO  mise en cache des classes
   prerender(zoom) {
@@ -207,6 +212,8 @@ export class Eso {
   }
 }
 
+/* 
+//destiné aux Straps, permet d'accéder à quelques états du composant
 function compiledStyles({ dynStyle, statStyle, dimensions }) {
   const flatStore = { ...statStyle, ...dimensions, ...dynStyle };
   const store = {};
@@ -221,4 +228,4 @@ function compiledStyles({ dynStyle, statStyle, dimensions }) {
     }
   }
   return store;
-}
+} */

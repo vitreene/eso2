@@ -1,27 +1,47 @@
 import { Perso } from "./Perso";
+// import { imagesCollection } from "../scene/init";
 
-const meetOrSlice = "slice";
-const viewBox = "0 0 605 316";
+// cache l'implémentation
+const constrainImage = {
+  contain: "meet",
+  cover: "slice",
+  meet: "contain",
+  slice: "cover",
+  undefined: "slice"
+};
+export function createImgClass(imagesCollection) {
+  return class Img extends Perso {
+    static imagesCollection = imagesCollection;
+    static nature = "img";
+    img = {};
 
-export class Img extends Perso {
-  static nature = "img";
+    constructor(story, emitter) {
+      super(story, emitter);
+      this.meetOrSlice = constrainImage[story.initial.fit];
+    }
 
-  render() {
-    // console.log("this.state.style", this.id, this.state.style);
-    return this.svg`<svg
+    update(props) {
+      super.update(props);
+      this.img = Img.imagesCollection.get(this.state.content);
+    }
+
+    render() {
+      const viewBox = `0 0 ${this.img?.width || 0} ${this.img?.height || 0}`;
+      return this.svg`<svg
        id=${this.id}
          style=${this.state.style}
          class=${this.state.class}   
       viewBox=${viewBox}
-      preserveAspectRatio=${"xMidYMid " + meetOrSlice}
+      preserveAspectRatio=${"xMidYMid " + this.meetOrSlice}
     >
       <image
-      xlink:href=${this.state.content}
+      xlink:href=${this.img?.src || ""}
         width="100%"
         height="100%"
       />
     </svg>`;
-  }
+    }
+  };
 }
 /* 
 FIXME 

@@ -2,12 +2,14 @@ import { bind as hyper } from "hyperhtml";
 import "./style.scss";
 
 import { layers } from "./register/create-layers";
+
 import { Root } from "./composants/Root";
 import { APP_ID } from "./data/constantes";
+import { init } from "./scene/init";
 
 // FIXME c'est l'import qui déclenche la lecture de la scene
 // rendre plus intentionnel
-import { activateZoom } from "./runtime";
+import { initRuntime } from "./runtime";
 
 import { grid_01_styles, fond_styles } from "./stories/layers";
 ////////////////////////////////////////////////
@@ -23,11 +25,12 @@ const grid_01 = layers.get("grid-01");
 ////////////////////////////////////////////////
 
 // ENTRY POINT
-const root = new Root(activateZoom);
+init.then(({ persos, actions }) => {
+  const root = new Root(initRuntime(persos, actions));
+  layersOnScene(root, [fond, grid_01]);
+});
 
 function layersOnScene(root, layers) {
   root.setState({ content: layers });
   hyper(document.getElementById(APP_ID))`${root}`;
 }
-
-layersOnScene(root, [fond, grid_01]);
