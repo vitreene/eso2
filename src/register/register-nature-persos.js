@@ -1,5 +1,5 @@
 import ComposantLib from "./composant-lib";
-import { Bloc } from "../composants/Perso";
+import { Bloc } from "../composants/Bloc";
 import { createImgClass } from "../composants/Img";
 
 export default function initCreatePerso(imagesCollection) {

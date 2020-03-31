@@ -1,13 +1,3 @@
-/**
- *
- * // TODO rendre autonome la fonction d'update
- * garde -t-elle son propre state /store ?
- * a-t-elle les fonctions register, update, prerender
- * gere t-elle classes, style, attributs, events content
- * prend this.el en entrée
- *
- */
-
 /* 
  eso accepte des modules chargés de traiter un attribut à la fois :
  modules :
@@ -80,16 +70,8 @@ import { doDimensions } from "./lib/dimensions-comp";
 import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
-
-import { DEFAULT_STYLES, SHORT_STYLES } from "../data/constantes";
-
+import { content } from "./content-comp";
 const { css, ...dynStyle } = doStyle;
-const content = {
-  update(content) {
-    return content;
-  },
-  prerender() {}
-};
 // TODO attr
 export class Eso extends Component {
   static registerKeyEvents = registerKeyEvents;

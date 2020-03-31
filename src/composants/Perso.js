@@ -8,6 +8,7 @@ export class Perso extends Eso {
     const { id, emit } = story;
     this.id = id;
     this.registerEmits(emit, emitter);
+    this.registerAttributes(story);
   }
 
   handleEvent(e) {
@@ -25,15 +26,12 @@ export class Perso extends Eso {
     }
     this.update({ statStyle: { pointerEvents: "all" } });
   }
-}
 
-export class Bloc extends Perso {
-  static nature = "bloc";
+  registerAttributes(story) {
+    const { attr } = story.initial;
+    if (!attr) return;
 
-  render() {
-    return this.html`<div id=${this.id} 
-      style=${this.state.style} 
-      class=${this.state.class} 
-      >${this.state.content}</div>`;
+    for (const [key, val] of Object.entries(attr))
+      this.node.setAttribute(key, val);
   }
 }

@@ -44,7 +44,8 @@ function sceneUpdateHandler(onScene, persos) {
   const { getElementOffset } = Eso;
 
   return function handler(update) {
-    console.log("update", update);
+    // console.log("update", update);
+    // TODO factoriser tous les appels à raf dans une meme fonction
     requestAnimationFrame(() => {
       const up = onScene.update(update);
       updateScene(up);

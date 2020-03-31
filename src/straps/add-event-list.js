@@ -1,6 +1,6 @@
-import { timeLiner, chrono } from "../scene/init";
+import { timeLiner } from "../scene/init";
 
-export default function addEventList(data) {
+export default function addEventList(data, chrono) {
   const c = chrono();
   console.log("addEventList", data, c);
   // id:01 est la timeline dédiée, par dessus static

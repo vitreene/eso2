@@ -26,20 +26,6 @@ export const textSample = {
       event: { ns: TC, name: PAUSE }
     }
   },
-  /*   emit: {
-    click: {
-      event: { ns: STRAP, name: "add-event-list" },
-      data: {
-        name: "click",
-        start: 0,
-        events: [
-          { start: 0, name: "ev100" },
-          { start: 1000, name: "ev101" },
-          { start: 2000, name: "ev102" }
-        ]
-      }
-    }
-  }, */
 
   listen: [
     { event: "ev011", action: "enter" },
@@ -106,6 +92,20 @@ export const imageSample = {
     fit: "cover", //"cover"
     statStyle: {
       position: "absolute"
+    }
+  },
+  emit: {
+    click: {
+      event: { ns: STRAP, name: "add-event-list" },
+      data: {
+        name: "click",
+        start: 0,
+        events: [
+          { start: 0, name: "ev010" },
+          { start: 1000, name: "ev011" },
+          { start: 2000, name: "ev014" }
+        ]
+      }
     }
   },
   listen: [

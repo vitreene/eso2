@@ -13,7 +13,7 @@ Par composition, ajouter aux straps :
 
 import { STRAP, TOGGLE } from "../data/constantes";
 
-export function registerStraps(emitter) {
+export function registerStraps(chrono, emitter) {
   // const DragStrap = Drag(emitter);
   // emitter.on([STRAP, "drag"], data => new DragStrap(data));
   const Move = moveStrap(emitter);
@@ -21,5 +21,5 @@ export function registerStraps(emitter) {
   const toggleStrap = toggle(emitter);
   emitter.on([STRAP, TOGGLE], data => toggleStrap(data));
 
-  emitter.on([STRAP, "add-event-list"], data => addEventList(data));
+  emitter.on([STRAP, "add-event-list"], data => addEventList(data, chrono));
 }
