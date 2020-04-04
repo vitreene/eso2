@@ -11,10 +11,10 @@ export function registerPersos(stories, imagesCollection, emitter) {
         break;
       case "polygon":
         break;
-      case "sprite":
-        break;
       case "bloc":
+      case "button":
       case "img":
+      case "sprite":
         persos.set(story.id, createPerso.create(story, emitter));
         break;
       default:

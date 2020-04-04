@@ -71,6 +71,8 @@ import { transition } from "./transitions-comp";
 import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
 import { content } from "./content-comp";
+import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from "../data/constantes";
+
 const { css, ...dynStyle } = doStyle;
 // TODO attr
 export class Eso extends Component {
@@ -115,8 +117,37 @@ export class Eso extends Component {
 
     // séparer : calculer les diffs, puis assembler
     // les diffs seront stockés pour la timeline (il faut le time)
-    this._revise(props);
+    let up = props;
+    props.enter && (up = this._onEnter(props));
+    props.exit && (up = this._onLeave(props));
+
+    this._revise(up);
     this.prerender();
+  }
+  _onEnter(props) {
+    return props;
+  }
+  _onLeave(props) {
+    //ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
+
+    const oncomplete = {
+      event: { ns: DEFAULT_NS, name: "leave-" + props?.id }
+      // pas de data si l'event est partag' par plusieurs elements
+      // data: { leave: true }
+    };
+    const transition = props.transition || [{ to: DEFAULT_TRANSITION_OUT }];
+    const lastTransition = transition.pop();
+    lastTransition.oncomplete
+      ? lastTransition.oncomplete.push(oncomplete)
+      : (lastTransition.oncomplete = [oncomplete]);
+
+    transition.push(lastTransition);
+
+    const up = {
+      ...props,
+      transition
+    };
+    return up;
   }
 
   _revise(props) {

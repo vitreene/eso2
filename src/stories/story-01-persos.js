@@ -1,4 +1,4 @@
-import { STRAP, TC, PAUSE } from "../data/constantes";
+import { STRAP, TC, PLAY, PAUSE, TOGGLE, DEFAULT_NS } from "../data/constantes";
 
 export const textSample = {
   id: "text-sample",
@@ -131,7 +131,10 @@ export const imageSample = {
     {
       name: "step01",
       move: { layer: "fond", slot: "fond_s01", rescale: true },
-      transition: { to: { opacity: 0.5 } }
+      transition: {
+        to: { opacity: 0.5 },
+        oncomplete: { event: { ns: DEFAULT_NS, name: "leave-sprite" } }
+      }
     },
     {
       name: "step02",
@@ -154,12 +157,13 @@ export const imageSample2 = {
   listen: [
     { event: "go", action: "enter" },
     { event: "ev011", action: "step01" },
-    { event: "ev013", action: "step02" },
-    { event: "end-rescale-image", action: "end-rescale-image" }
+    // { event: "ev013", action: "step02" },
+    { event: "leave-sprite", action: "step02" },
+    { event: "end-rescale-image2", action: "end-rescale-image2" }
   ],
   actions: [
     {
-      name: "end-rescale-image",
+      name: "end-rescale-image2",
       dynStyle: {
         outline: "20px solid red"
       }
@@ -182,4 +186,102 @@ export const imageSample2 = {
       transition: { to: { opacity: 1 } }
     }
   ]
+};
+
+export const togglePlay = {
+  id: "togglePlay",
+  nature: "button",
+  initial: {
+    statStyle: {
+      color: "white",
+      backgroundColor: "blue",
+      borderRadius: "4px",
+      fontWeight: "bold",
+      fontSize: "12px",
+      padding: "1rem",
+      textTransform: "uppercase",
+      textAlign: "center"
+    },
+    // dimensions: { width: 80, ratio: 1 },
+    content: "pause"
+  },
+
+  listen: [
+    { event: "go", action: "enter" },
+    { ns: TC, event: "play", action: "play" },
+    { ns: TC, event: "pause", action: "pause" }
+  ],
+  actions: [
+    {
+      name: "enter",
+      move: { layer: "grid-01", slot: "grid-01_s05" }
+    },
+    {
+      name: "play",
+      content: "pause"
+    },
+    {
+      name: "pause",
+      content: "play"
+    }
+  ],
+
+  emit: {
+    click: {
+      event: { ns: STRAP, name: TOGGLE },
+      data: {
+        id: "telco",
+        ns: TC,
+        valueA: PAUSE,
+        valueB: PLAY
+      }
+    }
+  }
+};
+
+export const spriteSample = {
+  id: "sprite",
+  nature: "sprite",
+  initial: {
+    content: "Mystery-80.png",
+    dimensions: { height: 300 },
+    statStyle: { opacity: 0 }
+  },
+  listen: [
+    { event: "ev011", action: "enter" },
+    { event: "ev013", action: "step01" },
+    { event: "ev015", action: "exit" },
+    { event: "move-sprite", action: "idle" },
+    { event: "leave-sprite", action: "leave" }
+  ],
+  actions: [
+    {
+      name: "enter",
+      move: { layer: "grid-01", slot: "grid-01_s03" },
+      transition: { to: { opacity: 1, x: -100, y: 10 } }
+    },
+    {
+      name: "step01",
+      move: { layer: "grid-01", slot: "grid-01_s01" },
+      transition: { to: { x: 100, y: 50, rotate: 15 } }
+    },
+    {
+      name: "exit",
+      exit: true,
+      transition: { to: "fadeOut" }
+    },
+    {
+      name: "idle"
+    },
+    {
+      name: "leave",
+      leave: true
+    }
+  ],
+  emit: {
+    mousedown: {
+      event: { ns: STRAP, name: "move" },
+      data: { id: "sprite", event: "move-sprite" }
+    }
+  }
 };

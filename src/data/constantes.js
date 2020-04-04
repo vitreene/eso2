@@ -20,7 +20,7 @@ export const DEFAULT_VOLUME = 0.1;
 
 export const EV = "eventList";
 export const TC = "telco";
-export const DEFAULT_NS = EV;
+export const DEFAULT_NS = MAIN;
 
 export const DEFAULT_TRANSITION_IN = "fadeIn";
 export const DEFAULT_TRANSITION_OUT = "fadeOut";

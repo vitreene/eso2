@@ -22,6 +22,7 @@ import { fromTo } from "./lib/from-to";
 
 export function transition(emitter) {
   const self = this;
+  const accumulate = syncRafUpdate(self);
 
   function update(props) {
     (Array.isArray(props) ? props : [props]).forEach(doTransition);
@@ -51,7 +52,7 @@ export function transition(emitter) {
             .forEach(function(action) {
               if (!action) return;
               const { event, data } = action;
-
+              console.log("action oncomplete", action);
               accumulate.add(function emit() {
                 emitter.emit([event.ns, event.name], data);
               });
@@ -61,9 +62,21 @@ export function transition(emitter) {
     }
   }
 
-  // si plusieurs transitions en cours,
-  //il faut reduire les valeurs sorties par chacune.
-  const accumulate = {
+  function interpolate(between) {
+    accumulate.add(between);
+  }
+
+  return { update };
+}
+
+// si plusieurs transitions en cours,
+//il faut reduire les valeurs sorties par chacune.
+
+// il arrive que deux transitions se suivant, la première l'emporte en priorité sur la suivant.
+
+// TODO déplacer la fonction pour centraliser les appels à raf
+function syncRafUpdate(self) {
+  return {
     cumul: [],
     add(value) {
       if (!this.cumul.length) requestAnimationFrame(() => this.flush());
@@ -85,10 +98,4 @@ export function transition(emitter) {
       this.cumul = [];
     }
   };
-
-  function interpolate(between) {
-    accumulate.add(between);
-  }
-
-  return { update };
 }

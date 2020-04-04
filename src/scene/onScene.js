@@ -49,8 +49,6 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
-//TODO ecrire les tests
-
 // TODO conformer les updates venant des clicks
 export class OnScene {
   constructor(slots) {
@@ -64,6 +62,13 @@ export class OnScene {
     this._moveToSlot = this._moveToSlot.bind(this);
     this._leaveScene = this._leaveScene.bind(this);
   }
+  /* 
+  TODO un élément qui a quitté la scene ne peut revenir que par un autre "enter"
+  ainsi, si un élément est supprimé, aucun autre évent ne peut le ramener s'il n'a pas de propriété "enter".
+  - comment faire fonctionner ce procédé avec la timeline ?
+  - y a il d'autres façons de faire ?
+  - quels sont les cas ou c'est utile ?
+ */
 
   update(up) {
     // console.log("up", up);
@@ -71,7 +76,6 @@ export class OnScene {
     if (!up.id) return this._getError("id", up);
     if (this.areOnScene.has(up.id)) {
       const isLeaving = up.leave;
-      // const changeSlot = up.layer && up.slot;
       const { move } = up;
       const changeSlot = move && move.layer && move.slot;
 
@@ -142,10 +146,6 @@ export class OnScene {
       update: up
     };
   }
-
-  // _getSlotId(up) {
-  //   return joinId(up.layer, up.slot);
-  // }
 
   _getError = (errorId, up) => ({
     areOnScene: this.areOnScene,
