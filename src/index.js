@@ -26,8 +26,11 @@ const grid_01 = layers.get("grid-01");
 
 // ENTRY POINT
 init.then(({ persos, actions }) => {
-  const root = new Root(initRuntime(persos, actions));
-  layersOnScene(root, [fond, grid_01]);
+  const activateZoom = initRuntime(persos, actions);
+  const root = new Root(activateZoom);
+  const layersList = [fond, grid_01];
+
+  layersOnScene(root, layersList);
 });
 
 function layersOnScene(root, layers) {

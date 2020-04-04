@@ -35,7 +35,9 @@ export function initRuntime(persos, actions) {
 
 function initRenderOnResize(persos, onScene) {
   return function renderOnResize(zoom) {
-    onScene.areOnScene.forEach(id => persos.get(id).prerender(zoom));
+    for (const id of onScene.areOnScene.keys()) {
+      persos.has(id) && persos.get(id).prerender(zoom);
+    }
   };
 }
 
