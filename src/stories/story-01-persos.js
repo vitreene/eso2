@@ -1,4 +1,110 @@
-import { STRAP, TC, PLAY, PAUSE, TOGGLE, DEFAULT_NS } from "../data/constantes";
+import {
+  CONTAINER_ESO,
+  STRAP,
+  TC,
+  PLAY,
+  PAUSE,
+  TOGGLE,
+  DEFAULT_NS
+} from "../data/constantes";
+
+//FIXME  il doit entrer en scene et quitter
+export const root = {
+  id: CONTAINER_ESO,
+  nature: "layer",
+  initial: {
+    className: "container",
+    content: [
+      {
+        id: "s01",
+        statStyle: {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: "grid",
+          gridColumn: 1,
+          gridRow: 1
+        }
+      }
+    ]
+  },
+  listen: [{ event: "leave-root", action: "leave" }],
+  actions: [{ name: "leave", leave: true }]
+};
+
+export const layerFond = {
+  id: "fond",
+  nature: "layer",
+  initial: {
+    statStyle: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: "grid",
+      gridColumn: 1,
+      gridRow: 1
+    },
+    content: [{ id: "s01" }]
+  },
+  listen: [{ event: "go", action: "enter" }],
+  actions: [
+    {
+      name: "enter",
+      move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + "_s01" },
+      transition: { to: "fadeIn" }
+    }
+  ]
+};
+
+export const layerGrid01 = {
+  id: "grid-01",
+  nature: "layer",
+  initial: {
+    statStyle: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      display: "grid",
+      margin: "2rem",
+      gridTemplateColumns: "6fr 4fr",
+      gridTemplateRows: "4fr 3fr repeat(3, 1fr)",
+      width: "calc(100% - 4rem)",
+      height: "calc(100vmin - 8rem)"
+    },
+    content: [
+      {
+        id: "s01",
+        statStyle: {
+          gridColumn: "1 / 3",
+          gridRow: 1
+        }
+      },
+      {
+        id: "s02",
+        statStyle: {
+          gridColumn: 1,
+          gridRow: "2 / 6"
+        }
+      },
+      { id: "s03", statStyle: { gridRow: 2 } },
+      { id: "s04", statStyle: { gridColumn: 2 } },
+      { id: "s05", statStyle: { gridColumn: 2 } },
+      { id: "s06", statStyle: { gridColumn: 2 } }
+    ]
+  },
+  listen: [{ event: "go", action: "enter" }],
+  actions: [
+    {
+      name: "enter",
+      move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + "_s01" },
+      transition: { to: "fadeIn" }
+    }
+  ]
+};
 
 export const textSample = {
   id: "text-sample",

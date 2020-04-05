@@ -5,20 +5,21 @@ export function registerActions(stories, emitter) {
 
   for (const story of stories) {
     const { id, listen, actions } = story;
-    listen.forEach(e => {
-      const NS = e.ns || DEFAULT_NS;
-      const { name, ...other } = actions.find(a => a.name === e.action);
-      const action = {
-        NS,
-        name: e.event,
-        data: {
-          id,
-          action: name,
-          ...other
-        }
-      };
-      actionsList.push(action);
-    });
+    listen &&
+      listen.forEach(e => {
+        const NS = e.ns || DEFAULT_NS;
+        const { name, ...other } = actions.find(a => a.name === e.action);
+        const action = {
+          NS,
+          name: e.event,
+          data: {
+            id,
+            action: name,
+            ...other
+          }
+        };
+        actionsList.push(action);
+      });
   }
 
   const pub = (story, handler) => other => handler({ ...story, ...other });

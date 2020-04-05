@@ -151,6 +151,7 @@ export class Eso extends Component {
   }
 
   _revise(props) {
+    if (!props) return;
     const newState = new Map();
     for (const revise in this.revision) {
       if (props[revise]) {
@@ -188,7 +189,7 @@ export class Eso extends Component {
           break;
       }
     });
-    chrono && console.log(chrono, this.store);
+    chrono && console.log(chrono, this.id, this.store);
   }
 
   // compiled = () => compiledStyles(this.store);

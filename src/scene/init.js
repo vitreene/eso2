@@ -13,7 +13,7 @@ import { registerStraps } from "../register/register-straps";
 import * as objectStories from "../stories/story-01-persos";
 import { eventimes } from "../stories/story-01-eventimes";
 
-const emitter = new EventEmitter2({ wildcard: true, maxListeners: 0 });
+export const emitter = new EventEmitter2({ wildcard: true, maxListeners: 0 });
 const stories = Object.values(objectStories);
 export const timeLiner = new TimeLiner(eventimes);
 

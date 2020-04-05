@@ -1,4 +1,5 @@
 import ComposantLib from "./composant-lib";
+import { Layer } from "../composants/Layer";
 import { Bloc } from "../composants/Bloc";
 import { Button } from "../composants/Button";
 import { createImgClass } from "../composants/Img";
@@ -9,6 +10,7 @@ export default function initCreatePerso(imagesCollection) {
   const Img = createImgClass(imagesCollection);
   const Sprite = createSpriteClass(imagesCollection);
 
+  createPerso.register(Layer);
   createPerso.register(Bloc);
   createPerso.register(Button);
   createPerso.register(Img);

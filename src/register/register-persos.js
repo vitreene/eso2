@@ -7,10 +7,9 @@ export function registerPersos(stories, imagesCollection, emitter) {
     switch (story.nature) {
       case "sound":
         break;
-      case "layer":
-        break;
       case "polygon":
         break;
+      case "layer":
       case "bloc":
       case "button":
       case "img":

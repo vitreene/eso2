@@ -28,6 +28,7 @@ export class Perso extends Eso {
   }
 
   registerAttributes(story) {
+    if (!story || !story.initial) return;
     const { attr } = story.initial;
     if (!attr) return;
 

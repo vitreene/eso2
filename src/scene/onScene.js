@@ -71,7 +71,6 @@ export class OnScene {
  */
 
   update(up) {
-    // console.log("up", up);
     let action = update => ({ changed: null, update });
     if (!up.id) return this._getError("id", up);
     if (this.areOnScene.has(up.id)) {
@@ -93,6 +92,7 @@ export class OnScene {
     }
     const { move } = up;
     const slotId = move.slot;
+
     if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
 
     // TODO trier selon l'ordre

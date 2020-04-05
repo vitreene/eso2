@@ -1,52 +1,53 @@
+import { bind as hyper } from "hyperhtml";
+
 import { Zoom } from "../eso/lib/zoom";
 import { Eso } from "../eso";
-import { slots } from "../register/create-layers";
 import { OnScene } from "../scene/onScene";
+import { slots } from "../composants/Root";
 
 import {
+  APP_ID,
   CONTAINER_ESO,
   DEFAULT_SIZE_SCENE,
   DEFAULT_NS
 } from "../data/constantes";
 
 // ============================================================
-// zoom est partagé par Root et updateScene
+// zoom est partagé par updateScene
 export let zoom;
 
 // ============================================================
-
-// need : onScene zoom persos
+// need : onScene zoom persos slots
 export function initRuntime(persos, actions) {
   const onScene = new OnScene(slots);
   actions(sceneUpdateHandler(onScene, persos));
 
-  // TODO : revoir la facon dont zoom est rendu disponible.
-  // l'activer différemment ?
-  return function activateZoom() {
-    zoom = new Zoom(
-      CONTAINER_ESO,
-      DEFAULT_SIZE_SCENE["4/3"],
-      initRenderOnResize(persos, onScene)
-    );
+  // afficher composant racine
+  const root = persos.get(CONTAINER_ESO);
+  root.node.addEventListener("disconnected", removeZoom);
+  hyper(document.getElementById(APP_ID))`${root}`;
+
+  const removeZoom = activateZoom();
+  onScene.areOnScene.set(CONTAINER_ESO, CONTAINER_ESO + "_s01");
+
+  function activateZoom() {
+    zoom = new Zoom(CONTAINER_ESO, DEFAULT_SIZE_SCENE["4/3"], renderOnResize);
     window.addEventListener("resize", zoom.resize);
     return () => window.removeEventListener("resize", zoom.resize);
-  };
-}
+  }
 
-function initRenderOnResize(persos, onScene) {
-  return function renderOnResize(zoom) {
+  function renderOnResize(zoom) {
     for (const id of onScene.areOnScene.keys()) {
       persos.has(id) && persos.get(id).prerender(zoom);
     }
-  };
+  }
 }
 
+// ============================================================
 // déclenche les updates
 function sceneUpdateHandler(onScene, persos) {
   const { getElementOffset } = Eso;
-
   return function handler(update) {
-    // console.log("update", update);
     // TODO factoriser tous les appels à raf dans une meme fonction
     requestAnimationFrame(() => {
       const up = onScene.update(update);
@@ -58,13 +59,13 @@ function sceneUpdateHandler(onScene, persos) {
 
   // need : persos zoom
   function updateScene({ changed, update }) {
+    // console.log("update", update);
     if (!update || Object.keys(update).length === 0) return;
     if (typeof changed === "string") {
-      console.error(changed);
+      console.error(changed, update);
       return;
     }
     const rescale = update.move?.rescale;
-
     const perso = persos.get(update?.id);
 
     // zoom enter
@@ -143,10 +144,10 @@ function sceneUpdateHandler(onScene, persos) {
     persos.get(update.id).update({ ...update, transition });
   }
 
+  // ============================================================
   // need : persos slots
   function updateSlot(slotId, persosIds) {
     const children = persosIds.map(id => persos.get(id));
     slots.get(slotId).setState({ children });
   }
 }
-// ============================================================
