@@ -1,10 +1,8 @@
-import { Component } from "hyperhtml";
-import { css } from "emotion";
-
 import { joinId } from "../eso/lib/helpers";
-// import { emitter } from "../scene/init";
 import { Perso } from "./Perso";
-import { slots } from "./Root";
+import { Slot } from "./Slot";
+
+export const slots = new Map();
 
 export class Layer extends Perso {
   static nature = "layer";
@@ -38,18 +36,4 @@ function innerLayer(content, layerId) {
     slots.set(id, slot);
   }
   return layer;
-}
-
-class Slot extends Component {
-  constructor(content) {
-    super();
-    this.id = content.id;
-    this.class = css`
-      ${content.statStyle}
-    `;
-  }
-  render() {
-    return this
-      .html`<article id=${this.id} class=${this.class}>${this.state.children}</article>`;
-  }
 }

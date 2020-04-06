@@ -46,7 +46,8 @@ export const layerFond = {
       bottom: 0,
       display: "grid",
       gridColumn: 1,
-      gridRow: 1
+      gridRow: 1,
+      backgroundColor: "cyan"
     },
     content: [{ id: "s01" }]
   },
@@ -263,15 +264,15 @@ export const imageSample2 = {
   listen: [
     { event: "go", action: "enter" },
     { event: "ev011", action: "step01" },
-    // { event: "ev013", action: "step02" },
-    { event: "leave-sprite", action: "step02" },
+    { event: "ev013", action: "step02" },
+    // { event: "leave-sprite", action: "step02" },
     { event: "end-rescale-image2", action: "end-rescale-image2" }
   ],
   actions: [
     {
       name: "end-rescale-image2",
       dynStyle: {
-        outline: "20px solid red"
+        outline: "20px solid blue"
       }
     },
     {
@@ -345,7 +346,7 @@ export const togglePlay = {
   }
 };
 
-export const spriteSample = {
+/* export  */ const spriteSample = {
   id: "sprite",
   nature: "sprite",
   initial: {

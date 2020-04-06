@@ -44,11 +44,3 @@ export function createImgClass(imagesCollection) {
     }
   };
 }
-/* 
-FIXME 
-- x precharger les images
-- x recupérer les dimensions
-- utiliser getelementsize pour les dimensions
-- x ajout auto de width et height 100%
-- position; absolute quand reslot
-*/
