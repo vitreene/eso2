@@ -57,7 +57,7 @@ export function transition(emitter) {
                 emitter.emit([event.ns, event.name], data);
               });
             });
-        }
+        },
       });
     }
   }
@@ -87,15 +87,16 @@ function syncRafUpdate(self) {
       // executer les fonctions après les updates
       let between = {};
       let fn = [];
+
       for (const acc of this.cumul) {
         typeof acc === "function" ? fn.push(acc) : Object.assign(between, acc);
       }
       self.update({ between });
-      fn.forEach(f => f());
+      fn.forEach((f) => f());
     },
     flush() {
       this.update();
       this.cumul = [];
-    }
+    },
   };
 }

@@ -17,17 +17,18 @@ export const emitter = new EventEmitter2({ wildcard: true, maxListeners: 0 });
 const stories = Object.values(objectStories);
 export const timeLiner = new TimeLiner(eventimes);
 
-export const init = registerImages(stories).then(imagesCollection => {
-  const persos = registerPersos(stories, imagesCollection, emitter);
-  const actions = registerActions(stories, emitter);
-  chrono = clock(timeLiner, emitter);
-  registerStraps(chrono, emitter);
+export const init = () =>
+  registerImages(stories).then((imagesCollection) => {
+    const persos = registerPersos(stories, imagesCollection, emitter);
+    const actions = registerActions(stories, emitter);
+    chrono = clock(timeLiner, emitter);
+    registerStraps(chrono, emitter);
 
-  return {
-    persos,
-    actions,
-    chrono
-  };
-});
+    return {
+      persos,
+      actions,
+      chrono,
+    };
+  });
 
 export let chrono;

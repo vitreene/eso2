@@ -5,7 +5,7 @@ import {
   PLAY,
   PAUSE,
   TOGGLE,
-  DEFAULT_NS
+  DEFAULT_NS,
 } from "../data/constantes";
 
 //FIXME  il doit entrer en scene et quitter
@@ -25,13 +25,13 @@ export const root = {
           bottom: 0,
           display: "grid",
           gridColumn: 1,
-          gridRow: 1
-        }
-      }
-    ]
+          gridRow: 1,
+        },
+      },
+    ],
   },
   listen: [{ event: "leave-root", action: "leave" }],
-  actions: [{ name: "leave", leave: true }]
+  actions: [{ name: "leave", leave: true }],
 };
 
 export const layerFond = {
@@ -47,18 +47,18 @@ export const layerFond = {
       display: "grid",
       gridColumn: 1,
       gridRow: 1,
-      backgroundColor: "cyan"
+      backgroundColor: "cyan",
     },
-    content: [{ id: "s01" }]
+    content: [{ id: "s01" }],
   },
   listen: [{ event: "go", action: "enter" }],
   actions: [
     {
       name: "enter",
       move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + "_s01" },
-      transition: { to: "fadeIn" }
-    }
-  ]
+      transition: { to: "fadeIn" },
+    },
+  ],
 };
 
 export const layerGrid01 = {
@@ -74,37 +74,37 @@ export const layerGrid01 = {
       gridTemplateColumns: "6fr 4fr",
       gridTemplateRows: "4fr 3fr repeat(3, 1fr)",
       width: "calc(100% - 4rem)",
-      height: "calc(100vmin - 8rem)"
+      height: "calc(100vmin - 8rem)",
     },
     content: [
       {
         id: "s01",
         statStyle: {
           gridColumn: "1 / 3",
-          gridRow: 1
-        }
+          gridRow: 1,
+        },
       },
       {
         id: "s02",
         statStyle: {
           gridColumn: 1,
-          gridRow: "2 / 6"
-        }
+          gridRow: "2 / 6",
+        },
       },
       { id: "s03", statStyle: { gridRow: 2 } },
       { id: "s04", statStyle: { gridColumn: 2 } },
       { id: "s05", statStyle: { gridColumn: 2 } },
-      { id: "s06", statStyle: { gridColumn: 2 } }
-    ]
+      { id: "s06", statStyle: { gridColumn: 2 } },
+    ],
   },
   listen: [{ event: "go", action: "enter" }],
   actions: [
     {
       name: "enter",
       move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + "_s01" },
-      transition: { to: "fadeIn" }
-    }
-  ]
+      transition: { to: "fadeIn" },
+    },
+  ],
 };
 
 export const textSample = {
@@ -117,32 +117,32 @@ export const textSample = {
       color: "blue",
       fontWeight: "bold",
       fontSize: "12px",
-      padding: "8px"
+      padding: "8px",
     },
     attr: {
-      "data-letter": "alphabet"
+      "data-letter": "alphabet",
     },
-    content: "dimanche"
+    content: "dimanche",
   },
   emit: {
     mousedown: {
       event: { ns: STRAP, name: "move" },
-      data: { id: "text-sample", event: "move" }
+      data: { id: "text-sample", event: "move" },
     },
     click: {
-      event: { ns: TC, name: PAUSE }
-    }
+      event: { ns: TC, name: PAUSE },
+    },
   },
 
   listen: [
     { event: "ev011", action: "enter" },
     { event: "ev012", action: "step01" },
     { event: "ev014", action: "step02" },
-    { event: "move", action: "move" }
+    { event: "move", action: "move" },
   ],
   actions: [
     {
-      name: "move"
+      name: "move",
     },
     {
       name: "enter",
@@ -150,8 +150,8 @@ export const textSample = {
       statStyle: {
         fontSize: "12px",
         backgroundColor: "#ffff00",
-        position: "absolute"
-      }
+        position: "absolute",
+      },
     },
     {
       name: "step01",
@@ -165,10 +165,10 @@ export const textSample = {
           scale: 0.4,
           fontSize: "48px",
           backgroundColor: "green",
-          color: "#0033FF"
+          color: "#0033FF",
         },
-        duration: 2480 // race condition ?
-      }
+        duration: 2000, // race condition ?
+      },
     },
     {
       name: "step02",
@@ -182,13 +182,13 @@ export const textSample = {
           // rotate: 360 * 4 + 45
           fontSize: "32px",
           backgroundColor: "#00ff00",
-          color: "#3300FF"
+          color: "#3300FF",
         },
-        duration: 500
+        duration: 1000,
       },
-      content: "arrivé"
-    }
-  ]
+      content: "arrivé",
+    },
+  ],
 };
 
 export const imageSample = {
@@ -198,8 +198,8 @@ export const imageSample = {
     content: "vignette.jpg",
     fit: "cover", //"cover"
     statStyle: {
-      position: "absolute"
-    }
+      position: "absolute",
+    },
   },
   emit: {
     click: {
@@ -210,29 +210,29 @@ export const imageSample = {
         events: [
           { start: 0, name: "ev010" },
           { start: 1000, name: "ev011" },
-          { start: 2000, name: "ev014" }
-        ]
-      }
-    }
+          { start: 2000, name: "ev014" },
+        ],
+      },
+    },
   },
   listen: [
     { event: "go", action: "enter" },
     { event: "ev012", action: "step01" },
     { event: "ev014", action: "step02" },
-    { event: "end-rescale-image", action: "end-rescale-image" }
+    { event: "end-rescale-image", action: "end-rescale-image" },
   ],
   actions: [
     {
       name: "end-rescale-image",
       dynStyle: {
-        outline: "20px solid red"
-      }
+        outline: "20px solid red",
+      },
     },
     {
       name: "enter",
       move: { layer: "grid-01", slot: "grid-01_s03" },
       dimensions: { width: "100%", height: "100%" },
-      transition: { to: "fadeIn" }
+      transition: { to: "fadeIn" },
       // style: { opacity: 0.5 }
     },
     {
@@ -240,15 +240,15 @@ export const imageSample = {
       move: { layer: "fond", slot: "fond_s01", rescale: true },
       transition: {
         to: { opacity: 0.5 },
-        oncomplete: { event: { ns: DEFAULT_NS, name: "leave-sprite" } }
-      }
+        oncomplete: { event: { ns: DEFAULT_NS, name: "leave-sprite" } },
+      },
     },
     {
       name: "step02",
       move: { layer: "grid-01", slot: "grid-01_s02", rescale: true },
-      transition: { to: { opacity: 1 } }
-    }
-  ]
+      transition: { to: { opacity: 1 } },
+    },
+  ],
 };
 
 export const imageSample2 = {
@@ -258,41 +258,41 @@ export const imageSample2 = {
     content: "perfume_002.jpg",
     fit: "cover", //"cover"
     statStyle: {
-      position: "absolute"
-    }
+      position: "absolute",
+    },
   },
   listen: [
     { event: "go", action: "enter" },
     { event: "ev011", action: "step01" },
     { event: "ev013", action: "step02" },
     // { event: "leave-sprite", action: "step02" },
-    { event: "end-rescale-image2", action: "end-rescale-image2" }
+    { event: "end-rescale-image2", action: "end-rescale-image2" },
   ],
   actions: [
     {
       name: "end-rescale-image2",
       dynStyle: {
-        outline: "20px solid blue"
-      }
+        outline: "20px solid blue",
+      },
     },
     {
       name: "enter",
       move: { layer: "grid-01", slot: "grid-01_s02" },
       dimensions: { width: "100%", height: "100%" },
-      transition: { to: "fadeIn" }
+      transition: { to: "fadeIn" },
       // style: { opacity: 0.5 }
     },
     {
       name: "step01",
       move: { layer: "grid-01", slot: "grid-01_s01", rescale: true },
-      transition: { to: { opacity: 0.5 } }
+      transition: { to: { opacity: 0.5 } },
     },
     {
       name: "step02",
       move: { layer: "fond", slot: "fond_s01", rescale: true },
-      transition: { to: { opacity: 1 } }
-    }
-  ]
+      transition: { to: { opacity: 1 } },
+    },
+  ],
 };
 
 export const togglePlay = {
@@ -307,30 +307,30 @@ export const togglePlay = {
       fontSize: "12px",
       padding: "1rem",
       textTransform: "uppercase",
-      textAlign: "center"
+      textAlign: "center",
     },
     // dimensions: { width: 80, ratio: 1 },
-    content: "pause"
+    content: "pause",
   },
 
   listen: [
     { event: "go", action: "enter" },
     { ns: TC, event: "play", action: "play" },
-    { ns: TC, event: "pause", action: "pause" }
+    { ns: TC, event: "pause", action: "pause" },
   ],
   actions: [
     {
       name: "enter",
-      move: { layer: "grid-01", slot: "grid-01_s05" }
+      move: { layer: "grid-01", slot: "grid-01_s05" },
     },
     {
       name: "play",
-      content: "pause"
+      content: "pause",
     },
     {
       name: "pause",
-      content: "play"
-    }
+      content: "play",
+    },
   ],
 
   emit: {
@@ -340,10 +340,10 @@ export const togglePlay = {
         id: "telco",
         ns: TC,
         valueA: PAUSE,
-        valueB: PLAY
-      }
-    }
-  }
+        valueB: PLAY,
+      },
+    },
+  },
 };
 
 /* export  */ const spriteSample = {
@@ -352,43 +352,43 @@ export const togglePlay = {
   initial: {
     content: "Mystery-80.png",
     dimensions: { height: 300 },
-    statStyle: { opacity: 0 }
+    statStyle: { opacity: 0 },
   },
   listen: [
     { event: "ev011", action: "enter" },
     { event: "ev013", action: "step01" },
     { event: "ev015", action: "exit" },
     { event: "move-sprite", action: "idle" },
-    { event: "leave-sprite", action: "leave" }
+    { event: "leave-sprite", action: "leave" },
   ],
   actions: [
     {
       name: "enter",
       move: { layer: "grid-01", slot: "grid-01_s03" },
-      transition: { to: { opacity: 1, x: -100, y: 10 } }
+      transition: { to: { opacity: 1, x: -100, y: 10 } },
     },
     {
       name: "step01",
       move: { layer: "grid-01", slot: "grid-01_s01" },
-      transition: { to: { x: 100, y: 50, rotate: 15 } }
+      transition: { to: { x: 100, y: 50, rotate: 15 } },
     },
     {
       name: "exit",
       exit: true,
-      transition: { to: "fadeOut" }
+      transition: { to: "fadeOut" },
     },
     {
-      name: "idle"
+      name: "idle",
     },
     {
       name: "leave",
-      leave: true
-    }
+      leave: true,
+    },
   ],
   emit: {
     mousedown: {
       event: { ns: STRAP, name: "move" },
-      data: { id: "sprite", event: "move-sprite" }
-    }
-  }
+      data: { id: "sprite", event: "move-sprite" },
+    },
+  },
 };

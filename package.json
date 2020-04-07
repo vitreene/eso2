@@ -46,9 +46,9 @@
   "dependencies": {
     "emotion": "^10.0.27",
     "eventemitter2": "^6.3.1",
-    "hooked-elements": "^1.0.1",
     "hyperhtml": "^2.32.2",
     "lighterhtml": "^2.5.0",
-    "popmotion": "^8.7.1"
+    "popmotion": "^8.7.1",
+    "wicked-elements": "^2.0.2"
   }
 }

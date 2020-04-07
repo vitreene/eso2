@@ -49,12 +49,11 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
-// TODO conformer les updates venant des clicks
 export class OnScene {
   constructor(slots) {
     // if (!slots || typeof slots !== "object") return false;
     if (!slots || !(slots instanceof Map)) return false;
-    this._slots = new Map(Array.from(slots.keys(), id => [id, []]));
+    this._slots = new Map(Array.from(slots.keys(), (id) => [id, []]));
     this.areOnScene = new Map();
 
     this.update = this.update.bind(this);
@@ -71,7 +70,7 @@ export class OnScene {
  */
 
   update(up) {
-    let action = update => ({ changed: null, update });
+    let action = (update) => ({ changed: null, update });
     if (!up.id) return this._getError("id", up);
     if (this.areOnScene.has(up.id)) {
       const isLeaving = up.leave;
@@ -102,7 +101,7 @@ export class OnScene {
     const changed = { add: [slotId, inslot] };
     return {
       changed,
-      update: { ...up, enter: true }
+      update: { ...up, enter: true },
     };
   }
 
@@ -116,7 +115,7 @@ export class OnScene {
     const oldSlotId = this.areOnScene.get(up.id);
     const slotId = move.slot;
 
-    const oldInslot = this._slots.get(oldSlotId).filter(s => s !== up.id);
+    const oldInslot = this._slots.get(oldSlotId).filter((s) => s !== up.id);
     if (!this._slots.get(slotId)) return this._getError("move", up);
 
     const inslot = this._slots.get(slotId).concat(up.id);
@@ -126,24 +125,24 @@ export class OnScene {
 
     const changed = {
       remove: [oldSlotId, oldInslot],
-      add: [slotId, inslot]
+      add: [slotId, inslot],
     };
     return {
       changed,
-      update: { ...up, reslot: true }
+      update: { ...up, reslot: true },
     };
   }
 
   _leaveScene(up) {
     const { id } = up;
     const slotId = this.areOnScene.get(id);
-    const inslot = this._slots.get(slotId).filter(s => s !== id);
+    const inslot = this._slots.get(slotId).filter((s) => s !== id);
     this._slots.set(slotId, inslot);
     this.areOnScene.delete(id);
     const changed = { remove: [slotId, inslot] };
     return {
       changed,
-      update: up
+      update: up,
     };
   }
 
@@ -151,12 +150,12 @@ export class OnScene {
     areOnScene: this.areOnScene,
     slots: this._slots,
     changed: errors[errorId],
-    update: up
+    update: up,
   });
 }
 
 const errors = {
   move: "error move: not a valid slot",
   slot: "error: not a valid slot",
-  id: "error: not a valid id"
+  id: "error: not a valid id",
 };

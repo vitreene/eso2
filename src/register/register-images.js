@@ -3,7 +3,7 @@ const composantTypeImage = ["img", "sprite"];
 
 export async function registerImages(stories) {
   const srcs = findSrcs(
-    stories.filter(story => composantTypeImage.includes(story.nature))
+    stories.filter((story) => composantTypeImage.includes(story.nature))
   );
   console.log("src", srcs);
   const imagesCollection = await loadImages(srcs);
@@ -12,23 +12,22 @@ export async function registerImages(stories) {
 }
 
 function findSrcs(imgs) {
-  const srcs = imgs.map(story => story.initial.content).filter(Boolean);
+  const srcs = imgs.map((story) => story.initial.content).filter(Boolean);
 
   for (const story of imgs) {
     story.actions &&
       story.actions.forEach(
-        action => action.content && srcs.push(action.content)
+        (action) => action.content && srcs.push(action.content)
       );
   }
   return srcs;
 }
-// TODO ajouter width et height à stories
 async function loadImages(srcs) {
   const imageCollection = new Map();
 
   return await Promise.all(
     srcs.map(
-      src =>
+      (src) =>
         new Promise((resolve, reject) => {
           const ikono = new Image();
           ikono.onload = () => {
@@ -36,7 +35,7 @@ async function loadImages(srcs) {
               width: ikono.width,
               height: ikono.height,
               ratio: ikono.width / ikono.height,
-              src
+              src,
             });
             resolve(true);
           };
@@ -46,7 +45,7 @@ async function loadImages(srcs) {
     )
   )
     .then(() => imageCollection)
-    .catch(err => console.log("erreur image :", src, err));
+    .catch((err) => console.log("erreur image :", src, err));
 
   // return imageCollection;
 }

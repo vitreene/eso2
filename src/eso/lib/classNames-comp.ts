@@ -10,12 +10,11 @@ export function setClassNames(
     (defaultClassNames = [defaultClassNames]);
 
   let newClassNames: string[] = classNames || [];
-  // TODO accepter un tableau
 
   for (const getClass of getClasses.split(" ").filter(Boolean)) {
     const newClass = typeof getClass === "string" && {
       operator: getClass.substr(0, 2),
-      name: getClass.slice(2)
+      name: getClass.slice(2),
     };
     // console.log("newClass", newClass);
 
@@ -28,12 +27,12 @@ export function setClassNames(
           break;
         // remove class
         case "-=":
-          newClassNames = newClassNames.filter(cl => cl !== newClass.name);
+          newClassNames = newClassNames.filter((cl) => cl !== newClass.name);
           break;
         //toggle class
         case ":=":
           newClassNames = isInList
-            ? newClassNames.filter(cl => cl !== newClass.name)
+            ? newClassNames.filter((cl) => cl !== newClass.name)
             : newClassNames.concat(newClass.name);
           break;
         // ?? uniquement cette classe

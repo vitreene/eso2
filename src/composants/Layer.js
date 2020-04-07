@@ -1,6 +1,6 @@
-import { joinId } from "../eso/lib/helpers";
 import { Perso } from "./Perso";
 import { Slot } from "./Slot";
+import { joinId } from "../eso/lib/helpers";
 
 export const slots = new Map();
 
@@ -9,7 +9,7 @@ export class Layer extends Perso {
   constructor(story, emitter) {
     super(story, emitter);
     this.update({
-      content: innerLayer(story.initial.content, this.id)
+      content: innerLayer(story.initial.content, this.id),
     });
   }
   render() {

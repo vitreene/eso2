@@ -1,6 +1,5 @@
 import { splitUnitValue } from "./helpers";
 
-// TODO quelles valeurs par défaut : flex:1 ?
 export const doDimensions = {
   update(dimensions) {
     // dimensions ; width,height,ratio
@@ -24,22 +23,22 @@ export const doDimensions = {
       return dimensions.ratio > 1
         ? {
             width: "100%",
-            height: dimensions.ratio * 100 + "%"
+            height: dimensions.ratio * 100 + "%",
           }
         : {
             width: (1 / dimensions.ratio) * 100 + "%",
-            height: "100%"
+            height: "100%",
           };
     let width = "";
     let height = "";
 
     const hasUnits = {
       w: regW && regW.unit,
-      h: regH && regH.unit
+      h: regH && regH.unit,
     };
     const suffix = {
       w: hasUnits.w || null, //|| "px",
-      h: hasUnits.h || null //|| "px"
+      h: hasUnits.h || null, //|| "px"
     };
 
     width = hasNoWidth
@@ -59,5 +58,5 @@ export const doDimensions = {
     // console.log("dimensions", dimensions, { width, height });
     return { width, height };
   },
-  prerender() {}
+  prerender() {},
 };
