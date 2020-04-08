@@ -6,6 +6,6 @@ module.exports = merge(webpackBaseConfig, {
     port: 8080,
     disableHostCheck: true,
     stats: "minimal",
-    bonjour: true
-  }
+    // bonjour: true
+  },
 });

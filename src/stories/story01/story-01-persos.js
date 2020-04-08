@@ -6,7 +6,7 @@ import {
   PAUSE,
   TOGGLE,
   DEFAULT_NS,
-} from "../data/constantes";
+} from "../../data/constantes";
 
 //FIXME  il doit entrer en scene et quitter
 export const root = {
