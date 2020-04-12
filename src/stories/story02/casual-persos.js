@@ -19,7 +19,7 @@ const casse = {
       width: 100,
     },
 
-    className: "casse",
+    classes: "casse",
     content: "•",
   },
   listen: [
@@ -37,12 +37,12 @@ const casse = {
     },
     {
       name: "mouseenter",
-      className: "+=casse-canhover",
+      classes: "+=casse-canhover",
       dynStyle: { borderRadius: "50%" },
     },
     {
       name: "mouseleave",
-      className: "-=casse-canhover",
+      classes: "-=casse-canhover",
       dynStyle: {
         borderRadius: null,
         backgroundColor: null,
@@ -61,10 +61,10 @@ const card = {
   nature: "bloc",
   initial: {
     dimensions: {
-      width: 100,
+      width: 130,
       ratio: 3 / 4,
     },
-    className: "card",
+    classes: "card",
     content: "CARD",
   },
   listen: [
@@ -110,7 +110,7 @@ const root = {
   id: CONTAINER_ESO,
   nature: "layer",
   initial: {
-    className: "container",
+    classes: "container",
     content: [
       {
         id: "s01",
@@ -135,7 +135,7 @@ const casual = {
   nature: "layer",
   initial: {
     style: { background: "#ff00ee" },
-    className: "casual",
+    classes: "casual",
     content: [
       { id: "s01", statStyle: { gridRow: 1 } },
       { id: "s02", statStyle: { gridRow: 2 } },
@@ -157,7 +157,7 @@ const plateau = {
   id: "plateau",
   nature: "layer",
   initial: {
-    className: "plateau",
+    classes: "plateau",
     content: [{ id: "s01" }],
   },
   listen: [{ event: "go", action: "enter" }],
@@ -177,7 +177,7 @@ const presentoir = {
     dimensions: {
       width: "80%",
     },
-    className: "presentoir",
+    classes: "presentoir",
     content: [{ id: "s01" }],
   },
   listen: [{ event: "go", action: "enter" }],
@@ -195,7 +195,7 @@ const sabot = {
   nature: "layer",
   initial: {
     dimensions: { width: "80%" },
-    className: "sabot",
+    classes: "sabot",
     content: [{ id: "s01", statStyle: { gridRow: 1 } }],
   },
   listen: [{ event: "go", action: "enter" }],
@@ -215,8 +215,8 @@ const infos = {
     dimensions: {
       width: "80%",
     },
-    className: ["infos", "h1"],
-    content: "bonjour !",
+    classes: "infos h1",
+    content: "Devinez le mot !",
   },
   listen: [{ event: "go", action: "enter" }],
   actions: [

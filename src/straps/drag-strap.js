@@ -17,15 +17,17 @@ export default function dragStrap(emitter) {
       this.targets = targets;
       this.currentTarget = null;
       this.cb = cb || defaultCallback;
+      this.startDrag(data);
+    }
 
-      console.log("DRAG", data);
+    startDrag(data) {
+      console.log("ma DRAG", data);
       emitter.emit([STRAP, "move"], data);
       emitter.once([STRAP, "end_" + data.event], this.endDrag);
 
       emitter.on([STRAP, "guard_hover"], this.guard_hover);
     }
-
-    endDrag = d => {
+    endDrag = (d) => {
       console.log("end drag", d.target, this.source, d);
       this.targets.includes(d.target) && console.log("WIN !", d.target);
       emitter.off([STRAP, "guard_hover"], this.guard_hover);

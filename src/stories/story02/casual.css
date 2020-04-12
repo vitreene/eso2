@@ -9,6 +9,15 @@
   position: relative;
   margin: auto;
 }
+#presentoir_s01 {
+  justify-content: center;
+}
+
+#sabot_s01 {
+  justify-content: center;
+  align-items: stretch;
+}
+
 #sabot {
   background-color: green;
   position: relative;
@@ -25,8 +34,10 @@
   font-weight: bold;
   color: darkorange;
   border-radius: 1rem;
+  cursor: grab;
+  user-select: none;
 }
-#casse {
+.casse {
   background-color: darkolivegreen;
   border: 4px solid honeydew;
   display: flex;
@@ -38,21 +49,20 @@
   color: whitesmoke;
   transition: background-color 0.3s;
   pointer-events: all;
+  user-select: none;
 }
 
 /* .casse:hover {
   background-color: olive;
 } */
-.infos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#infos {
+  margin: 0 auto;
 }
 
 .h1 {
   color: #ff3e00;
   text-transform: uppercase;
-  font-size: 4em;
+  font-size: 2em;
   font-weight: 100;
 }
 .casse-canhover {

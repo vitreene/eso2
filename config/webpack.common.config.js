@@ -10,7 +10,7 @@ module.exports = {
   output: {
     filename: "[name].[hash:8].js",
     path: path.resolve(__dirname, "../dist"),
-    sourceMapFilename: "[file].map[query]"
+    sourceMapFilename: "[file].map[query]",
   },
   devtool: "eval-cheap-module-source-map",
   // devtool: "eval-source-map",
@@ -25,17 +25,17 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env", "@babel/typescript"]
-          }
-        }
+            presets: ["@babel/preset-env", "@babel/typescript"],
+          },
+        },
       },
       {
         test: [/.css$|.scss$/],
         use: [
           { loader: MiniCssExtractPlugin.loader, options: { hmr: true } },
           "css-loader",
-          "sass-loader"
-        ]
+          "sass-loader",
+        ],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -44,17 +44,17 @@ module.exports = {
             loader: "file-loader",
             options: {
               name: "../public/images/[name].[ext]",
-              outputPath: ""
+              outputPath: "",
               // outputPath: "assets/images"
-            }
-          }
-        ]
-      }
-    ]
+            },
+          },
+        ],
+      },
+    ],
   },
   devServer: {
     contentBase: "./dist",
-    hot: true
+    hot: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -63,17 +63,28 @@ module.exports = {
       inject: true,
       minify: {
         removeComments: true,
-        collapseWhitespace: false
-      }
+        collapseWhitespace: false,
+      },
     }),
     new MiniCssExtractPlugin({
       // filename: "style.[hash].css"
-      filename: "style.css"
+      filename: "style.css",
     }),
     new CopyWebpackPlugin([
       // { from: "./src/static/images", to: "assets/images" }
-      { from: "./public/images", to: "" }
+      { from: "./public/images", to: "" },
     ]),
-    new CleanWebpackPlugin()
-  ]
+    new CleanWebpackPlugin(),
+  ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
+  },
 };

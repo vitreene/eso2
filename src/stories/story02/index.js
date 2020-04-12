@@ -3,7 +3,7 @@ import {
   prepCasuals,
   casuals,
   casualEventimes as eventimes,
-} from "./casual-data";
+} from "./casual-persos";
 import { generateCasual } from "../../scripts/casual-init";
 
 const { stories: cards, eventimes: casualEvents } = generateCasual(prepCasuals);

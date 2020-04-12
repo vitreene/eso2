@@ -25,38 +25,42 @@ export function moveStrap(emitter) {
     constructor(data) {
       console.log("DATA", data);
       this.data = data;
-      this.down();
       this.below = null;
-      this.pointerEvents = null;
+
+      const cssprops = window.getComputedStyle(data.e.target);
+      this.pointerEvents = cssprops.getPropertyValue("pointer-events");
+
+      this.down();
     }
 
     initialMousePosition = {
       x: 0,
-      y: 0
+      y: 0,
     };
     pointer = {
       x: 0,
-      y: 0
+      y: 0,
     };
 
-    move = e => {
+    move = (e) => {
       const { id, event } = this.data;
       // sous le pointer
       const below = document.elementFromPoint(e.clientX, e.clientY);
+      console.log("below", below);
       const belowChanged = below && below.id !== this.below;
       const absPointer = {
         x: window.scrollX + e.clientX,
-        y: window.scrollY + e.clientY
+        y: window.scrollY + e.clientY,
       };
 
       const newPointer = {
         x: absPointer.x - this.initialMousePosition.x,
-        y: absPointer.y - this.initialMousePosition.y
+        y: absPointer.y - this.initialMousePosition.y,
       };
 
       const relativePointer = {
         x: `${newPointer.x / zoom.value}`,
-        y: `${newPointer.y / zoom.value}`
+        y: `${newPointer.y / zoom.value}`,
       };
 
       // diffuser l'event
@@ -65,7 +69,7 @@ export function moveStrap(emitter) {
           leave: this.below,
           hover: below.id,
           id,
-          event
+          event,
         });
 
         this.below = below.id;
@@ -73,20 +77,20 @@ export function moveStrap(emitter) {
       emitter.emit([DEFAULT_NS, event], {
         dynStyle: {
           dX: relativePointer.x,
-          dY: relativePointer.y
-        }
+          dY: relativePointer.y,
+        },
       });
       emitter.emit([STRAP, "pointer"], {
         relativeFromStart: newPointer,
         relativeFromLast: relativePointer,
         pointerFromStart: this.pointer,
-        pointeur: absPointer
+        pointeur: absPointer,
       });
 
       this.pointer = newPointer;
     };
 
-    up = e => {
+    up = (e) => {
       e.preventDefault();
 
       const { id, event } = this.data;
@@ -96,7 +100,7 @@ export function moveStrap(emitter) {
       // top, left sur le composant, x,y pour le support
       const sign = {
         x: this.pointer.x < 0 ? "-" : "+",
-        y: this.pointer.y < 0 ? "-" : "+"
+        y: this.pointer.y < 0 ? "-" : "+",
       };
 
       const dynStyle = {
@@ -104,12 +108,12 @@ export function moveStrap(emitter) {
         left: `${sign.x}=${Math.abs(this.pointer.x / zoom.value)}`,
         top: `${sign.y}=${Math.abs(this.pointer.y / zoom.value)}`,
         dX: 0,
-        dY: 0
+        dY: 0,
       };
 
       const absPointer = {
         x: window.scrollX + e.clientX,
-        y: window.scrollY + e.clientY
+        y: window.scrollY + e.clientY,
       };
 
       emitter.emit([DEFAULT_NS, event], { dynStyle });
@@ -119,7 +123,7 @@ export function moveStrap(emitter) {
         event,
         dynStyle,
         pointer: absPointer,
-        target: this.below
+        target: this.below,
       });
     };
 
@@ -132,14 +136,18 @@ export function moveStrap(emitter) {
       document.addEventListener("pointermove", this.move);
       document.addEventListener("pointerup", this.up);
 
+      emitter.emit([DEFAULT_NS, event], {
+        dynStyle: { pointerEvents: "none" },
+      });
+
       this.initialMousePosition = {
         x: e.clientX,
-        y: e.clientY
+        y: e.clientY,
       };
 
       this.pointer = {
         x: 0,
-        y: 0
+        y: 0,
       };
     };
   };

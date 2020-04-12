@@ -84,7 +84,7 @@ export class Eso extends Component {
 
     const { id, initial } = story;
     this.store = {}; // TODO faire une Map
-    this.handler = props => this.setState(props);
+    this.handler = (props) => this.setState(props);
 
     this.id = id;
     this.cssClass = null;
@@ -95,7 +95,7 @@ export class Eso extends Component {
       between: dynStyle,
       dynStyle,
       content,
-      transition: transition.call(this, emitter)
+      transition: transition.call(this, emitter),
     };
     // this.update = this.update.bind(this);
     // this.revise = this.revise.bind(this);
@@ -131,7 +131,7 @@ export class Eso extends Component {
     //ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
 
     const oncomplete = {
-      event: { ns: DEFAULT_NS, name: "leave-" + props?.id }
+      event: { ns: DEFAULT_NS, name: "leave-" + props?.id },
       // pas de data si l'event est partag' par plusieurs elements
       // data: { leave: true }
     };
@@ -145,7 +145,7 @@ export class Eso extends Component {
 
     const up = {
       ...props,
-      transition
+      transition,
     };
     return up;
   }
@@ -208,7 +208,7 @@ export class Eso extends Component {
       this.cssClass = css(
         this.revision.dynStyle.prerender(this.zoom, {
           ...statStyle,
-          ...dimensions
+          ...dimensions,
           //   ,pointerEvents
         })
       );
@@ -219,7 +219,7 @@ export class Eso extends Component {
     const newState = {
       style,
       class: theClasses,
-      ...other
+      ...other,
     };
 
     this.handler(newState);
