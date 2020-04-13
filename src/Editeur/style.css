@@ -1,0 +1,95 @@
+svg {
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  background-color: aquamarine;
+}
+
+#app {
+  display: grid;
+  grid-template: 1fr;
+  width: 60vw;
+  height: 60vh;
+  margin: 0 auto;
+}
+
+#scene,
+#editor {
+  grid-column: 1;
+  grid-row: 1;
+}
+#scene {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: lightgreen;
+  outline: thin green solid;
+}
+#editor {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  /* background-color: rgb(238, 200, 144); */
+  outline: thin orange solid;
+}
+
+.edit-pattern {
+  position: absolute;
+  outline: 2px dashed darkblue;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.edit-pattern .box {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #333;
+  pointer-events: all;
+}
+
+.box:hover {
+  background-color: darkblue;
+}
+.box.left-top {
+  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+}
+.box.left-bottom {
+  transform: translate(-50%, 50%);
+  bottom: 0;
+  left: 0;
+}
+.box.right-top {
+  transform: translate(50%, -50%);
+  top: 0;
+  right: 0;
+}
+.box.right-bottom {
+  transform: translate(50%, 50%);
+  bottom: 0;
+  right: 0;
+}
+
+.elem {
+  outline: thin red solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#b {
+  position: absolute;
+  left: -100px;
+  top: 120px;
+  /* pointer-events: none; */
+}
+#c {
+  position: absolute;
+  left: 200px;
+  top: 50px;
+}
+
+.selected {
+  background-color: aquamarine;
+}

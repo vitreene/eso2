@@ -1,5 +1,7 @@
-import "./style.scss";
-import { init } from "./scene/init";
-import { initRuntime } from "./runtime";
+import { Player } from "./Player";
+import { Editeur } from "./Editeur";
+// const mode = 'player'
+const mode = "editeur";
 
-init().then(({ persos, actions }) => initRuntime(persos, actions));
+if (mode === "player") Player();
+else Editeur();

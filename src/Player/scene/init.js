@@ -10,14 +10,11 @@ import { registerPersos } from "../register/register-persos";
 import { registerActions } from "../register/register-actions";
 import { registerStraps } from "../register/register-straps";
 
-// import * as objectStories from "../stories/story01/story-01-persos";
-// import { eventimes } from "../stories/story01/story-01-eventimes";
-
 // import { stories as objectStories, eventimes } from "../stories/story01";
 import { stories as objectStories, eventimes } from "../stories/story02";
-
 const stories = Object.values(objectStories);
-console.log("stories, eventimes", stories, eventimes);
+// console.log("stories, eventimes", stories, eventimes);
+
 export const timeLiner = new TimeLiner(eventimes);
 export const emitter = new EventEmitter2({ wildcard: true, maxListeners: 0 });
 

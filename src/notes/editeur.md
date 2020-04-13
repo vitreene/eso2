@@ -72,6 +72,7 @@ un composant se superpose au Perso, qui permet de :
  - ajoute des poignées : redimensionner, déplacer, tourner, mettre à l'échelle, incliner
  - active le panneau propriétés du Perso
  Le perso n'est pas touché, on ne mélange pas les propriétés
+ - selection de groupe
 
 Lecture et enregistrement des persos
 -> utiliser un store, puis localstorage / bdd et générer un json
@@ -82,3 +83,7 @@ Persos selectionné -> Ajouter un event :
 - choisir un event enregistré ou en saisir un nouveau
 -  le panneau propriétés se met à jour 
 - on peut naviguer ensuite parmi les events sur lesquels on est intervenu
+
+
+
+1. selectionner un objet : click sur background-> closest ?
