@@ -23,6 +23,7 @@
     "no-unreachable": "warn",
     "no-cond-assign": "warn",
     "no-dupe-args": "warn",
-    "no-duplicate-case": "warn"
+    "no-duplicate-case": "warn",
+    "function-call-argument-newline": ["warn", "consistent"]
   }
 }

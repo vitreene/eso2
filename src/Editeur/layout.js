@@ -1,26 +1,40 @@
-import { render, html } from "lighterhtml";
+import { bind, Component } from 'hyperhtml';
 
-export const main = document.getElementById("app");
-export const app = (scene, editor) =>
-  render(
-    main,
-    html`
+export const main = document.getElementById('app');
+export const app = (scene, editor) => {
+  console.log('(scene, editor) ', scene, editor);
+  bind(main)`
       ${scene} ${editor}
-    `
-  );
+    `;
+};
 
-export const scene = (elems) =>
-  html`
-    <div id="scene">
-      ${elems.map(
-        (el) =>
-          html`
+export class Scene extends Component {
+  constructor(id, elems) {
+    super();
+    this.id = id;
+    this.setState({ elems });
+  }
+
+  render() {
+    return this.html`
+    <div id=${this.id}>${this.state.elems.map(
+      (el) => `
             <div id=${el} class="elem">${el}</div>
           `
-      )}
-    </div>
+    )}</div>
   `;
-export const editor = (edit) =>
-  html`
-    <div id="editor">${edit}</div>
+  }
+}
+
+export class Editor extends Component {
+  constructor(content) {
+    super();
+    this.setState({ content });
+  }
+  render() {
+    // console.log("this.state", this.state);
+    return this.html`
+       <div id="editor">${this.state.content}</div>
   `;
+  }
+}

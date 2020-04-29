@@ -1,8 +1,9 @@
-export function selectionFactory(EnableEdit) {
+export function selectionFactory(container, EnableEdit) {
   const selected = new Set();
   let deep = 0;
   const enable = new EnableEdit();
-  const scene = document.getElementById("scene");
+  const scene = container._wire$;
+
   return function selectElement(e) {
     const multi = e.shiftKey;
     const under = e.altKey;

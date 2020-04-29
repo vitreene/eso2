@@ -1,130 +1,203 @@
-import "./style.css";
-import { html } from "lighterhtml";
-import { Component } from "hyperhtml";
+import './style.css';
+import { Component } from 'hyperhtml';
+// import { observable } from 'mobx';
 
-import { getElementOffset } from "./get-element-offset";
+import { Move } from './move';
+import { RotateAndScale } from './rotate';
+import { getElementOffset } from './get-element-offset';
+import { selectionFactory } from './selection';
+import { main, app, Scene, Editor } from './layout';
 
-import { main, app, scene, editor } from "./layout";
-import { selectionFactory } from "./selectionFactory";
-import { Move } from "./move";
+import { SCENE_ID, EDIT_ID } from './constantes';
+import { CooStore } from './coord-store';
+import { resizeAction } from './resizeAction';
 
-let elems = "abcde".split("");
+let elems = 'abcde'.split('');
+
 let edit = null;
-function renderApp(innerElems = elems, innerEdit = edit) {
-  app(scene(innerElems), editor(innerEdit));
-}
+const scene = new Scene(SCENE_ID, elems);
+const editor = new Editor(edit);
 
-class EditPerso {
+const coo = new CooStore();
+
+// logique input / traitement / dispatch
+class EditController {
   static getRect(el) {
-    return getElementOffset(el);
+    const res = getElementOffset(el);
+    console.log(el.id, res);
+    return res;
   }
+  static scene = { cached: false };
+  static get delta() {
+    if (!this.scene.cached) {
+      this.scene = this.getRect(scene._wire$);
+      this.scene.cached = true;
+    }
+    return this.scene;
+  }
+
+  el;
+  editor;
+  id;
+  action;
+
   constructor(el) {
     this.el = el;
-    this.rect = EditPerso.getRect(el);
+    this.id = this.el.id;
+    this.rectSize = this.rectSize.bind(this);
+    this.initResize = this.initResize.bind(this);
     this.resize = this.resize.bind(this);
-  }
-  get editor() {
-    const delta = EditPerso.getRect(this.el.parentNode);
-    const { width, height, x, y } = this.rect;
-    const style = { width, height, left: x - delta.x, top: y - delta.y };
-    console.log(style);
-    // return new EditPattern({ style, resize: this.resize });
-    return new editPattern({ style, resize: this.resize });
+    this.rotate = this.rotate.bind(this);
   }
 
-  resize(action, x, y) {
-    // console.log(action, x, y);
-    let style = {};
-    switch (action) {
-      case "left-top":
-        style = `
-          width: ${this.rect.width - x}px;
-          height: ${this.rect.height - y}px;
-          left: ${this.rect.x + x}px;
-          top: ${this.rect.y + y}px;
-        `;
-        break;
+  initEditor() {
+    this.editor = new EditBox({
+      target: this.id,
+      rect: this.rectSize,
+      ondown: this.initResize,
+      onmove: this.resize,
+      onRandS: this.rotate,
+    });
 
-      default:
-        break;
-    }
-    this.el.style = style;
-    console.log(" this.el.style", style);
-    renderApp();
+    const delta = EditController.delta;
+    const { x, y, width, height } = EditController.getRect(this.el);
+    const style = {
+      width,
+      height,
+      left: x - delta.x,
+      top: y - delta.y,
+    };
+
+    coo.observe(this.id, updateEditBoxCoords(this.editor));
+    coo.observe(this.id, updateEditedElement(this.el));
+    coo.update(this.id, style);
   }
 
-  show() {
-    this.render(this.editor);
+  initResize(action) {
+    this.action = action;
+    const rect = coo.read(this.id);
+    console.log('initResize', action, rect);
+
+    this._actionResize = resizeAction(action, rect);
   }
-  hide() {
-    this.render(null);
+
+  _actionResize() {}
+
+  resize(x, y) {
+    const style = this._actionResize(x, y);
+    coo.update(this.id, style);
   }
-  render(el) {
-    renderApp(undefined, el);
+
+  rotate(_action, rotate, scale) {
+    coo.update(this.id, { rotate, scale });
+  }
+
+  rectSize() {
+    return EditController.getRect(this.el);
+  }
+
+  mount() {
+    this.initEditor();
+    editor.setState({ content: this.editor });
+  }
+  unmount() {
+    coo.unObserve(this.id);
+    editor.setState({ content: null });
   }
 }
 
-const editPattern = function(props) {
-  function mdown(e) {
-    e.stopPropagation();
-    new Move({ id: e.target.id, e, callback: props.resize });
-  }
-
-  return html`
-    <div id="edit" class="edit-pattern" style=${props.style}>
-      EDIT
-      <div id="left-top" class="box left-top" onmousedown=${mdown}></div>
-      <div id="left-bottom" class="box left-bottom" onmousedown=${mdown}></div>
-      <div id="right-top" class="box right-top" onmousedown=${mdown}></div>
-      <div
-        id="right-bottom"
-        class="box right-bottom"
-        onmousedown=${mdown}
-      ></div>
-    </div>
-  `;
-};
-/* 
-class EditPattern extends Component {
+// composant interface de l'éditeur d'objet
+class EditBox extends Component {
   constructor(props) {
     super();
-    this.setState({ style: props.style });
-    this.callback = props.resize;
+    this.props = props;
   }
 
-  handleEvent(e) {
+  onmousedown(e) {
     e.stopPropagation();
-    new Move({ id: e.target.id, e, callback: this.callback });
+    if (e.target.id === 'edit-rotation') {
+      new RotateAndScale({
+        id: e.target.id,
+        e,
+        onRandS: this.props.onRandS,
+        onup: this.props.onup,
+        rect: this.props.rect(),
+      });
+    } else
+      new Move({
+        id: e.target.id,
+        e,
+        ondown: this.props.ondown,
+        onmove: this.props.onmove,
+        onup: this.props.onup,
+      });
   }
   render() {
     return this.html`
-        <div id="edit" class="edit-pattern" style=${this.state.style}>
+        <div id=${EDIT_ID} class="edit-pattern" style=${this.state.style} onmousedown=${this}>
           EDIT
-          <div id="left-top" class="box left-top" onmousedown=${this}></div>
-          <div id="left-bottom" class="box left-bottom" onmousedown=${this}></div>
-          <div id="right-top" class="box right-top" onmousedown=${this}></div>
-          <div id="right-bottom" class="box right-bottom" onmousedown=${this}></div>
+          <div id="edit-left-top" class="box left-top" onmousedown=${this}></div>
+          <div id="edit-left-bottom" class="box left-bottom" onmousedown=${this}></div>
+          <div id="edit-right-top" class="box right-top" onmousedown=${this}></div>
+          <div id="edit-right-bottom" class="box right-bottom" onmousedown=${this}></div>
+          <div id="edit-rotation" class="box rotation" onmousedown=${this}></div>
         </div>
       `;
   }
 }
- */
+
+// gere la visibilité de l'éditeur d'objet
 export class EnableEdit {
   selected = new Set();
-
+  edit = null;
   add(node) {
-    node.classList.add("selected");
-    this.edit = new EditPerso(node);
-    this.edit.show();
+    console.log('add EnableEdit');
+    node.classList.add('selected');
+    this.edit = new EditController(node);
+    this.edit.mount();
   }
   remove(node) {
-    node.classList.remove("selected");
-    this.edit.hide();
+    console.log('remove EnableEdit');
+
+    node.classList.remove('selected');
+    this.edit.unmount();
   }
 }
 
 export function Editeur() {
-  renderApp();
+  app(scene, editor);
   const selectElement = selectionFactory(EnableEdit);
-  main.addEventListener("click", selectElement);
+  main.addEventListener('mousedown', selectElement, false);
 }
+
+function updateEditedElement(el) {
+  return function updater({ rotate, scale, ...rect }) {
+    const transform = rotate && `transform: rotate(${rotate}deg);`;
+    const style = `
+      left: ${rect.left}px;
+      top: ${rect.top}px;
+      width: ${rect.width}px;
+      height: ${rect.height}px;
+      ${transform}
+    `;
+    el.style = style;
+  };
+}
+function updateEditBoxCoords(el) {
+  return function updater({ rotate, scale, ...rect }) {
+    const transform = `rotate(${rotate}deg)`;
+    const style = {
+      ...rect,
+      transform,
+    };
+    el.setState({ style });
+  };
+}
+/* 
+const style = {
+  left: this.style.left * scale,
+  top: this.style.top * scale,
+  width: this.style.width * scale,
+  height: this.style.height * scale,
+};
+ */

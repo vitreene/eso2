@@ -86,4 +86,62 @@ Persos selectionné -> Ajouter un event :
 
 
 
-1. selectionner un objet : click sur background-> closest ?
+1. selectionner un objet 
+
+2. propager une modification de l'éditeur sur l'objet lui-meme. 
+Un store sera plus simple pour cela.
+utiliser MST et mobx ?
+
+Les schémas
+collections :
+#### Persos: [Story]
+Story
+    - id
+    - nature
+    - initial: Eso
+    - emit: [Emit]
+    - listen: [Event]
+    - actions : [Eso]
+
+Eso 
+    - statStyle : CSSstyle
+    - dynStyle : CSSstyle
+    - className : string
+    - dimensions : {
+        width? : string | number, 
+        height? : string | number, 
+        ratio? : number
+        }
+    - transition : {
+        from: CSSstyle | string , 
+        to: CSSstyle | string , 
+        duration, 
+        ease, 
+        repeat 
+        }
+    - attr: {any}
+    - content : string | number | 
+                [SlotDefinition] | TextDefinition | HtmlDefinition | SVGDefinition
+
+
+     (dans actions):
+    - move {layer?, slot, rescale} 
+    ou bien 
+    - slot: string, 
+    - rescale: booleen
+
+
+SlotDefinition 
+    - id
+    - className?
+    - statStyle?
+
+// clés de texte
+TextDefinition 
+    - lang?: string
+    - key: string
+    - effect?: string
+
+HtmlDefinition : textHtml | html
+
+
