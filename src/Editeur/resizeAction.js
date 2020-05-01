@@ -1,6 +1,8 @@
 import { transformCoords } from './lib';
+
+// TODO à optimiser quand stable
 export function resizeAction(action, rect) {
-  const { left, top, width, height, rotate } = rect;
+  const { left, top, width, height, rotate, scale } = rect;
 
   return function(px, py) {
     if (action === 'edit')
@@ -11,7 +13,7 @@ export function resizeAction(action, rect) {
         height,
       };
 
-    const { x, y } = transformCoords(px, py, rotate);
+    const { x, y } = transformCoords(px, py, rotate, scale);
     const quadrant = whichQuadrant(action, x, y, {
       width,
       height,

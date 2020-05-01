@@ -15,11 +15,22 @@ calculer l'angle
 
 */
 
-import { dummy } from './constantes';
+import {
+  noop,
+  TRANSLATE,
+  RESIZE,
+  ROTATE,
+  SCALE,
+  CONSTRAIN,
+  DUPLICATE,
+  HOMOTETIC,
+  ROTATE_AND_SCALE,
+} from './constantes';
+
 import { toFixed2, hypothenuse, RADtoDEG } from './lib';
 
 export class RotateAndScale {
-  center = {
+  origin = {
     x: 0,
     y: 0,
   };
@@ -30,9 +41,10 @@ export class RotateAndScale {
 
   constructor(data) {
     this.data = data;
-    this.onRandS = data.onRandS || dummy;
-    this.onup = data.onup || dummy;
-
+    // this.onRandS = data.onRandS || noop;
+    this.ondown = data.ondown || noop;
+    this.onmove = data.onmove || noop;
+    this.onup = data.onup || noop;
     this.down = this.down.bind(this);
     this.move = this.move.bind(this);
     this.up = this.up.bind(this);
@@ -40,20 +52,18 @@ export class RotateAndScale {
   }
 
   down() {
-    const { id, e, rect } = this.data;
+    const { id, e, origin } = this.data;
     e.preventDefault();
     e.stopPropagation();
-    console.log('this.data', this.data);
+    const modifiers = { shift: e.shiftKey, alt: e.altKey };
+    const action = whichPointerAction(this.data.action, modifiers);
+    console.log(action, modifiers);
+
     console.log('POINTERDOWN', id);
     document.addEventListener('pointermove', this.move);
     document.addEventListener('pointerup', this.up);
 
-    // mieux à faire ?
-
-    this.center = {
-      x: rect.x + rect.width / 2,
-      y: rect.y + rect.height / 2,
-    };
+    this.origin = origin;
 
     this.pointer = {
       x: window.scrollX + e.clientX,
@@ -61,8 +71,8 @@ export class RotateAndScale {
     };
 
     const relPointer = {
-      x: this.pointer.x - this.center.x,
-      y: this.pointer.y - this.center.y,
+      x: this.pointer.x - this.origin.x,
+      y: this.pointer.y - this.origin.y,
     };
 
     this.distance = hypothenuse(relPointer.x, relPointer.y);
@@ -79,8 +89,8 @@ export class RotateAndScale {
     };
 
     const relPointer = {
-      x: this.pointer.x - this.center.x,
-      y: this.pointer.y - this.center.y,
+      x: this.pointer.x - this.origin.x,
+      y: this.pointer.y - this.origin.y,
     };
 
     const distance = hypothenuse(relPointer.x, relPointer.y);
@@ -88,7 +98,7 @@ export class RotateAndScale {
     const theta = Math.atan2(relPointer.y, relPointer.x);
     const angle = toFixed2(RADtoDEG(theta));
 
-    this.onRandS(this.data.id, angle, scale);
+    this.onmove(this.data.id, angle, scale);
   }
 
   up(e) {
@@ -100,3 +110,25 @@ export class RotateAndScale {
     this.onup(this.pointer);
   }
 }
+
+function whichPointerAction(action, modifiers) {
+  const mode = (modifiers.alt ? 'alt' : '') + (modifiers.shift ? 'shift' : '');
+
+  return actions[action][mode] ? actions[action][mode] : action;
+}
+
+const actions = {
+  [TRANSLATE]: {
+    shift: CONSTRAIN,
+    alt: DUPLICATE,
+  },
+  [RESIZE]: {
+    shift: HOMOTETIC,
+    alt: RESIZE,
+  },
+  [ROTATE]: {
+    alt: SCALE,
+    shift: CONSTRAIN,
+    altshift: ROTATE_AND_SCALE,
+  },
+};

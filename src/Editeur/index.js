@@ -3,12 +3,11 @@ import { Component } from 'hyperhtml';
 // import { observable } from 'mobx';
 
 import { Move } from './move';
-import { RotateAndScale } from './rotate';
 import { getElementOffset } from './get-element-offset';
 import { selectionFactory } from './selection';
 import { main, app, Scene, Editor } from './layout';
 
-import { SCENE_ID, EDIT_ID } from './constantes';
+import { SCENE_ID, EDIT_ID, TRANSLATE, ROTATE } from './constantes';
 import { CooStore } from './coord-store';
 import { resizeAction } from './resizeAction';
 
@@ -37,9 +36,10 @@ class EditController {
   }
 
   el;
-  editor;
   id;
+  editor;
   action;
+  scale = 1;
 
   constructor(el) {
     this.el = el;
@@ -76,9 +76,11 @@ class EditController {
   initResize(action) {
     this.action = action;
     const rect = coo.read(this.id);
-    console.log('initResize', action, rect);
+    // console.log('initResize', action, rect);
 
-    this._actionResize = resizeAction(action, rect);
+    this.scale = rect.scale || 1;
+    if (action !== 'edit-rotation')
+      this._actionResize = resizeAction(action, rect);
   }
 
   _actionResize() {}
@@ -88,7 +90,8 @@ class EditController {
     coo.update(this.id, style);
   }
 
-  rotate(_action, rotate, scale) {
+  rotate(_action, rotate, s = 1) {
+    const scale = this.scale * s;
     coo.update(this.id, { rotate, scale });
   }
 
@@ -116,15 +119,23 @@ class EditBox extends Component {
   onmousedown(e) {
     e.stopPropagation();
     if (e.target.id === 'edit-rotation') {
-      new RotateAndScale({
+      const rect = this.props.rect();
+      const origin = {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2,
+      };
+      new Move({
+        action: ROTATE,
         id: e.target.id,
         e,
-        onRandS: this.props.onRandS,
+        ondown: this.props.ondown,
+        onmove: this.props.onRandS,
         onup: this.props.onup,
-        rect: this.props.rect(),
+        origin,
       });
     } else
       new Move({
+        action: TRANSLATE,
         id: e.target.id,
         e,
         ondown: this.props.ondown,
@@ -172,7 +183,10 @@ export function Editeur() {
 
 function updateEditedElement(el) {
   return function updater({ rotate, scale, ...rect }) {
-    const transform = rotate && `transform: rotate(${rotate}deg);`;
+    console.log(scale);
+
+    const transform = `transform: ${rotate && `rotate(${rotate}deg)`} ${scale &&
+      `scale(${scale})`};`;
     const style = `
       left: ${rect.left}px;
       top: ${rect.top}px;
@@ -184,20 +198,27 @@ function updateEditedElement(el) {
   };
 }
 function updateEditBoxCoords(el) {
-  return function updater({ rotate, scale, ...rect }) {
-    const transform = `rotate(${rotate}deg)`;
+  return function updater({ rotate, scale = 1, ...rect }) {
+    // const transform = `${rotate && `rotate(${rotate}deg)`} ${scale &&
+    //   `scale(${scale})`}`;
+    const transform = `${rotate && `rotate(${rotate}deg)`}`;
     const style = {
-      ...rect,
+      ...scaleRect(rect, scale),
       transform,
     };
     el.setState({ style });
   };
 }
-/* 
-const style = {
-  left: this.style.left * scale,
-  top: this.style.top * scale,
-  width: this.style.width * scale,
-  height: this.style.height * scale,
-};
- */
+
+function scaleRect(rect, scale) {
+  const center = {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+  return {
+    left: center.x - (rect.width / 2) * scale,
+    top: center.y - (rect.height / 2) * scale,
+    width: rect.width * scale,
+    height: rect.height * scale,
+  };
+}

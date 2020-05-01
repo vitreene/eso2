@@ -18,10 +18,9 @@ svg {
   grid-column: 1;
   grid-row: 1;
 }
+
 #scene {
   position: relative;
-  /* display: grid;
-  grid-template-columns: 1fr 1fr; */
   background-color: lightgreen;
   outline: thin green solid;
 }
@@ -29,7 +28,6 @@ svg {
   position: relative;
   z-index: 1;
   pointer-events: none;
-  /* background-color: rgb(238, 200, 144); */
   outline: thin orange solid;
 }
 
