@@ -1,31 +1,38 @@
 // NOTE https://hackernoon.com/lets-start-with-webpack-4-91a0f1dba02e
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: './src/index.js',
   output: {
-    filename: "[name].[hash:8].js",
-    path: path.resolve(__dirname, "../dist"),
-    sourceMapFilename: "[file].map[query]",
+    filename: '[name].[hash:8].js',
+    path: path.resolve(__dirname, '../dist'),
+    sourceMapFilename: '[file].map[query]',
   },
-  devtool: "eval-cheap-module-source-map",
+  devtool: 'eval-cheap-module-source-map',
   // devtool: "eval-source-map",
   // devtool: "eval-cheap-source-map",
 
-  resolve: { extensions: [".js", ".ts"] },
+  resolve: {
+    extensions: ['.js', '.ts'],
+    alias: {
+      Eso: path.resolve(__dirname, '../src/Player/eso/'),
+      Player: path.resolve(__dirname, '../src/Player/'),
+      Editeur: path.resolve(__dirname, '../src/Editeur/'),
+    },
+  },
   module: {
     rules: [
       {
         test: [/.js$|.ts$/],
         exclude: /(node_modules)/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            presets: ["@babel/preset-env", "@babel/typescript"],
+            presets: ['@babel/preset-env', '@babel/typescript'],
           },
         },
       },
@@ -33,18 +40,18 @@ module.exports = {
         test: [/.css$|.scss$/],
         use: [
           { loader: MiniCssExtractPlugin.loader, options: { hmr: true } },
-          "css-loader",
-          "sass-loader",
+          'css-loader',
+          'sass-loader',
         ],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
         use: [
           {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "../public/images/[name].[ext]",
-              outputPath: "",
+              name: '../public/images/[name].[ext]',
+              outputPath: '',
               // outputPath: "assets/images"
             },
           },
@@ -53,13 +60,13 @@ module.exports = {
     ],
   },
   devServer: {
-    contentBase: "./dist",
+    contentBase: './dist',
     hot: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Eso es",
-      template: "./src/index.html",
+      title: 'Eso es',
+      template: './src/index.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -68,11 +75,11 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       // filename: "style.[hash].css"
-      filename: "style.css",
+      filename: 'style.css',
     }),
     new CopyWebpackPlugin([
       // { from: "./src/static/images", to: "assets/images" }
-      { from: "./public/images", to: "" },
+      { from: './public/images', to: '' },
     ]),
     new CleanWebpackPlugin(),
   ],
@@ -81,8 +88,8 @@ module.exports = {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          name: "vendors",
-          chunks: "all",
+          name: 'vendors',
+          chunks: 'all',
         },
       },
     },

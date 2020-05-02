@@ -1,5 +1,5 @@
-import { zoom } from "../runtime";
-import { DEFAULT_NS, STRAP } from "../data/constantes";
+import { zoom } from '../zoom';
+import { DEFAULT_NS, STRAP } from '../data/constantes';
 /* 
 - pointeur lit la position de la souris / touch
 -> emet : 
@@ -23,12 +23,12 @@ cependant, en modifiant la css de #app, puis en la rétablissant, le déplacmeen
 export function moveStrap(emitter) {
   return class Move {
     constructor(data) {
-      console.log("DATA", data);
+      console.log('DATA', data);
       this.data = data;
       this.below = null;
 
       const cssprops = window.getComputedStyle(data.e.target);
-      this.pointerEvents = cssprops.getPropertyValue("pointer-events");
+      this.pointerEvents = cssprops.getPropertyValue('pointer-events');
 
       this.down();
     }
@@ -46,7 +46,7 @@ export function moveStrap(emitter) {
       const { id, event } = this.data;
       // sous le pointer
       const below = document.elementFromPoint(e.clientX, e.clientY);
-      console.log("below", below);
+      console.log('below', below);
       const belowChanged = below && below.id !== this.below;
       const absPointer = {
         x: window.scrollX + e.clientX,
@@ -65,7 +65,7 @@ export function moveStrap(emitter) {
 
       // diffuser l'event
       if (belowChanged) {
-        emitter.emit([STRAP, "guard_hover"], {
+        emitter.emit([STRAP, 'guard_hover'], {
           leave: this.below,
           hover: below.id,
           id,
@@ -80,7 +80,7 @@ export function moveStrap(emitter) {
           dY: relativePointer.y,
         },
       });
-      emitter.emit([STRAP, "pointer"], {
+      emitter.emit([STRAP, 'pointer'], {
         relativeFromStart: newPointer,
         relativeFromLast: relativePointer,
         pointerFromStart: this.pointer,
@@ -94,13 +94,13 @@ export function moveStrap(emitter) {
       e.preventDefault();
 
       const { id, event } = this.data;
-      document.removeEventListener("pointermove", this.move);
-      document.removeEventListener("pointerup", this.up);
+      document.removeEventListener('pointermove', this.move);
+      document.removeEventListener('pointerup', this.up);
 
       // top, left sur le composant, x,y pour le support
       const sign = {
-        x: this.pointer.x < 0 ? "-" : "+",
-        y: this.pointer.y < 0 ? "-" : "+",
+        x: this.pointer.x < 0 ? '-' : '+',
+        y: this.pointer.y < 0 ? '-' : '+',
       };
 
       const dynStyle = {
@@ -118,7 +118,7 @@ export function moveStrap(emitter) {
 
       emitter.emit([DEFAULT_NS, event], { dynStyle });
 
-      emitter.emit([STRAP, "end_" + event], {
+      emitter.emit([STRAP, 'end_' + event], {
         id,
         event,
         dynStyle,
@@ -131,13 +131,13 @@ export function moveStrap(emitter) {
       const { id, event, e } = this.data;
       e.preventDefault();
 
-      console.log("POINTERDOWN", id, event);
+      console.log('POINTERDOWN', id, event);
 
-      document.addEventListener("pointermove", this.move);
-      document.addEventListener("pointerup", this.up);
+      document.addEventListener('pointermove', this.move);
+      document.addEventListener('pointerup', this.up);
 
       emitter.emit([DEFAULT_NS, event], {
-        dynStyle: { pointerEvents: "none" },
+        dynStyle: { pointerEvents: 'none' },
       });
 
       this.initialMousePosition = {

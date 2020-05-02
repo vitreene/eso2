@@ -1,7 +1,7 @@
-import { zoom } from "../../runtime";
 export function getElementOffset(el = null) {
   const width = el && el.offsetWidth;
   const height = el && el.offsetHeight;
+  return getOffset(el);
 
   function getOffset(el, left = 0, top = 0) {
     // trace(el, top, left);
@@ -13,7 +13,6 @@ export function getElementOffset(el = null) {
       top + el.offsetTop - el.scrollTop
     );
   }
-  return zoom.unZoom(getOffset(el));
 }
 
 /* 

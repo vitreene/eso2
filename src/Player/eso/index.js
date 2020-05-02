@@ -62,32 +62,37 @@ conserve l'état du composant
  serait-il possible d'enregistrer seulement les diffs calculés en sortie de la fonction update
  avec une liste "changed"
  */
-import { Component } from "hyperhtml";
+import { Component } from 'hyperhtml';
 
-import { getElementOffset } from "./lib/get-element-offset";
-import { registerKeyEvents } from "./lib/register-keyEvents";
-import { doDimensions } from "./lib/dimensions-comp";
-import { transition } from "./transitions-comp";
-import { doStyle } from "./style-comp";
-import { doClasses } from "./classes-comp";
-import { content } from "./content-comp";
-import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from "../data/constantes";
+import { getElementOffset } from './lib/get-element-offset';
+import { registerKeyEvents } from './lib/register-keyEvents';
+import { doDimensions } from './lib/dimensions-comp';
+import { transition } from './transitions-comp';
+import { doStyle } from './style-comp';
+import { doClasses } from './classes-comp';
+import { content } from './content-comp';
+import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from '../data/constantes';
 
 const { css, ...dynStyle } = doStyle;
 // TODO attr
 export class Eso extends Component {
   static registerKeyEvents = registerKeyEvents;
   static getElementOffset = getElementOffset;
+
+  id;
+  zoom = 1;
+  cssClass;
+  revision;
+  handler;
+  store = {}; // TODO faire une Map
+
   constructor(story, emitter) {
     super();
     super().node = this.render();
 
     const { id, initial } = story;
-    this.store = {}; // TODO faire une Map
     this.handler = (props) => this.setState(props);
-
     this.id = id;
-    this.cssClass = null;
     this.revision = {
       classes: doClasses,
       dimensions: doDimensions,
@@ -131,7 +136,7 @@ export class Eso extends Component {
     //ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
 
     const oncomplete = {
-      event: { ns: DEFAULT_NS, name: "leave-" + props?.id },
+      event: { ns: DEFAULT_NS, name: 'leave-' + props?.id },
       // pas de data si l'event est partag' par plusieurs elements
       // data: { leave: true }
     };
@@ -168,20 +173,20 @@ export class Eso extends Component {
   _addToStore(state, chrono) {
     state.forEach((diff, revise) => {
       switch (revise) {
-        case "dynStyle":
-        case "statStyle":
-        case "dimensions":
+        case 'dynStyle':
+        case 'statStyle':
+        case 'dimensions':
           this.store[revise] = { ...this.store[revise], ...diff };
           break;
-        case "between":
-          this.store["dynStyle"] = { ...this.store["dynStyle"], ...diff };
+        case 'between':
+          this.store['dynStyle'] = { ...this.store['dynStyle'], ...diff };
           break;
-        case "classes":
-        case "content":
+        case 'classes':
+        case 'content':
           // console.log(this.id, revise, diff);
           this.store[revise] = diff;
           break;
-        case "transition":
+        case 'transition':
           // où et pour qui cette info sera utile ? pour timeline ?
           break;
 
