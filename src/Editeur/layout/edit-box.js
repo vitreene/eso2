@@ -1,6 +1,8 @@
 import { Component } from 'hyperhtml';
-import { Move } from '../move';
-import { EDIT_ID, TRANSLATE, ROTATE } from '../constantes';
+
+import { Move } from '../lib/move';
+import { EDIT_ID, TRANSLATE, ROTATE } from '../lib/constantes';
+
 // composant interface de l'éditeur d'objet
 export class EditBox extends Component {
   constructor(props) {

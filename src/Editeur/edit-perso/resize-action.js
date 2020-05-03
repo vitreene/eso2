@@ -1,4 +1,4 @@
-import { transformCoords } from './lib';
+import { transformCoords } from '../lib';
 
 // TODO à optimiser quand stable
 export function resizeAction(action, rect) {

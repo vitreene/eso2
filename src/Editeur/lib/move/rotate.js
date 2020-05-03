@@ -1,4 +1,4 @@
-import { toFixed2, hypothenuse, RADtoDEG } from '../lib';
+import { toFixed2, hypothenuse, RADtoDEG } from '..';
 export const rotate = {
   down(e) {
     this.pointer = {

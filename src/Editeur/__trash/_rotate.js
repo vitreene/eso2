@@ -25,9 +25,9 @@ import {
   DUPLICATE,
   HOMOTETIC,
   ROTATE_AND_SCALE,
-} from './constantes';
+} from '../lib/constantes';
 
-import { toFixed2, hypothenuse, RADtoDEG } from './lib';
+import { toFixed2, hypothenuse, RADtoDEG } from '../lib';
 
 export class RotateAndScale {
   origin = {

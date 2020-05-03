@@ -8,10 +8,10 @@ import {
   reduce,
   interpret,
 } from 'robot3';
-import { SCENE_ID, EDIT_ID } from './constantes';
+import { SCENE_ID, EDIT_ID } from '../lib/constantes';
 
-export function selectionFactory(EnableEdit) {
-  const enable = new EnableEdit();
+export function selectionFactory(enable) {
+  // const scene = enable.scene.wire$;
   const scene = document.getElementById(SCENE_ID);
 
   const context = () => ({
