@@ -6,5 +6,5 @@ export let chrono;
 
 export const initClock = (timeLiner) => {
   chrono = clock(timeLiner, emitter);
-  registerStraps(chrono, emitter);
+  registerStraps(chrono, timeLiner, emitter);
 };

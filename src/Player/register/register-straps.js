@@ -1,7 +1,7 @@
-import { moveStrap } from "../straps/move-strap";
-import Drag from "../straps/drag-strap";
-import toggle from "../straps/toggle";
-import addEventList from "../straps/add-event-list";
+import { moveStrap } from '../straps/move-strap';
+import Drag from '../straps/drag-strap';
+import toggle from '../straps/toggle';
+import addEventList from '../straps/add-event-list';
 
 /* 
 Par composition, ajouter aux straps :
@@ -11,15 +11,17 @@ Par composition, ajouter aux straps :
 -> la gestion du play/pause est passée à clock
 */
 
-import { STRAP, TOGGLE } from "../data/constantes";
+import { STRAP, TOGGLE } from '../data/constantes';
 
-export function registerStraps(chrono, emitter) {
+export function registerStraps(chrono, timeLiner, emitter) {
   const DragStrap = Drag(emitter);
-  emitter.on([STRAP, "drag"], (data) => new DragStrap(data));
+  emitter.on([STRAP, 'drag'], (data) => new DragStrap(data));
   const Move = moveStrap(emitter);
-  emitter.on([STRAP, "move"], (data) => new Move(data));
+  emitter.on([STRAP, 'move'], (data) => new Move(data));
   const toggleStrap = toggle(emitter);
   emitter.on([STRAP, TOGGLE], (data) => toggleStrap(data));
 
-  emitter.on([STRAP, "add-event-list"], (data) => addEventList(data, chrono));
+  emitter.on([STRAP, 'add-event-list'], (data) =>
+    addEventList(data, chrono, timeLiner)
+  );
 }

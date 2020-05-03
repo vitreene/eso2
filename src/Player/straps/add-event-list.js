@@ -1,6 +1,4 @@
-import { timeLiner } from 'Player';
-
-export default function addEventList(data, chrono) {
+export default function addEventList(data, chrono, timeLiner) {
   const c = chrono();
   console.log('addEventList', data, c);
   // id:01 est la timeline dédiée, par dessus static
