@@ -81,6 +81,10 @@ module.exports = {
       // { from: "./src/static/images", to: "assets/images" }
       { from: './public/images', to: '' },
     ]),
+    new CopyWebpackPlugin([
+      // { from: "./src/static/images", to: "assets/images" }
+      { from: './public/stories', to: 'stories' },
+    ]),
     new CleanWebpackPlugin(),
   ],
   optimization: {

@@ -1,8 +1,8 @@
 import { zoom, getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_NS } from '../data/constantes';
 
-// ============================================================
 // déclenche les updates
+// ============================================================
 export function sceneUpdateHandler(onScene, persos, slots) {
   return function handler(update) {
     // TODO factoriser tous les appels à raf dans une meme fonction
@@ -13,8 +13,6 @@ export function sceneUpdateHandler(onScene, persos, slots) {
   };
 
   // ============================================================
-
-  // need : persos zoom
   function updateScene({ changed, update }) {
     // console.log("update", update);
     if (!update || Object.keys(update).length === 0) return;
@@ -102,7 +100,6 @@ export function sceneUpdateHandler(onScene, persos, slots) {
   }
 
   // ============================================================
-  // need : persos slots
   function updateSlot(slotId, persosIds) {
     const children = persosIds.map((id) => persos.get(id));
     slots.get(slotId).setState({ children });
