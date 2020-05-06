@@ -1,13 +1,5 @@
 import { bind, Component } from 'hyperhtml';
 
-export const main = document.getElementById('app');
-export const app = (scene, editor) => {
-  console.log('(scene, editor) ', scene, editor);
-  bind(main)`
-      ${scene} ${editor}
-    `;
-};
-
 export class Scene extends Component {
   constructor(id, elems) {
     super();
@@ -27,14 +19,38 @@ export class Scene extends Component {
 }
 
 export class Editor extends Component {
-  constructor(content) {
+  constructor(content, id = 'editor') {
     super();
-    this.setState({ content });
+    this.setState({ content, id });
   }
   render() {
     // console.log("this.state", this.state);
     return this.html`
-       <div id="editor">${this.state.content}</div>
+       <div id=${this.state.id}>${this.state.content}</div>
   `;
   }
 }
+
+export class Point extends Component {
+  constructor(id) {
+    super();
+    this.id = id;
+  }
+  render() {
+    return this.html`
+       <div id=${this.id} class="dot" style=${this.state.position} ></div>
+  `;
+  }
+}
+
+export const editorPoints = new Editor();
+editorPoints.setState({ id: 'editor-points' });
+
+export const main = document.getElementById('app');
+export const app = (scene, editor) => {
+  console.log('(scene, editor) ', scene, editor);
+
+  bind(main)`
+      ${scene} ${editor} ${editorPoints}
+    `;
+};

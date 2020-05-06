@@ -1,7 +1,15 @@
+import { Point } from '../layout/layout';
+import { bind } from 'hyperhtml';
+
 import { transformCoords, objToFixed, toFixed2 } from '../lib';
 import { CONSTRAIN } from '../lib/constantes';
 
 export function resizeAction(a, rect) {
+  const poPoint = new Point('po');
+  const coPoint = new Point('co');
+
+  const editorPoints = document.getElementById('editor-points');
+  bind(editorPoints)`${poPoint}${coPoint}`;
   const action = splitAction(a);
   const { left, top, width, height, rotate, scale } = rect;
 
@@ -39,17 +47,27 @@ export function resizeAction(a, rect) {
     const act = whichAction(action, co, rect);
 
     // compense le décalage de la rotation css
-    const diff = {
+    let diff = {
       x: (co.x - po.x) / 2,
       y: (co.y - po.y) / 2,
     };
     // FIXME compenser le décalage en cas de contrainte
-    if (modifier === CONSTRAIN) co = po;
+    /* 
+    la contrainte ne fonctionne pas si le bloc est tourné. 
+    po est proportionnel au bloc, co ne l'est pas 
+    avec co = po, le dimensionnement est correct, pas la position
+    sans, la position est correcte, pas le dimensionnement
+    */
+    if (modifier === CONSTRAIN) {
+      // co = po;
+    }
 
     let swapW = 0;
     let swapH = 0;
     const style = {};
 
+    poPoint.setState({ position: { left: po.x, top: po.y } });
+    coPoint.setState({ position: { left: co.x, top: co.y } });
     switch (act.x) {
       case 'left':
         swapW = action.x === 'right' ? width : 0;
