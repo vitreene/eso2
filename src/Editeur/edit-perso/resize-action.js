@@ -1,96 +1,80 @@
-import { transformCoords } from '../lib';
+import { transformCoords, objToFixed, toFixed2 } from '../lib';
+import { CONSTRAIN } from '../lib/constantes';
 
-// TODO à optimiser quand stable
-export function resizeAction(action, rect) {
+export function resizeAction(a, rect) {
+  const action = splitAction(a);
   const { left, top, width, height, rotate, scale } = rect;
 
-  return function(px, py) {
-    if (action === 'edit')
+  return function(px, py, modifier) {
+    let po = { x: px, y: py };
+
+    // déplacement
+    if (action.action === 'edit')
       return {
-        left: left + px,
-        top: top + py,
+        left: left + po.x,
+        top: top + po.y,
         width,
         height,
       };
 
-    const { x, y } = transformCoords(px, py, rotate, scale);
-    const quadrant = whichQuadrant(action, x, y, {
-      width,
-      height,
-    });
-    const act = whichAction(quadrant);
+    // si resize proportionnel
+    if (modifier === CONSTRAIN) {
+      const scaleX = po.x / width;
+      const scaleY = po.y / height;
+      const sign =
+        action.action === 'edit-left-bottom' ||
+        action.action === 'edit-right-top'
+          ? -1
+          : 1;
+      const constrain = (scaleX + scaleY * sign) / 2;
+
+      po.x = width * constrain;
+      po.y = height * constrain * sign;
+    }
+
+    // coordonnées tiennent compte de la rotation et de l'échelle
+    let co = transformCoords(po.x, po.y, rotate, scale);
+
+    // adapte l'action  si l'on croise le redimensionnement
+    const act = whichAction(action, co, rect);
+
+    // compense le décalage de la rotation css
+    const diff = {
+      x: (co.x - po.x) / 2,
+      y: (co.y - po.y) / 2,
+    };
+    // FIXME compenser le décalage en cas de contrainte
+    if (modifier === CONSTRAIN) co = po;
 
     let swapW = 0;
     let swapH = 0;
-    let style = {};
+    const style = {};
 
-    const diff = {
-      x: (x - px) / 2,
-      y: (y - py) / 2,
-    };
-
-    /*
-Il faut splitter left/right et top/bottom
-por factoriser les calculs.
-*/
-    switch (act) {
-      case 'edit-left-top':
-        if (action.includes('right')) {
-          swapW = width;
-        }
-        if (action.includes('bottom')) {
-          swapH = height;
-        }
-        style = {
-          left: left + x + swapW - diff.x,
-          top: top + y + swapH - diff.y,
-          width: width - x - 2 * swapW,
-          height: height - y - 2 * swapH,
-        };
+    switch (act.x) {
+      case 'left':
+        swapW = action.x === 'right' ? width : 0;
+        style.left = left - diff.x + swapW + co.x;
+        style.width = width - 2 * swapW - co.x;
         break;
-      case 'edit-right-top':
-        if (action.includes('left')) {
-          swapW = width;
-        }
-        if (action.includes('bottom')) {
-          swapH = height;
-        }
-        style = {
-          left: left + swapW - diff.x,
-          top: top + y + swapH - diff.y,
-          width: width + x - 2 * swapW,
-          height: height - y - 2 * swapH,
-        };
+      case 'right':
+        swapW = action.x === 'left' ? width : 0;
+        style.left = left - diff.x + swapW;
+        style.width = width - 2 * swapW + co.x;
         break;
-      case 'edit-left-bottom':
-        if (action.includes('right')) {
-          swapW = width;
-        }
-        if (action.includes('top')) {
-          swapH = height;
-        }
-        style = {
-          left: left + x + swapW - diff.x,
-          top: top + swapH - diff.y,
-          width: width - x - 2 * swapW,
-          height: height + y - 2 * swapH,
-        };
+      default:
         break;
-      case 'edit-right-bottom':
-        if (action.includes('left')) {
-          swapW = width;
-        }
-        if (action.includes('top')) {
-          swapH = height;
-        }
+    }
 
-        style = {
-          left: left + swapW - diff.x,
-          top: top + swapH - diff.y,
-          width: width + x - 2 * swapW,
-          height: height + y - 2 * swapH,
-        };
-
+    switch (act.y) {
+      case 'top':
+        swapH = action.y === 'bottom' ? height : 0;
+        style.top = top - diff.y + swapH + co.y;
+        style.height = height - 2 * swapH - co.y;
+        break;
+      case 'bottom':
+        swapH = action.y === 'top' ? height : 0;
+        style.top = top - diff.y + swapH;
+        style.height = height - 2 * swapH + co.y;
         break;
       default:
         break;
@@ -100,48 +84,45 @@ por factoriser les calculs.
   };
 }
 
-// permet d'evaluer quel décalage appliquer lorsque le resize les inversé
-export function whichQuadrant(action, x, y, rect) {
-  let quadrant = { x: 0, y: 0 };
+// permet d'evaluer quel décalage appliquer lorsque le resize est inversé
+export function whichAction(action, co, rect) {
+  const quadrant = whichQuadrant(action, co, rect);
+  const x = quadrant.x > 0 ? 'right' : 'left';
+  const y = quadrant.y > 0 ? 'top' : 'bottom';
+  return { x, y };
+}
 
-  switch (action) {
-    case 'edit-left-top':
-      quadrant = {
-        x: Math.sign(x - rect.width),
-        y: Math.sign(rect.height - y),
-      };
+export function whichQuadrant(action, { x, y }, rect) {
+  const quadrant = { x: 0, y: 0 };
+
+  switch (action.x) {
+    case 'left':
+      quadrant.x = Math.sign(x - rect.width);
       break;
-
-    case 'edit-right-top':
-      quadrant = {
-        x: Math.sign(rect.width + x),
-        y: Math.sign(rect.height - y),
-      };
+    case 'right':
+      quadrant.x = Math.sign(x + rect.width);
       break;
-
-    case 'edit-left-bottom':
-      quadrant = {
-        x: Math.sign(x - rect.width),
-        y: Math.sign(-rect.height - y),
-      };
-      break;
-
-    case 'edit-right-bottom':
-      quadrant = {
-        x: Math.sign(rect.width + x),
-        y: Math.sign(-rect.height - y),
-      };
-      break;
-
     default:
       break;
   }
-
+  switch (action.y) {
+    case 'bottom':
+      quadrant.y = Math.sign(-y - rect.height);
+      break;
+    case 'top':
+      quadrant.y = Math.sign(-y + rect.height);
+      break;
+    default:
+      break;
+  }
   return quadrant;
 }
 
-export function whichAction(quadrant) {
-  const axeX = quadrant.x > 0 ? 'right' : 'left';
-  const axeY = quadrant.y > 0 ? 'top' : 'bottom';
-  return `edit-${axeX}-${axeY}`;
+function splitAction(action) {
+  const split = action.split('-');
+  return {
+    action,
+    x: split[1],
+    y: split[2],
+  };
 }

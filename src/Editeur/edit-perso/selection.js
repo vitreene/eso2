@@ -119,6 +119,7 @@ export function selectionFactory(enable) {
 
     const shift = e.shiftKey;
     const alt = e.altKey;
+    // TODO belows doit renvoyer un Perso
     const belows = document.elementsFromPoint(e.clientX, e.clientY);
 
     const editElement = document.getElementById(EDIT_ID);

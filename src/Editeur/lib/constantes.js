@@ -2,6 +2,7 @@ export function noop() {}
 
 export const EDIT_ID = 'edit';
 export const SCENE_ID = 'scene';
+export const CONTAINER_ESO = SCENE_ID;
 
 // actions du bloc
 export const MOVE = 'move';

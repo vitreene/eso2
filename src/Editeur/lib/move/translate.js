@@ -1,3 +1,5 @@
+import { whichPointerAction } from './whichPointerAction';
+
 export const translate = {
   down(e) {
     this.origin = this.origin || {
@@ -19,7 +21,10 @@ export const translate = {
       x: absPointer.x - this.origin.x,
       y: absPointer.y - this.origin.y,
     };
-    this.onmove(newPointer.x, newPointer.y);
+    const modifiers = { shift: e.shiftKey, alt: e.altKey };
+    this.actionModified = whichPointerAction(this.actionInitial, modifiers);
+
+    this.onmove(newPointer.x, newPointer.y, this.actionModified);
     this.pointer = newPointer;
   },
 };

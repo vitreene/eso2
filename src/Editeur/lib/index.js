@@ -5,6 +5,12 @@ export function round(precision) {
 }
 export const toFixed2 = round(2);
 
+export function objToFixed(obj) {
+  const res = {};
+  for (const o in obj) res[o] = toFixed2(obj[o]);
+  return res;
+}
+
 export function hypothenuse(x, y) {
   return Math.sqrt(x * x + y * y);
 }
@@ -23,8 +29,23 @@ export function transformCoords(x = 0, y = 0, rotate = 0, s = 1) {
   const coords = {
     x: distance * Math.cos(angle - rad) * scale,
     y: distance * Math.sin(angle - rad) * scale,
+    distance,
+    angle,
   };
   // console.log(toFixed2(x), toFixed2(y), coords);
 
   return coords;
+}
+
+export function scaleRect(rect, scale) {
+  const center = {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+  return {
+    left: center.x - (rect.width / 2) * scale,
+    top: center.y - (rect.height / 2) * scale,
+    width: rect.width * scale,
+    height: rect.height * scale,
+  };
 }

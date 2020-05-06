@@ -145,3 +145,10 @@ TextDefinition
 HtmlDefinition : textHtml | html
 
 
+
+Il y a matière a faire un article comme celui-ci au sujet du resize :
+https://medium.com/the-z/making-a-resizable-div-in-js-is-not-easy-as-you-think-bda19a1bc53d
+
+..et celui-ci s'arrete assez tot.
+
+https://stackoverflow.com/questions/22257408/user-resizable-and-user-rotatable-shapes-on-canvas-with-wpf

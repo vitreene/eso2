@@ -1,7 +1,10 @@
 import { getElementOffset } from '../lib/get-element-offset';
+import { scaleRect } from '../lib';
 import { resizeAction } from './resize-action';
 import { EditBox } from '../layout/edit-box';
 import { CooStore } from '../coord-store';
+
+import { isPerso, updateEditedPerso } from '../init';
 
 import { SCENE_ID } from '../lib/constantes';
 
@@ -32,6 +35,8 @@ export class EditController {
   scale = 1;
 
   constructor(el, editorScene) {
+    console.log('EditController', el);
+
     this.el = el;
     this.id = this.el.id;
     this.editorScene = editorScene;
@@ -56,8 +61,11 @@ export class EditController {
       left: x - delta.x,
       top: y - delta.y,
     };
+    const updater = isPerso(this.id)
+      ? updateEditedPerso(this.id)
+      : updateEditedElement(this.el);
     coo.observe(this.id, updateEditBoxCoords(this.editor));
-    coo.observe(this.id, updateEditedElement(this.el));
+    coo.observe(this.id, updater);
     coo.update(this.id, style);
   }
   initResize(action) {
@@ -69,8 +77,8 @@ export class EditController {
       this._actionResize = resizeAction(action, rect);
   }
   _actionResize() {}
-  resize(x, y) {
-    const style = this._actionResize(x, y);
+  resize(x, y, modifier) {
+    const style = this._actionResize(x, y, modifier);
     coo.update(this.id, style);
   }
   rotate(_action, rotate, s = 1) {
@@ -117,18 +125,5 @@ export function updateEditBoxCoords(el) {
       transform,
     };
     el.setState({ style });
-  };
-}
-
-function scaleRect(rect, scale) {
-  const center = {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2,
-  };
-  return {
-    left: center.x - (rect.width / 2) * scale,
-    top: center.y - (rect.height / 2) * scale,
-    width: rect.width * scale,
-    height: rect.height * scale,
   };
 }

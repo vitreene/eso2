@@ -1,4 +1,5 @@
 import { EditController } from './EditController';
+
 // gere la visibilité de l'éditeur d'objet
 export class EnableEdit {
   constructor(editorScene) {

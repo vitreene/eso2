@@ -1,14 +1,14 @@
-import { splitUnitValue } from "./helpers";
+import { splitUnitValue } from './helpers';
 
 const transformList = {
-  x: { transform: "translateX", unit: "px", zoomable: true },
-  y: { transform: "translateY", unit: "px", zoomable: true },
-  rotate: { transform: "rotate", unit: "deg", zoomable: false },
-  scale: { transform: "scale", unit: "", zoomable: false }, // true ?
-  skewX: { transform: "skewX", unit: "", zoomable: false },
-  skewY: { transform: "skewY", unit: "", zoomable: false },
-  dX: "matrixX",
-  dY: "matrixY"
+  x: { transform: 'translateX', unit: 'px', zoomable: true },
+  y: { transform: 'translateY', unit: 'px', zoomable: true },
+  rotate: { transform: 'rotate', unit: 'deg', zoomable: false },
+  scale: { transform: 'scale', unit: '', zoomable: false }, // true ?
+  skewX: { transform: 'skewX', unit: '', zoomable: false },
+  skewY: { transform: 'skewY', unit: '', zoomable: false },
+  dX: 'matrixX',
+  dY: 'matrixY',
 };
 // alias
 transformList.r = transformList.rotate;
@@ -28,7 +28,7 @@ export function extractTransform(oldStyle) {
 export function withTransform(props, zoom) {
   const { dX, dY, ...other } = props;
 
-  let transform = "";
+  let transform = '';
   for (const tr in other) {
     // console.log("other, tr", other, tr);
     let { value, unit } = splitUnitValue(other[tr]);
@@ -37,7 +37,7 @@ export function withTransform(props, zoom) {
     value = value.toFixed(2);
     unit = unit || transformList[tr].unit;
 
-    transform += transformList[tr].transform + "(" + value + unit + ") ";
+    transform += transformList[tr].transform + '(' + value + unit + ') ';
   }
   if (dX || dY) {
     const coords = transformCoords(dX, dY, other.rotate, other.scale);
@@ -54,7 +54,7 @@ function transformCoords(x = 0, y = 0, rotate = 0, s = 1) {
   const rad = DEGtoRAD(rotate);
   const coords = {
     x: distance * Math.cos(angle - rad) * scale,
-    y: distance * Math.sin(angle - rad) * scale
+    y: distance * Math.sin(angle - rad) * scale,
   };
 
   return coords;

@@ -16,13 +16,13 @@ Prerender
   sortie : style
 
  */
-import { css } from "emotion";
+import { css } from 'emotion';
 
-import { whiteListCssProps, positionCssProps } from "../data/constantes";
-import { hasProperties, pipe } from "./lib/helpers";
-import { mapRelatives } from "./lib/map-relatives";
+import { whiteListCssProps, positionCssProps } from '../data/constantes';
+import { hasProperties, pipe } from './lib/helpers';
+import { mapRelatives } from './lib/map-relatives';
 // import { removeAliasProps } from "./lib/remove-alias-props";
-import { extractTransform, withTransform } from "./lib/transform-comp";
+import { extractTransform, withTransform } from './lib/transform-comp';
 export const doStyle = {
   css(style) {
     return css(style);
@@ -38,12 +38,12 @@ export const doStyle = {
     const newStyle = pipe(mapProps /* removeAliasProps */)(props);
     // console.log(props, newStyle);
 
-    // FIXME pos absolute si déplacement
-    const position = hasProperties(positionCssProps, props) && "relative";
+    // FIXME pos absolute si déplacement, sinon relative ?
+    const position = hasProperties(positionCssProps, props) && 'absolute';
 
     return {
       ...(position && { position }),
-      ...newStyle
+      ...newStyle,
     };
   },
   prerender(zoom = 1, newStyle) {
@@ -52,14 +52,14 @@ export const doStyle = {
     const newRenderStyle = {};
 
     for (const prop in newStyle) {
-      if (whiteListCssProps.has(prop) && typeof newStyle[prop] === "number") {
-        newRenderStyle[prop] = newStyle[prop] * zoom + "px";
+      if (whiteListCssProps.has(prop) && typeof newStyle[prop] === 'number') {
+        newRenderStyle[prop] = newStyle[prop] * zoom + 'px';
       } else newRenderStyle[prop] = newStyle[prop];
     }
     const { style, transform } = extractTransform(newRenderStyle);
     return {
       ...style,
-      ...withTransform(transform, zoom)
+      ...withTransform(transform, zoom),
     };
-  }
+  },
 };
