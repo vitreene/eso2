@@ -8,39 +8,42 @@ export class Zoom {
     return o;
   };
   static singleton = false;
-  z;
+
+  box = defaultBox;
   el;
-  scene;
+  stage;
   renderOnResize;
 
   /**
    *
-   * @param {string} id - id de la scène
-   * @param {Object} scene - dimensions de la scène virtuelle
-   * @param {Number} scene.w - largeur de la scène virtuelle : 1600
-   * @param {Number} scene.h - hauteur de la scène virtuelle : 900
-   * @param {Number} scene.r - ratio de la scène virtuelle : 16 / 9
+   * @param {string} id - id de la scène, doit etre déjà créé
+   * @param {Object} stage - dimensions de la scène virtuelle
+   * @param {Number} stage.w - largeur de la scène virtuelle : 1600
+   * @param {Number} stage.h - hauteur de la scène virtuelle : 900
+   * @param {Number} stage.r - ratio de la scène virtuelle : 16 / 9
    * @param {function} handler - callback appelé quand le zoom change
    */
 
-  constructor(id, scene, handler) {
+  constructor(id, stage, handler) {
     if (Zoom.singleton) return this;
     Zoom.singleton = true;
+
     this.el = document.getElementById(id);
-    this.scene = scene;
+    if (!this.el) console.warn('id %s element not found', id);
+    this.stage = stage;
     this.renderOnResize = handler;
-    this.z = this.setZoom().zoom;
+    this.box = this.setZoom();
   }
+
   get value() {
-    return this.z;
+    return this.box;
   }
 
   resize = () => {
-    console.log('resize', this.z);
-
-    const { zoom } = this.setZoom();
-    if (this.z !== zoom) {
-      this.z = zoom;
+    const zoom = this.setZoom();
+    if (!idem(this.box, zoom)) {
+      this.box = zoom;
+      console.log('resize', this.box.zoom);
       this.renderOnResize && this.renderOnResize(zoom);
     }
   };
@@ -49,26 +52,31 @@ export class Zoom {
     return Zoom.deZoom(obj, this.value);
   }
   setZoom = () => {
+    if (!this.el) return defaultBox;
     // determiner l'échelle du projet, comparée à sa valeur par défaut.
-    const w = this.el.clientWidth;
-    const h = this.el.clientHeight;
-    const wZoom = w / this.scene.w;
-    const hScene = wZoom * this.scene.h;
+    const width = this.el.clientWidth;
+    const height = this.el.clientHeight;
+    const wZoom = width / this.stage.w;
+    const hScene = wZoom * this.stage.h;
 
-    if (hScene > h) {
-      const zoom = h / this.scene.h;
-      const wScene = this.scene.w * zoom;
+    if (hScene > height) {
+      const zoom = height / this.stage.h;
+      const wScene = this.stage.w * zoom;
       return round({
-        w: wScene,
-        h,
-        ratio: wScene / h,
+        left: (width - wScene) / 2,
+        top: 0,
+        width: wScene,
+        height,
+        ratio: wScene / height,
         zoom,
       });
     } else {
       return round({
-        w,
-        h: hScene,
-        ratio: hScene / w,
+        left: 0,
+        top: (height - hScene) / 2,
+        width,
+        height: hScene,
+        ratio: hScene / width,
         zoom: wZoom,
       });
     }
@@ -81,4 +89,24 @@ export function round(obj) {
     r[e] = parseFloat(obj[e].toFixed(2));
   }
   return r;
+}
+
+const defaultBox = {
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+  ratio: 1,
+  zoom: 1,
+};
+
+function idem(o1, o2) {
+  let res = true;
+  for (const p in o1) {
+    if (o1[p] !== o2[p]) {
+      res = false;
+      break;
+    }
+  }
+  return res;
 }

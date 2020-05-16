@@ -20,6 +20,7 @@ export class EditBox extends Component {
       new Move({
         action: ROTATE,
         id: e.target.id,
+        zoom: this.props.zoom,
         e,
         ondown: this.props.ondown,
         onmove: this.props.onRandS,
@@ -30,6 +31,7 @@ export class EditBox extends Component {
       new Move({
         action: TRANSLATE,
         id: e.target.id,
+        zoom: this.props.zoom,
         e,
         ondown: this.props.ondown,
         onmove: this.props.onmove,

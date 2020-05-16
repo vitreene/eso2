@@ -18,8 +18,8 @@ export const translate = {
       y: window.scrollY + e.clientY,
     };
     const newPointer = {
-      x: absPointer.x - this.origin.x,
-      y: absPointer.y - this.origin.y,
+      x: (absPointer.x - this.origin.x) / this.zoom,
+      y: (absPointer.y - this.origin.y) / this.zoom,
     };
     const modifiers = { shift: e.shiftKey, alt: e.altKey };
     this.actionModified = whichPointerAction(this.actionInitial, modifiers);

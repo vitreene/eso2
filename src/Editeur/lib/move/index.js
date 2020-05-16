@@ -31,6 +31,7 @@ export class Move {
   constructor(data) {
     this.e = data.e;
     this.id = data.id;
+    this.zoom = data.zoom;
     this.origin = data.origin;
     this.actionInitial = data.action;
     this.actionModified = data.action;

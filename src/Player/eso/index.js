@@ -81,6 +81,7 @@ export class Eso extends Component {
 
   id;
   zoom = 1;
+  box = {};
   cssClass;
   revision;
   handler;
@@ -200,23 +201,29 @@ export class Eso extends Component {
   // compiled = () => compiledStyles(this.store);
 
   // TODO  mise en cache des classes
-  prerender(zoom) {
-    zoom && (this.zoom = zoom);
+  prerender(box) {
+    // console.log('ESO box --> ', box);
+
+    box && (this.box = box);
+
     // calculer styles : appliquer zoom sur unitless
+    // ajouter box offset sur left et top ; et sur translate ?
     // transformer style statique  + dimensions + pointerevent en classe
 
     const { dynStyle, statStyle, dimensions, classes, ...other } = this.store;
     // const pointerEvents = options.pointerEvents ? "all" : "none";
-    const style = this.revision.dynStyle.prerender(this.zoom, dynStyle);
+    const style = this.revision.dynStyle.prerender(this.box, dynStyle);
+    // console.log(style, dynStyle);
 
     if (statStyle || dimensions) {
-      this.cssClass = css(
-        this.revision.dynStyle.prerender(this.zoom, {
-          ...statStyle,
-          ...dimensions,
-          //   ,pointerEvents
-        })
-      );
+      const cssClass = this.revision.dynStyle.prerender(this.box, {
+        ...statStyle,
+        ...dimensions,
+        //   ,pointerEvents
+      });
+      // console.log(this.id, this.box, dimensions, cssClass);
+
+      this.cssClass = css(cssClass);
     }
 
     const theClasses = this.revision.classes.prerender(this.cssClass, classes);

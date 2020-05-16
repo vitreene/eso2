@@ -11,7 +11,6 @@ import {
 import { SCENE_ID, EDIT_ID } from '../lib/constantes';
 
 export function selectionFactory(enable) {
-  // const scene = enable.scene.wire$;
   const scene = document.getElementById(SCENE_ID);
 
   const context = () => ({
@@ -22,6 +21,8 @@ export function selectionFactory(enable) {
 
   // reducers ///////////////////
   function select(ctx, ev) {
+    console.log(ev.belows);
+
     const below = !isBackground(ev.belows[ctx.deep]) && ev.belows[ctx.deep];
     const selected = new Set();
     below && selected.add(below);
@@ -115,7 +116,10 @@ export function selectionFactory(enable) {
   });
 
   return function selectElement(e) {
+    e.preventDefault();
     e.stopPropagation();
+
+    console.log('selectElement', e);
 
     const shift = e.shiftKey;
     const alt = e.altKey;

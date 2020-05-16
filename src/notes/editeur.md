@@ -152,3 +152,59 @@ https://medium.com/the-z/making-a-resizable-div-in-js-is-not-easy-as-you-think-b
 ..et celui-ci s'arrete assez tot.
 
 https://stackoverflow.com/questions/22257408/user-resizable-and-user-rotatable-shapes-on-canvas-with-wpf
+
+
+
+
+# Editeur : mise en place
+1. layout
+- une zone, à gauche, pour créer, puis organiser les blocs
+- une zone, à droite, pour éditer le bloc sélectionné
+
+
+2.la scene
+occupe la partie centrale disponible sur l'écran.
+y montrer la scene vituelle, dans ses proportions
+determiner ce qui appartient au layout, et ce qui reveint à la scene elle-meme : les layers, notamment.
+- le zoom est obligé.
+
+3.interface
+
+créer un bloc  :
+- chosir le type de bloc
+- cliquer ou tracer un bloc à l'écran
+- l'objet est créé, l'éditeur affiche les parametres du bloc
+
+créer un bloc, plusieurs possibilités :
+-  * choix préalable d'un type, 
+    - en cliquant un bouton
+    - * option d'un select
+- choix a posteriori
+    - d'abord tracer un bloc, puis lui attribuer une fonction
+- choix libre, il est possible de changer la destination d'un bloc en cours de route. Héritage des éléments communs
+cette fonction ne peut etre mise en place que dans une version mature de l'interface.
+
+- la sélection d'un bloc "arme" le pointer, un tracé est possible qui génére un bloc selon le choix fait.
+- une modale propose d'entrer quelques parametres de base :
+- id, avec proposition par défaut, verif de l'unicité
+- placement : quel slot ? ce n'est pas requis par initial
+- dimensions : facultatif ; 
+    - le perso prend par défaut les dimensions de son parent. Contradictoire avec la notion de tracer un bloc pour le créer 
+    - un bloc texte ou image peut etre défini par son contenu
+un bloc créé est défini par sa nature, comme il faut bien le placer quelque part provisoirement, la position est enregistrée à la création dans une action "enter" distincte de 'inital'. 
+"enter" pourra etre réécrite plus tard
+
+
+
+## fonctionnement de l'editeur
+l'editeur doit pouvoir charger une scene :
+- lister les Persos,
+- lister les evenements
+    les événements sont placés sur une timeline 
+    déplacer la tete de lecture pour afficher les persos 
+- comment lire le fichier de scene dans le contexte de l'éditeur
+Dans un premier temps, ignorer les persos générés et les layers
+
+Faut-il dupliquer la logique du Player et tenter plus tard d'adapter à l'éditeur ?
+-> oui
+

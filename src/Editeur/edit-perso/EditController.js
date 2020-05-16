@@ -1,21 +1,26 @@
-import { getElementOffset } from '../lib/get-element-offset';
 import { scaleRect } from '../lib';
 import { resizeAction } from './resize-action';
-import { EditBox } from '../layout/edit-box';
 import { CooStore } from '../coord-store';
 
-import { isPerso, updateEditedPerso } from '../init';
+import {
+  getElementOffsetZoomed,
+  zoom,
+  resizeCallbacks,
+  isPerso,
+  updateEditedPerso,
+} from '../init';
 
+import { EditBox } from '../layout/edit-box';
 import { SCENE_ID } from '../lib/constantes';
 
-// import { editor } from '../index';
+import { updateLog } from '../layout/Log';
 
 const coo = new CooStore();
 
 // logique input / traitement / dispatch
 export class EditController {
   static getRect(el) {
-    const res = getElementOffset(el);
+    const res = getElementOffsetZoomed(el);
     console.log(el.id, res);
     return res;
   }
@@ -48,6 +53,7 @@ export class EditController {
   initEditor() {
     this.editor = new EditBox({
       target: this.id,
+      zoom: zoom.value.zoom,
       rect: this.rectSize,
       ondown: this.initResize,
       onmove: this.resize,
@@ -64,7 +70,12 @@ export class EditController {
     const updater = isPerso(this.id)
       ? updateEditedPerso(this.id)
       : updateEditedElement(this.el);
-    coo.observe(this.id, updateEditBoxCoords(this.editor));
+
+    const box = updateEditBoxCoords(this.editor);
+    resizeCallbacks.set('editor', (zoom) => box.prerender(zoom));
+
+    coo.observe(this.id, updateLog);
+    coo.observe(this.id, box.updater);
     coo.observe(this.id, updater);
     coo.update(this.id, style);
   }
@@ -95,6 +106,7 @@ export class EditController {
   unmount() {
     coo.unObserve(this.id);
     this.editorScene.setState({ content: null });
+    resizeCallbacks.remove('editor');
   }
 }
 
@@ -116,14 +128,29 @@ export function updateEditedElement(el) {
 }
 
 export function updateEditBoxCoords(el) {
-  return function updater({ rotate, scale = 1, ...rect }) {
+  let coords = {
+    rotate: 0,
+    scale: 1,
+    rect: {},
+  };
+  function updater({ rotate, scale = 1, ...rect }) {
     // const transform = `${rotate && `rotate(${rotate}deg)`} ${scale &&
     //   `scale(${scale})`}`;
+    coords = { rotate, scale, rect };
+    prerender();
+  }
+  function prerender(box = zoom.box) {
+    const { rotate, scale, rect } = coords;
     const transform = `${rotate && `rotate(${rotate}deg)`}`;
     const style = {
-      ...scaleRect(rect, scale),
+      ...scaleRect(rect, scale, box),
       transform,
     };
     el.setState({ style });
+  }
+
+  return {
+    updater,
+    prerender,
   };
 }

@@ -12,10 +12,7 @@
     - calculer le style selon la cible
     - updater le composant 
     */
-
-export class CooStore {
-  list = new Map();
-  signals = new Map();
+/* 
   add(id, coord) {
     const co = {
       left: coord.left,
@@ -27,12 +24,17 @@ export class CooStore {
     };
     this.list.set(id, co);
   }
+   */
+export class CooStore {
+  list = new Map();
+  signals = new Map();
+
   read(id) {
     return this.list.has(id) ? this.list.get(id) : null;
   }
-  update(id, coord) {
+  update(id, obj) {
     // if (!this.list.has(id)) return null;
-    const co = Object.assign({}, this.list.has(id) && this.list.get(id), coord);
+    const co = Object.assign({}, this.list.has(id) && this.list.get(id), obj);
     this.list.set(id, co);
     this.notify(id);
   }

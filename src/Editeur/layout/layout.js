@@ -1,19 +1,17 @@
 import { bind, Component } from 'hyperhtml';
 
 export class Scene extends Component {
-  constructor(id, elems) {
+  constructor(id, content) {
     super();
     this.id = id;
-    this.setState({ elems });
+    this.setState({ content });
   }
 
   render() {
     return this.html`
-    <div id=${this.id}>${this.state.elems.map(
-      (el) => `
-            <div id=${el} class="elem">${el}</div>
-          `
-    )}</div>
+    <div id=${this.id + '-outer'} ><div id=${this.id} >${
+      this.state.content
+    }</div></div>
   `;
   }
 }
@@ -24,7 +22,6 @@ export class Editor extends Component {
     this.setState({ content, id });
   }
   render() {
-    // console.log("this.state", this.state);
     return this.html`
        <div id=${this.state.id}>${this.state.content}</div>
   `;
@@ -42,15 +39,28 @@ export class Point extends Component {
   `;
   }
 }
+export class BlocEditor extends Component {
+  constructor(id) {
+    super();
+    this.id = id;
+  }
+  render() {
+    return this.html`
+         <code id=${this.id} class="text-editor"  contenteditable>texte...</code>
+  `;
+  }
+}
 
-export const editorPoints = new Editor();
-editorPoints.setState({ id: 'editor-points' });
+const blocEditor = new BlocEditor('text-editor');
+export const editorPoints = new Editor(null, 'editor-points');
 
-export const main = document.getElementById('app');
-export const app = (scene, editor) => {
-  console.log('(scene, editor) ', scene, editor);
+const container = document.getElementById('app');
 
-  bind(main)`
-      ${scene} ${editor} ${editorPoints}
+export const App = (stage, editor, log) => {
+  bind(container)`
+<div id="left-menu">${log}</div>
+<div id="main">${stage} ${editor} ${editorPoints}</div>
+<div id="bottom-menu"></div>
+    <div id="right-menu">${blocEditor}</div>
     `;
 };

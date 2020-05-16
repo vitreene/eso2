@@ -45,7 +45,7 @@ export class TrueOnce {
 }
 
 export class GetSet {
-  constructor(label, value = "") {
+  constructor(label, value = '') {
     this.label = label;
     let val = value;
     this[label] = {
@@ -54,7 +54,7 @@ export class GetSet {
       },
       get() {
         return val;
-      }
+      },
     };
   }
 }
@@ -78,7 +78,7 @@ export const hasOwn = (obj, key) =>
 export function arrayToObject(arr) {
   const obj = {};
   try {
-    arr.forEach(el => (obj[el.id] = el));
+    arr.forEach((el) => (obj[el.id] = el));
   } catch (error) {
     return null;
   }
@@ -86,48 +86,54 @@ export function arrayToObject(arr) {
 }
 
 export function joinId(...args) {
-  return args.filter(a => a !== "").join("_");
+  return args.filter((a) => a !== '').join('_');
 }
 
 export function isPlainObject(obj) {
-  return Object.prototype.toString.call(obj) === "[object Object]";
+  return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
 // ne teste pas la validité de obj
-export function round(obj) {
+export function objToFixed(obj) {
   const r = {};
-  for (const e in obj) {
-    r[e] = parseFloat(obj[e].toFixed(2));
-  }
+  for (const e in obj) r[e] = parseFloat(obj[e].toFixed(2));
+
   return r;
 }
+
+export function round(precision) {
+  return function(value) {
+    return Number(value.toFixed(precision));
+  };
+}
+export const toFixed2 = round(2);
 
 export const deferOnMount = {
   dequeue() {
     let exe;
     do {
       exe = this.exe;
-      typeof exe === "function" && exe();
-    } while (exe !== "empty");
+      typeof exe === 'function' && exe();
+    } while (exe !== 'empty');
   },
   values: [],
   set exe(fn) {
     this.values.push(fn);
   },
   get exe() {
-    return this.values.length > 0 ? this.values.shift() : "empty";
-  }
+    return this.values.length > 0 ? this.values.shift() : 'empty';
+  },
 };
 
 const separate = /\s*(\d+)\s*(\D*)/;
 export function splitUnitValue(val) {
   if (val === undefined) return null;
-  if (typeof val === "number") return { value: val, unit: null };
+  if (typeof val === 'number') return { value: val, unit: null };
   const match = val.match(separate);
   return {
     value: match[1],
-    unit: match[2]
+    unit: match[2],
   };
 }
-export const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x);
-export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
+export const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x);
+export const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);

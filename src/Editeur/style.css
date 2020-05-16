@@ -11,28 +11,74 @@ svg {
 
 #app {
   display: grid;
-  grid-template: 1fr;
-  width: 60vw;
-  height: 60vh;
+  grid-template-columns: 200px 1fr 200px;
+  grid-template-rows: 1fr 20vh;
+  width: 100vw;
+  height: 100vh;
   margin: 0 auto;
-  pointer-events: none;
+  /* pointer-events: none; */
+}
+#bottom-menu {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  background-color: #edc;
 }
 
-#scene,
+#left-menu {
+  /* width: 100%; */
+  display: flex;
+  padding: 1rem;
+  background-color: beige;
+}
+#right-menu {
+  /* width: 100%; */
+  display: flex;
+  padding: 1rem;
+  background-color: beige;
+}
+#main {
+  display: grid;
+  position: relative;
+}
+
+#scene-outer {
+  position: relative;
+  overflow: hidden;
+  background-color: hsl(62, 37%, 86%);
+}
+
+#scene-outer,
 #editor-points,
 #editor {
   grid-column: 1;
   grid-row: 1;
 }
-
+#editor-points,
+#editor,
 #scene {
-  position: relative;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+}
+#scene {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stage {
   background-color: hsl(62, 37%, 86%);
-  outline: thin green solid;
+  pointer-events: none;
+}
+
+.outline {
+  outline: 2px green dotted;
 }
 #editor-points,
 #editor {
-  position: relative;
+  /* position: relative; */
   z-index: 1;
   pointer-events: none;
   outline: thin orange solid;
@@ -119,4 +165,19 @@ svg {
 }
 #co.dot {
   border-color: blue;
+}
+
+.text-editor {
+  display: block;
+  width: 100%;
+  border: 1px solid rebeccapurple;
+  padding: 1rem;
+  pointer-events: all;
+  word-break: break-all;
+}
+.text-editor ul,
+.text-editor li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }

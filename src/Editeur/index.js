@@ -1,20 +1,22 @@
 import './style.css';
 
-import { main, app, /* Scene, */ Editor } from './layout/layout';
+import { App, Scene, Editor } from './layout/layout';
+import { log } from './layout/Log';
 import { EnableEdit } from './edit-perso/EnableEdit';
 import { selectionFactory } from './edit-perso/selection';
+import { SCENE_ID } from './lib/constantes';
 
-import { scene } from './init';
-
-// import { SCENE_ID } from './lib/constantes';
-// let elems = 'abcde'.split('');
-// export const scene = new Scene(SCENE_ID, elems);
+import { scene, activateZoom } from './init';
 
 export const editor = new Editor();
+const stage = new Scene(SCENE_ID);
 
 export function Editeur() {
-  app(scene, editor);
+  App(stage, editor, log);
   const enable = new EnableEdit(editor);
   const selectElement = selectionFactory(enable);
-  main.addEventListener('mousedown', selectElement, false);
+  scene.node.addEventListener('mousedown', selectElement, false);
+  stage.setState({ content: scene });
+  const removeZoom = activateZoom();
+  scene.node.addEventListener('disconnected', removeZoom);
 }

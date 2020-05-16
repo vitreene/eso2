@@ -1,15 +1,28 @@
-import { Point } from '../layout/layout';
-import { bind } from 'hyperhtml';
+// import { Point } from '../layout/layout';
+import { Point } from '../layout/layout-s';
+// import { bind } from 'hyperhtml';
 
 import { transformCoords, objToFixed, toFixed2 } from '../lib';
 import { CONSTRAIN } from '../lib/constantes';
+
+function deleteChilds(e) {
+  let child = e.lastElementChild;
+  while (child) {
+    e.removeChild(child);
+    child = e.lastElementChild;
+  }
+}
 
 export function resizeAction(a, rect) {
   const poPoint = new Point('po');
   const coPoint = new Point('co');
 
   const editorPoints = document.getElementById('editor-points');
-  bind(editorPoints)`${poPoint}${coPoint}`;
+  deleteChilds(editorPoints);
+  editorPoints.append(poPoint.node);
+  editorPoints.append(coPoint.node);
+  // bind(editorPoints)`${poPoint}${coPoint}`;
+
   const action = splitAction(a);
   const { left, top, width, height, rotate, scale } = rect;
 
@@ -66,8 +79,11 @@ export function resizeAction(a, rect) {
     let swapH = 0;
     const style = {};
 
-    poPoint.setState({ position: { left: po.x, top: po.y } });
-    coPoint.setState({ position: { left: co.x, top: co.y } });
+    poPoint.update({ left: toFixed2(po.x) + 'px', top: toFixed2(po.y) + 'px' });
+    coPoint.update({ left: toFixed2(co.x) + 'px', top: toFixed2(co.y) + 'px' });
+
+    // poPoint.setState({ position: { left: po.x, top: po.y } });
+    // coPoint.setState({ position: { left: co.x, top: co.y } });
     switch (act.x) {
       case 'left':
         swapW = action.x === 'right' ? width : 0;

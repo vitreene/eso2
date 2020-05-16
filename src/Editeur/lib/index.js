@@ -37,15 +37,15 @@ export function transformCoords(x = 0, y = 0, rotate = 0, s = 1) {
   return coords;
 }
 
-export function scaleRect(rect, scale) {
+export function scaleRect(rect, scale = 1, box) {
   const center = {
     x: rect.left + rect.width / 2,
     y: rect.top + rect.height / 2,
   };
   return {
-    left: center.x - (rect.width / 2) * scale,
-    top: center.y - (rect.height / 2) * scale,
-    width: rect.width * scale,
-    height: rect.height * scale,
+    left: (center.x - (rect.width / 2) * scale) * box.zoom /* + box.left */,
+    top: (center.y - (rect.height / 2) * scale) * box.zoom /* + box.top */,
+    width: rect.width * scale * box.zoom,
+    height: rect.height * scale * box.zoom,
   };
 }

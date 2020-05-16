@@ -8,7 +8,12 @@ export const root = {
   id: CONTAINER_ESO,
   nature: 'layer',
   initial: {
-    className: 'container',
+    classes: CONTAINER_ESO + ' outline',
+    dimensions: {
+      width: 1200,
+      height: 900,
+    },
+
     content: [
       {
         id: 's01',
@@ -125,7 +130,8 @@ export const spriteSample = {
     content: 'Mystery-80.png',
     dimensions: { height: 300 },
     // statStyle: { opacity: 0 },
-    statStyle: { position: 'absolute' },
+    // statStyle: { position: 'absolute' },
+    statStyle: { top: 50, left: 50 },
   },
   listen: [
     { event: 'ev011', action: 'enter' },

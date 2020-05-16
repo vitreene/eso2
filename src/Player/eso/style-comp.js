@@ -16,7 +16,8 @@ Prerender
   sortie : style
 
  */
-import { css } from 'emotion';
+
+import { css } from 'goober';
 
 import { whiteListCssProps, positionCssProps } from '../data/constantes';
 import { hasProperties, pipe } from './lib/helpers';
@@ -46,20 +47,43 @@ export const doStyle = {
       ...newStyle,
     };
   },
-  prerender(zoom = 1, newStyle) {
+  prerender(box, newStyle) {
+    // console.log('BOX', box);
+
+    if (!box) box = defaultBox;
+    if (typeof box === 'number') box = { ...defaultBox, zoom: box };
+
     if (!newStyle) return;
     // calculer styles : appliquer zoom sur unitless
     const newRenderStyle = {};
 
+    /* 
+    FIXME si l'on passe d'une position static à absolute, appliquer offset décale l'objet !
+    ca doit etre fixé ailleurs.
+    */
     for (const prop in newStyle) {
       if (whiteListCssProps.has(prop) && typeof newStyle[prop] === 'number') {
-        newRenderStyle[prop] = newStyle[prop] * zoom + 'px';
+        // FIXME pas ici
+        // const offset = ['left', 'top'].includes(prop) ? box[prop] : 0;
+        // console.log('prerender', prop, box, offset);
+        // newRenderStyle[prop] = newStyle[prop] * box.zoom + offset + 'px';
+
+        newRenderStyle[prop] = newStyle[prop] * box.zoom + 'px';
       } else newRenderStyle[prop] = newStyle[prop];
     }
     const { style, transform } = extractTransform(newRenderStyle);
     return {
       ...style,
-      ...withTransform(transform, zoom),
+      ...withTransform(transform, box.zoom),
     };
   },
+};
+
+const defaultBox = {
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+  ratio: 1,
+  zoom: 1,
 };
