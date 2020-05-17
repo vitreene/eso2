@@ -6,6 +6,7 @@ export const noopEmitter = {
 
 export const EDIT_ID = 'edit';
 export const SCENE_ID = 'scene';
+export const SCENE_CONTAINER = 'scene-outer';
 export const CONTAINER_ESO = 'stage';
 export const DEFAULT_SIZE_SCENE = {
   '16/9': {

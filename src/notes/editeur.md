@@ -208,3 +208,14 @@ Dans un premier temps, ignorer les persos générés et les layers
 Faut-il dupliquer la logique du Player et tenter plus tard d'adapter à l'éditeur ?
 -> oui
 
+
+## référents de coordonnées
+- les persos sont placés dans des layers; leur position est fonction de leur parent.
+- le cadre d'édition est placé sur un layer supérieur, dans un autre référent de coordonnées. 
+les mesures doivent se faire dans le cadre général et ensuite ramenés dans le contexte des persos.
+- les mesures du pointeur sont relatives, normalement tout élément correctement positionné doit se déplacer à l'identique dans son contexte.
+- prévoir de mesurer un groupe sélectionné
+
+décaleage initial et au resize du perso et de son editeur
+- soit le probleme est simple à résoudre et est lié au placment initial ;
+- soit il ncessite de transposer les éléments dans la scene virtuelle , puis de calculer leur position dans leur contexte réel. 

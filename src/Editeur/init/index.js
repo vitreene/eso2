@@ -5,7 +5,12 @@ import { createSpriteClass } from 'Player/composants/Sprite';
 import { loadImages } from 'Player/register/register-images';
 
 import { root, textSample, spriteSample } from '../lib/data-persos';
-import { noopEmitter, DEFAULT_SIZE_SCENE, SCENE_ID } from '../lib/constantes';
+import {
+  noopEmitter,
+  DEFAULT_SIZE_SCENE,
+  SCENE_ID,
+  CONTAINER_ESO,
+} from '../lib/constantes';
 import { objToFixed } from '../lib';
 
 import { Zoom } from '../../Player/zoom/zoom';
@@ -16,6 +21,7 @@ export let zoom;
 const sample = new Bloc(textSample, noopEmitter);
 export const scene = new Layer(root, noopEmitter);
 export const persos = new Map();
+const slot = slots.get(CONTAINER_ESO + '_s01');
 
 persos.set(root.id, scene);
 persos.set(textSample.id, sample);
@@ -39,13 +45,13 @@ async function getImage() {
   const sprite = new Sprite(spriteSample, noopEmitter);
   persos.set(sprite.id, sprite);
 
-  scene.update({ content: [sample, sprite] });
+  // scene.update({ content: [sample, sprite] });
 
   console.log('getImage', zoom.box);
   console.log('slots', slots);
 
   renderOnResize(zoom.box);
-  scene.update({ content: sprite });
+  slot.update(sprite);
 }
 
 // relancer le rendu des Persos si resize

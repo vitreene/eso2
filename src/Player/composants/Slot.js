@@ -11,8 +11,12 @@ export class Slot extends Component {
       ${content.statStyle}
     `;
   }
+  update(content) {
+    this.setState({ content });
+  }
+
   render() {
     return this
-      .html`<article id=${this.id} class="slot ${this.class}">${this.state.children}</article>`;
+      .html`<article id=${this.id} class="slot ${this.class}">${this.state.content}</article>`;
   }
 }

@@ -11,28 +11,26 @@ import {
 } from '../init';
 
 import { EditBox } from '../layout/edit-box';
-import { SCENE_ID } from '../lib/constantes';
-
 import { updateLog } from '../layout/Log';
+import { CONTAINER_ESO, SCENE_CONTAINER } from '../lib/constantes';
 
 const coo = new CooStore();
 
 // logique input / traitement / dispatch
 export class EditController {
-  static getRect(el) {
-    const res = getElementOffsetZoomed(el);
-    console.log(el.id, res);
-    return res;
-  }
-  static scene = { cached: false };
-  static get delta() {
-    if (!this.scene.cached) {
-      //   this.scene = this.getRect(scene._wire$);
-      this.scene = this.getRect(document.getElementById(SCENE_ID));
-      this.scene.cached = true;
+  static rects = new Map();
+
+  static delta(id) {
+    if (!this.rects.has(id)) {
+      this.rects.set(id, this.getRect(document.getElementById(id)));
     }
-    return this.scene;
+    return this.rects.get(id);
   }
+
+  static getRect(el) {
+    return getElementOffsetZoomed(el);
+  }
+
   el;
   id;
   editor;
@@ -41,7 +39,6 @@ export class EditController {
 
   constructor(el, editorScene) {
     console.log('EditController', el);
-
     this.el = el;
     this.id = this.el.id;
     this.editorScene = editorScene;
@@ -50,6 +47,7 @@ export class EditController {
     this.resize = this.resize.bind(this);
     this.rotate = this.rotate.bind(this);
   }
+
   initEditor() {
     this.editor = new EditBox({
       target: this.id,
@@ -59,7 +57,7 @@ export class EditController {
       onmove: this.resize,
       onRandS: this.rotate,
     });
-    const delta = EditController.delta;
+    const delta = EditController.delta(CONTAINER_ESO);
     const { x, y, width, height } = EditController.getRect(this.el);
     const style = {
       width,
@@ -72,37 +70,48 @@ export class EditController {
       : updateEditedElement(this.el);
 
     const box = updateEditBoxCoords(this.editor);
-    resizeCallbacks.set('editor', (zoom) => box.prerender(zoom));
+
+    resizeCallbacks.set('editor', function(zoom) {
+      EditController.rects.clear();
+      box.prerender(zoom);
+    });
 
     coo.observe(this.id, updateLog);
     coo.observe(this.id, box.updater);
     coo.observe(this.id, updater);
+
     coo.update(this.id, style);
   }
+
   initResize(action) {
     this.action = action;
     const rect = coo.read(this.id);
-    // console.log('initResize', action, rect);
     this.scale = rect.scale || 1;
     if (action !== 'edit-rotation')
       this._actionResize = resizeAction(action, rect);
   }
+
   _actionResize() {}
+
   resize(x, y, modifier) {
     const style = this._actionResize(x, y, modifier);
     coo.update(this.id, style);
   }
+
   rotate(_action, rotate, s = 1) {
     const scale = this.scale * s;
     coo.update(this.id, { rotate, scale });
   }
+
   rectSize() {
     return EditController.getRect(this.el);
   }
+
   mount() {
     this.initEditor();
     this.editorScene.setState({ content: this.editor });
   }
+
   unmount() {
     coo.unObserve(this.id);
     this.editorScene.setState({ content: null });
@@ -128,19 +137,33 @@ export function updateEditedElement(el) {
 }
 
 export function updateEditBoxCoords(el) {
-  let coords = {
-    rotate: 0,
-    scale: 1,
-    rect: {},
-  };
+  let coords = { rotate: 0, scale: 1, rect: {} };
+  return { updater, prerender };
+
+  function getDelta() {
+    const stage = EditController.delta(CONTAINER_ESO);
+    const scene = EditController.delta(SCENE_CONTAINER);
+    return {
+      x: scene.x - stage.x,
+      y: scene.y - stage.y,
+    };
+  }
+
   function updater({ rotate, scale = 1, ...rect }) {
-    // const transform = `${rotate && `rotate(${rotate}deg)`} ${scale &&
-    //   `scale(${scale})`}`;
-    coords = { rotate, scale, rect };
+    coords = { rotate, scale, ...rect };
     prerender();
   }
+
   function prerender(box = zoom.box) {
-    const { rotate, scale, rect } = coords;
+    const { rotate, scale } = coords;
+    const delta = getDelta();
+    const rect = {
+      width: coords.width,
+      height: coords.height,
+      left: coords.left - delta.x,
+      top: coords.top - delta.y,
+    };
+
     const transform = `${rotate && `rotate(${rotate}deg)`}`;
     const style = {
       ...scaleRect(rect, scale, box),
@@ -148,9 +171,4 @@ export function updateEditBoxCoords(el) {
     };
     el.setState({ style });
   }
-
-  return {
-    updater,
-    prerender,
-  };
 }

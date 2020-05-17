@@ -101,8 +101,8 @@ export function sceneUpdateHandler(onScene, persos, slots) {
 
   // ============================================================
   function updateSlot(slotId, persosIds) {
-    const children = persosIds.map((id) => persos.get(id));
+    const content = persosIds.map((id) => persos.get(id));
 
-    slots.get(slotId).setState({ children });
+    slots.get(slotId).update(content);
   }
 }

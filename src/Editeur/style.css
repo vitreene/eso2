@@ -53,16 +53,21 @@ svg {
   grid-column: 1;
   grid-row: 1;
 }
-#editor-points,
-#editor,
+/* #editor-points,
+#editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+} */
+
 #scene {
   position: absolute;
   top: 1rem;
   left: 1rem;
   bottom: 1rem;
   right: 1rem;
-}
-#scene {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,6 +78,7 @@ svg {
   pointer-events: none;
 }
 
+#sprite,
 .outline {
   outline: 2px green dotted;
 }
