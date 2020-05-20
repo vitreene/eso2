@@ -48,28 +48,23 @@ export const doStyle = {
     };
   },
   prerender(box, newStyle) {
+    if (!newStyle) return;
     // console.log('BOX', box);
-
     if (!box) box = defaultBox;
     if (typeof box === 'number') box = { ...defaultBox, zoom: box };
 
-    if (!newStyle) return;
     // calculer styles : appliquer zoom sur unitless
     const newRenderStyle = {};
 
-    /* 
-    FIXME si l'on passe d'une position static à absolute, appliquer offset décale l'objet !
-    ca doit etre fixé ailleurs.
-    */
     for (const prop in newStyle) {
       if (whiteListCssProps.has(prop) && typeof newStyle[prop] === 'number') {
-        // FIXME pas ici
-        // const offset = ['left', 'top'].includes(prop) ? box[prop] : 0;
-        // console.log('prerender', prop, box, offset);
-        // newRenderStyle[prop] = newStyle[prop] * box.zoom + offset + 'px';
-
         newRenderStyle[prop] = newStyle[prop] * box.zoom + 'px';
       } else newRenderStyle[prop] = newStyle[prop];
+    }
+    // TODO placer des limites :
+    // https://css-tricks.com/simplified-fluid-typography/
+    if ('fontSize' in newStyle && typeof newStyle.fontSize === 'number') {
+      newRenderStyle.fontSize = newStyle.fontSize * box.zoom + 'px';
     }
     const { style, transform } = extractTransform(newRenderStyle);
     return {

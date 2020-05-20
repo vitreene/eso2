@@ -18,13 +18,13 @@ import { getElementOffset } from '../lib/get-element-offset';
 
 export let zoom;
 
-const sample = new Bloc(textSample, noopEmitter);
+const textBox = new Bloc(textSample, noopEmitter);
 export const scene = new Layer(root, noopEmitter);
 export const persos = new Map();
 const slot = slots.get(CONTAINER_ESO + '_s01');
 
 persos.set(root.id, scene);
-persos.set(textSample.id, sample);
+persos.set(textSample.id, textBox);
 getImage();
 
 export function updateEditedPerso(id) {
@@ -45,13 +45,11 @@ async function getImage() {
   const sprite = new Sprite(spriteSample, noopEmitter);
   persos.set(sprite.id, sprite);
 
-  // scene.update({ content: [sample, sprite] });
-
   console.log('getImage', zoom.box);
   console.log('slots', slots);
 
   renderOnResize(zoom.box);
-  slot.update(sprite);
+  slot.update([textBox, sprite]);
 }
 
 // relancer le rendu des Persos si resize

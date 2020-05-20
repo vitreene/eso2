@@ -115,7 +115,7 @@ export class EditController {
   unmount() {
     coo.unObserve(this.id);
     this.editorScene.setState({ content: null });
-    resizeCallbacks.remove('editor');
+    resizeCallbacks.delete('editor');
   }
 }
 

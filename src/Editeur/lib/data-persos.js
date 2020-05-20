@@ -43,7 +43,7 @@ export const textSample = {
     statStyle: {
       color: 'darkblue',
       fontWeight: 'bold',
-      fontSize: '2rem',
+      fontSize: 48,
       fontFamily: 'Antonio, Arial',
       padding: '8px',
       backgroundColor: 'palevioletred',
@@ -57,6 +57,7 @@ export const textSample = {
     content: 'dimanche',
   },
   emit: {
+    /* 
     mousedown: {
       event: { ns: STRAP, name: 'move' },
       data: { id: 'text-sample', event: 'move' },
@@ -64,8 +65,8 @@ export const textSample = {
     click: {
       event: { ns: TC, name: PAUSE },
     },
+    */
   },
-
   listen: [
     { event: 'ev011', action: 'enter' },
     { event: 'ev012', action: 'step01' },
@@ -129,9 +130,7 @@ export const spriteSample = {
   initial: {
     content: 'Mystery-80.png',
     dimensions: { height: 300 },
-    // statStyle: { opacity: 0 },
-    // statStyle: { position: 'absolute' },
-    statStyle: { top: 50, left: 50 },
+    dynStyle: { top: 600, left: 800 },
   },
   listen: [
     { event: 'ev011', action: 'enter' },

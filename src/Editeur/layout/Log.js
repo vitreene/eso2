@@ -7,7 +7,9 @@ export class Log extends Component {
     if (typeof log === 'object') {
       state = [];
       for (const prop in log)
-        state.push(wire()`<li>${prop} : ${log[prop]}</li>`);
+        state.push(
+          wire()`<li><label>${prop} : </label><input value=${log[prop]} onchange={this}/> </li>`
+        );
     }
 
     this.setState({ log: wire()`<ul>${state}</ul>` });
