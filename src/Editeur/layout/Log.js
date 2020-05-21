@@ -1,14 +1,40 @@
 import { Component, wire } from 'hyperhtml';
-import { objToFixed } from '../lib/index';
+import { toFixed2 } from '../lib/index';
+import { noop } from '../lib/constantes';
 
 export class Log extends Component {
+  handlerChange;
+  unsubscribe;
+
+  setStore(id, store) {
+    if (!id) {
+      this.handlerChange = noop;
+      this.unsubscribe();
+      this.update({});
+      return;
+    }
+    this.handlerChange = (prop) => store.update(id, prop);
+    this.unsubscribe = store.observe(id, this.update.bind(this));
+    this.update(store.read(id));
+  }
+
+  handleEvent(e) {
+    console.log('e.target.value', e.target.value);
+    this.handlerChange({ [e.target.name]: parseFloat(e.target.value) });
+  }
   update(log) {
+    console.log('log', this);
     let state = '';
     if (typeof log === 'object') {
       state = [];
       for (const prop in log)
         state.push(
-          wire()`<li><label>${prop} : </label><input value=${log[prop]} onchange={this}/> </li>`
+          wire()`<li>
+            <label>${prop} : </label>
+            <input name=${prop} 
+            value=${toFixed2(log[prop])} 
+            onchange=${this}/>
+            </li>`
         );
     }
 
@@ -19,11 +45,4 @@ export class Log extends Component {
          <code id=${this.id} class="text-editor">${this.state.log}</code>
   `;
   }
-}
-export const log = new Log();
-
-export function updateLog(coord) {
-  // console.log('updateLog', coord);
-
-  log.update(objToFixed(coord));
 }

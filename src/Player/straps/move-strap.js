@@ -44,9 +44,10 @@ export function moveStrap(emitter) {
 
     move = (e) => {
       const { id, event } = this.data;
+
       // sous le pointer
       const below = document.elementFromPoint(e.clientX, e.clientY);
-      console.log('below', below);
+      // console.log('below', below);
       const belowChanged = below && below.id !== this.below;
       const absPointer = {
         x: window.scrollX + e.clientX,
@@ -57,10 +58,10 @@ export function moveStrap(emitter) {
         x: absPointer.x - this.initialMousePosition.x,
         y: absPointer.y - this.initialMousePosition.y,
       };
-
+      const z = zoom.box.zoom;
       const relativePointer = {
-        x: `${newPointer.x / zoom.value}`,
-        y: `${newPointer.y / zoom.value}`,
+        x: `${newPointer.x / z}`,
+        y: `${newPointer.y / z}`,
       };
 
       // diffuser l'event
@@ -74,6 +75,7 @@ export function moveStrap(emitter) {
 
         this.below = below.id;
       }
+
       emitter.emit([DEFAULT_NS, event], {
         dynStyle: {
           dX: relativePointer.x,
@@ -94,6 +96,7 @@ export function moveStrap(emitter) {
       e.preventDefault();
 
       const { id, event } = this.data;
+
       document.removeEventListener('pointermove', this.move);
       document.removeEventListener('pointerup', this.up);
 
@@ -102,11 +105,11 @@ export function moveStrap(emitter) {
         x: this.pointer.x < 0 ? '-' : '+',
         y: this.pointer.y < 0 ? '-' : '+',
       };
-
+      const z = zoom.box.zoom;
       const dynStyle = {
         pointerEvents: this.pointerEvents,
-        left: `${sign.x}=${Math.abs(this.pointer.x / zoom.value)}`,
-        top: `${sign.y}=${Math.abs(this.pointer.y / zoom.value)}`,
+        left: `${sign.x}=${Math.abs(this.pointer.x / z)}`,
+        top: `${sign.y}=${Math.abs(this.pointer.y / z)}`,
         dX: 0,
         dY: 0,
       };

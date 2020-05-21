@@ -3,6 +3,9 @@ import { Layer } from 'Player/composants/Layer';
 import { Bloc } from 'Player/composants/Bloc';
 import { createSpriteClass } from 'Player/composants/Sprite';
 import { loadImages } from 'Player/register/register-images';
+import { Zoom } from '../../Player/zoom/zoom';
+
+import { getElementOffset } from '../lib/get-element-offset';
 
 import { root, textSample, spriteSample } from '../lib/data-persos';
 import {
@@ -12,9 +15,6 @@ import {
   CONTAINER_ESO,
 } from '../lib/constantes';
 import { objToFixed } from '../lib';
-
-import { Zoom } from '../../Player/zoom/zoom';
-import { getElementOffset } from '../lib/get-element-offset';
 
 export let zoom;
 

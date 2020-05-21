@@ -41,6 +41,7 @@ export class CooStore {
   observe(id, handler) {
     if (!this.signals.has(id)) this.signals.set(id, new Set());
     this.signals.get(id).add(handler);
+    return () => this.unsubscribe(id, handler);
   }
   notify(id) {
     if (this.signals.has(id) && this.list.has(id))

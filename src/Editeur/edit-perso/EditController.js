@@ -1,6 +1,4 @@
-import { scaleRect } from '../lib';
-import { resizeAction } from './resize-action';
-import { CooStore } from '../coord-store';
+import { EditBox } from '../layout/edit-box';
 
 import {
   getElementOffsetZoomed,
@@ -10,11 +8,9 @@ import {
   updateEditedPerso,
 } from '../init';
 
-import { EditBox } from '../layout/edit-box';
-import { updateLog } from '../layout/Log';
+import { scaleRect } from '../lib';
+import { resizeAction } from './resize-action';
 import { CONTAINER_ESO, SCENE_CONTAINER } from '../lib/constantes';
-
-const coo = new CooStore();
 
 // logique input / traitement / dispatch
 export class EditController {
@@ -33,15 +29,16 @@ export class EditController {
 
   el;
   id;
+  coo;
   editor;
   action;
   scale = 1;
 
-  constructor(el, editorScene) {
+  constructor(el, coo) {
     console.log('EditController', el);
     this.el = el;
     this.id = this.el.id;
-    this.editorScene = editorScene;
+    this.coo = coo;
     this.rectSize = this.rectSize.bind(this);
     this.initResize = this.initResize.bind(this);
     this.resize = this.resize.bind(this);
@@ -76,16 +73,14 @@ export class EditController {
       box.prerender(zoom);
     });
 
-    coo.observe(this.id, updateLog);
-    coo.observe(this.id, box.updater);
-    coo.observe(this.id, updater);
-
-    coo.update(this.id, style);
+    this.coo.observe(this.id, box.updater);
+    this.coo.observe(this.id, updater);
+    this.coo.update(this.id, style);
   }
 
   initResize(action) {
     this.action = action;
-    const rect = coo.read(this.id);
+    const rect = this.coo.read(this.id);
     this.scale = rect.scale || 1;
     if (action !== 'edit-rotation')
       this._actionResize = resizeAction(action, rect);
@@ -95,26 +90,26 @@ export class EditController {
 
   resize(x, y, modifier) {
     const style = this._actionResize(x, y, modifier);
-    coo.update(this.id, style);
+    this.coo.update(this.id, style);
   }
 
   rotate(_action, rotate, s = 1) {
     const scale = this.scale * s;
-    coo.update(this.id, { rotate, scale });
+    this.coo.update(this.id, { rotate, scale });
   }
 
   rectSize() {
     return EditController.getRect(this.el);
   }
 
-  mount() {
+  mount(editorScene) {
     this.initEditor();
-    this.editorScene.setState({ content: this.editor });
+    editorScene.setState({ content: this.editor });
   }
 
-  unmount() {
-    coo.unObserve(this.id);
-    this.editorScene.setState({ content: null });
+  unmount(editorScene) {
+    this.coo.unObserve(this.id);
+    editorScene.setState({ content: null });
     resizeCallbacks.delete('editor');
   }
 }
