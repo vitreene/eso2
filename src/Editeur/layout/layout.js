@@ -46,7 +46,7 @@ export class BlocEditor extends Component {
   }
   render() {
     return this.html`
-         <code id=${this.id} class="text-editor"  contenteditable>texte...</code>
+         <code id=${this.id} class="text-editor"  >texte...</code>
   `;
   }
 }

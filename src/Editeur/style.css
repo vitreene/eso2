@@ -187,3 +187,18 @@ svg {
   padding: 0;
   list-style: none;
 }
+
+.log-set {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.log-set-label {
+  display: block;
+  text-align: right;
+}
+.log-set-input {
+  display: inline-block;
+  width: 10ex;
+  padding: 2px;
+}

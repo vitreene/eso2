@@ -11,6 +11,10 @@ export function objToFixed(obj) {
   return res;
 }
 
+export function isNumeric(num) {
+  return !isNaN(num);
+}
+
 export function hypothenuse(x, y) {
   return Math.sqrt(x * x + y * y);
 }
