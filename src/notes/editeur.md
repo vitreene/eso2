@@ -86,4 +86,136 @@ Persos selectionné -> Ajouter un event :
 
 
 
-1. selectionner un objet : click sur background-> closest ?
+1. selectionner un objet 
+
+2. propager une modification de l'éditeur sur l'objet lui-meme. 
+Un store sera plus simple pour cela.
+utiliser MST et mobx ?
+
+Les schémas
+collections :
+#### Persos: [Story]
+Story
+    - id
+    - nature
+    - initial: Eso
+    - emit: [Emit]
+    - listen: [Event]
+    - actions : [Eso]
+
+Eso 
+    - statStyle : CSSstyle
+    - dynStyle : CSSstyle
+    - className : string
+    - dimensions : {
+        width? : string | number, 
+        height? : string | number, 
+        ratio? : number
+        }
+    - transition : {
+        from: CSSstyle | string , 
+        to: CSSstyle | string , 
+        duration, 
+        ease, 
+        repeat 
+        }
+    - attr: {any}
+    - content : string | number | 
+                [SlotDefinition] | TextDefinition | HtmlDefinition | SVGDefinition
+
+
+     (dans actions):
+    - move {layer?, slot, rescale} 
+    ou bien 
+    - slot: string, 
+    - rescale: booleen
+
+
+SlotDefinition 
+    - id
+    - className?
+    - statStyle?
+
+// clés de texte
+TextDefinition 
+    - lang?: string
+    - key: string
+    - effect?: string
+
+HtmlDefinition : textHtml | html
+
+
+
+Il y a matière a faire un article comme celui-ci au sujet du resize :
+https://medium.com/the-z/making-a-resizable-div-in-js-is-not-easy-as-you-think-bda19a1bc53d
+
+..et celui-ci s'arrete assez tot.
+
+https://stackoverflow.com/questions/22257408/user-resizable-and-user-rotatable-shapes-on-canvas-with-wpf
+
+
+
+
+# Editeur : mise en place
+1. layout
+- une zone, à gauche, pour créer, puis organiser les blocs
+- une zone, à droite, pour éditer le bloc sélectionné
+
+
+2.la scene
+occupe la partie centrale disponible sur l'écran.
+y montrer la scene vituelle, dans ses proportions
+determiner ce qui appartient au layout, et ce qui reveint à la scene elle-meme : les layers, notamment.
+- le zoom est obligé.
+
+3.interface
+
+créer un bloc  :
+- chosir le type de bloc
+- cliquer ou tracer un bloc à l'écran
+- l'objet est créé, l'éditeur affiche les parametres du bloc
+
+créer un bloc, plusieurs possibilités :
+-  * choix préalable d'un type, 
+    - en cliquant un bouton
+    - * option d'un select
+- choix a posteriori
+    - d'abord tracer un bloc, puis lui attribuer une fonction
+- choix libre, il est possible de changer la destination d'un bloc en cours de route. Héritage des éléments communs
+cette fonction ne peut etre mise en place que dans une version mature de l'interface.
+
+- la sélection d'un bloc "arme" le pointer, un tracé est possible qui génére un bloc selon le choix fait.
+- une modale propose d'entrer quelques parametres de base :
+- id, avec proposition par défaut, verif de l'unicité
+- placement : quel slot ? ce n'est pas requis par initial
+- dimensions : facultatif ; 
+    - le perso prend par défaut les dimensions de son parent. Contradictoire avec la notion de tracer un bloc pour le créer 
+    - un bloc texte ou image peut etre défini par son contenu
+un bloc créé est défini par sa nature, comme il faut bien le placer quelque part provisoirement, la position est enregistrée à la création dans une action "enter" distincte de 'inital'. 
+"enter" pourra etre réécrite plus tard
+
+
+
+## fonctionnement de l'editeur
+l'editeur doit pouvoir charger une scene :
+- lister les Persos,
+- lister les evenements
+    les événements sont placés sur une timeline 
+    déplacer la tete de lecture pour afficher les persos 
+- comment lire le fichier de scene dans le contexte de l'éditeur
+Dans un premier temps, ignorer les persos générés et les layers
+
+Faut-il dupliquer la logique du Player et tenter plus tard d'adapter à l'éditeur ?
+-> oui
+
+
+## référents de coordonnées
+- les persos sont placés dans des layers; leur position est fonction de leur parent.
+- le cadre d'édition est placé sur un layer supérieur, dans un autre référent de coordonnées. 
+les mesures doivent se faire dans le cadre général et ensuite ramenés dans le contexte des persos.
+- les mesures du pointeur sont relatives, normalement tout élément correctement positionné doit se déplacer à l'identique dans son contexte.
+- prévoir de mesurer un groupe sélectionné
+
+décaleage initial et au resize du perso et de son editeur
+- soit le probleme est simple à résoudre et est lié au placment initial ;
+- soit il ncessite de transposer les éléments dans la scene virtuelle , puis de calculer leur position dans leur contexte réel. 

@@ -184,3 +184,17 @@ https://thecodingtrain.com/CodingChallenges/098.1-quadtree.html
 La plupart de ces éléments appartiennent à l'app "Player" 
 Eso est le composant chargé du rendu des Persos (Perso = Eso + attributes + events).
 attributes + events sont très liés à la librairie employée, pour l'instant ils sont traités à part. Une librairie qui utiliserait une fonction "h" ou jsx  aurait une autre interface.
+
+
+### layer est-il necessaire ?
+les slots sont répertoriés dans leur propre table, auquel on peut accéder directement. 
+Layer est un bloc normal avec un content d'un ou plusieurs slots. En construisant un layer avec une grille, il y a moins de complications à construire le layer, qui perd de sa spécificité.
+-> supprimer le layer :
+- retirer la reference dans la propriété move à layer
+- garantir aux slots un nom unique
+
+Pourquoi garder le slot comme élément du DOM et pas comme simplement une référence à n'importe quel objet ? 
+- le slot a des caractéristiques propres :
+    - un element flex pour pre-positionner son contenu par défaut;
+    - un groupe de slots sera soit empilé, soit cote à cote en liste
+    - un slot est responsif, et simplifie les positionnements (c'est à voir)

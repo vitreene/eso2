@@ -1,6 +1,6 @@
 // https: stackoverflow.com/questions/46165545/access-dom-when-using-hyper-component
 
-import { Eso } from "../eso";
+import { Eso } from 'Eso';
 
 export class Perso extends Eso {
   constructor(story, emitter) {
@@ -12,7 +12,7 @@ export class Perso extends Eso {
   }
 
   handleEvent(e) {
-    console.log("handleEvent", e.type, this.state);
+    console.log('handleEvent', e.type, this.state);
     this.emit[e.type] && this.emit[e.type]({ e, store: () => this.store() });
   }
 
@@ -24,7 +24,7 @@ export class Perso extends Eso {
     for (const event in keyEvents) {
       this.node.addEventListener(event, this);
     }
-    this.update({ statStyle: { pointerEvents: "all" } });
+    this.update({ statStyle: { pointerEvents: 'all' } });
   }
 
   registerAttributes(story) {

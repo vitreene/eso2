@@ -18,6 +18,8 @@ $fontsize: 24px;
   min-width: 100%;
   outline: 2px red solid;
   overflow: hidden;
+  position: relative;
+  display: flex;
 }
 
 h1 {

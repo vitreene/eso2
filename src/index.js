@@ -1,7 +1,6 @@
-import { Player } from "./Player";
-import { Editeur } from "./Editeur";
-// const mode = 'player'
-const mode = "editeur";
+// import { Player } from './Player';
+import { Editeur } from './Editeur';
+// import { Editor } from './Editeur/layout/layout-s';
 
-if (mode === "player") Player();
-else Editeur();
+// Player();
+Editeur();

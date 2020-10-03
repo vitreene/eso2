@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 svg {
   width: 50%;
   height: 50%;
@@ -7,37 +11,95 @@ svg {
 
 #app {
   display: grid;
-  grid-template: 1fr;
-  width: 60vw;
-  height: 60vh;
+  grid-template-columns: 200px 1fr 200px;
+  grid-template-rows: 1fr 20vh;
+  width: 100vw;
+  height: 100vh;
   margin: 0 auto;
+  /* pointer-events: none; */
+}
+#bottom-menu {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  background-color: #edc;
 }
 
-#scene,
+#left-menu {
+  /* width: 100%; */
+  display: flex;
+  padding: 1rem;
+  background-color: beige;
+}
+#right-menu {
+  /* width: 100%; */
+  display: flex;
+  padding: 1rem;
+  background-color: beige;
+}
+#main {
+  display: grid;
+  position: relative;
+}
+
+#scene-outer {
+  position: relative;
+  overflow: hidden;
+  background-color: hsl(62, 37%, 86%);
+}
+
+#scene-outer,
+#editor-points,
 #editor {
   grid-column: 1;
   grid-row: 1;
 }
-#scene {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background-color: lightgreen;
-  outline: thin green solid;
-}
+/* #editor-points,
 #editor {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+} */
+
+#scene {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stage {
+  background-color: hsl(62, 37%, 86%);
+  pointer-events: none;
+}
+
+#sprite,
+.outline {
+  outline: 2px green dotted;
+}
+#editor-points,
+#editor {
+  /* position: relative; */
   z-index: 1;
   pointer-events: none;
-  /* background-color: rgb(238, 200, 144); */
   outline: thin orange solid;
 }
 
+#editor-points {
+  top: 100%;
+}
 .edit-pattern {
   position: absolute;
   outline: 2px dashed darkblue;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  pointer-events: all;
 }
 .edit-pattern .box {
   position: absolute;
@@ -70,26 +132,73 @@ svg {
   bottom: 0;
   right: 0;
 }
-
-.elem {
-  outline: thin red solid;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#b {
+.box.rotation {
   position: absolute;
-  left: -100px;
-  top: 120px;
-  /* pointer-events: none; */
+  transform: translateY(-50%);
+  /* top: -24px;
+  left: 50%; */
+  right: -24px;
+  top: 50%;
+  border-radius: 50%;
 }
-#c {
+.box.rotation:after {
+  content: '';
   position: absolute;
-  left: 200px;
-  top: 50px;
+  /* transform: translate(50%, 100%); */
+  left: -12px;
+  top: calc(50% - 1px);
+  width: 12px;
+  height: 2px;
+  background-color: #333;
 }
-
 .selected {
   background-color: aquamarine;
+}
+
+.toto {
+  text-transform: uppercase;
+}
+
+.dot {
+  position: absolute;
+
+  width: 5px;
+  height: 5px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid darkred;
+}
+#co.dot {
+  border-color: blue;
+}
+
+.text-editor {
+  display: block;
+  width: 100%;
+  border: 1px solid rebeccapurple;
+  padding: 1rem;
+  pointer-events: all;
+  word-break: break-all;
+}
+.text-editor ul,
+.text-editor li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.log-set {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.log-set-label {
+  display: block;
+  text-align: right;
+}
+.log-set-input {
+  display: inline-block;
+  width: 10ex;
+  padding: 2px;
 }

@@ -1,11 +1,14 @@
-import { Perso } from "./Perso";
-import { Slot } from "./Slot";
-import { joinId } from "../eso/lib/helpers";
+import { Perso } from './Perso';
+import { Slot } from './Slot';
+import { joinId } from '../eso/lib/helpers';
 
+// FIXME possible memory leak
+// TODO déplacer la déclaration des slots ailleurs
+// un slot peut etre n'importe quel élément acceptant un mode en contenu !
 export const slots = new Map();
 
 export class Layer extends Perso {
-  static nature = "layer";
+  static nature = 'layer';
   constructor(story, emitter) {
     super(story, emitter);
     this.update({
@@ -35,5 +38,7 @@ function innerLayer(content, layerId) {
     layer.push(slot);
     slots.set(id, slot);
   }
+  console.log('innerLayer', layer);
+
   return layer;
 }

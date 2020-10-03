@@ -1,13 +1,13 @@
 // const imageCollection = {};
-const composantTypeImage = ["img", "sprite"];
+const composantTypeImage = ['img', 'sprite'];
 
 export async function registerImages(stories) {
   const srcs = findSrcs(
     stories.filter((story) => composantTypeImage.includes(story.nature))
   );
-  console.log("src", srcs);
+  console.log('src', srcs);
   const imagesCollection = await loadImages(srcs);
-  console.log("imagesCollection", imagesCollection);
+  console.log('imagesCollection', imagesCollection);
   return imagesCollection;
 }
 
@@ -22,7 +22,7 @@ function findSrcs(imgs) {
   }
   return srcs;
 }
-async function loadImages(srcs) {
+export async function loadImages(srcs) {
   const imageCollection = new Map();
 
   return await Promise.all(
@@ -45,7 +45,7 @@ async function loadImages(srcs) {
     )
   )
     .then(() => imageCollection)
-    .catch((err) => console.log("erreur image :", src, err));
+    .catch((err) => console.log('erreur image :', src, err));
 
   // return imageCollection;
 }
